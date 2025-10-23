@@ -1,0 +1,896 @@
+[
+  {
+    "question": "Làm sao để cơm không bị nhão?",
+    "answer": "Vo gạo sạch, canh tỉ lệ 1 gạo : 1.2 nước và để cơm nghỉ 10 phút sau khi nấu.",
+    "category": "cooking",
+    "tags": ["cơm", "nhão", "vo gạo", "tỉ lệ nước"]
+  },
+  {
+    "question": "Chiên cá thế nào để không bị dính chảo?",
+    "answer": "Làm nóng chảo trước, cho ít muối vào dầu hoặc phủ cá bằng lớp bột mỏng.",
+    "category": "cooking",
+    "tags": ["chiên cá", "dính chảo", "bột áo"]
+  },
+  {
+    "question": "Làm sao để rau luộc xanh và giòn?",
+    "answer": "Luộc rau trong nước sôi mạnh, thêm chút muối và dầu, sau đó ngâm ngay vào nước đá.",
+    "category": "cooking",
+    "tags": ["rau luộc", "màu xanh", "giòn"]
+  },
+  {
+    "question": "Nướng thịt làm sao để không bị khô?",
+    "answer": "Ướp thịt với dầu hoặc sốt trước khi nướng và không nướng quá lâu.",
+    "category": "cooking",
+    "tags": ["nướng thịt", "không khô", "ướp dầu"]
+  },
+  {
+    "question": "Cách làm nước dùng trong?",
+    "answer": "Hớt bọt thường xuyên và cho hành tây nướng vào nồi khi ninh.",
+    "category": "cooking",
+    "tags": ["nước dùng", "trong", "hớt bọt"]
+  },
+  {
+    "question": "Bảo quản rau sống như thế nào để tươi lâu?",
+    "answer": "Bọc rau trong khăn giấy khô, cho vào hộp kín và để ngăn mát.",
+    "category": "storage",
+    "tags": ["rau sống", "bảo quản", "tươi lâu"]
+  },
+  {
+    "question": "Có thể thay đường bằng gì khi nấu ăn?",
+    "answer": "Có thể dùng mật ong, siro agave hoặc đường dừa tùy món.",
+    "category": "substitution",
+    "tags": ["đường", "mật ong", "thay thế"]
+  },
+  {
+    "question": "Ăn nhiều rau xanh có lợi ích gì?",
+    "answer": "Rau xanh cung cấp chất xơ, vitamin và giúp tiêu hóa tốt hơn.",
+    "category": "nutrition",
+    "tags": ["rau xanh", "lợi ích", "vitamin"]
+  },
+  {
+    "question": "Cách khử mùi hôi tủ lạnh?",
+    "answer": "Đặt baking soda hoặc lát chanh trong tủ lạnh để hút mùi.",
+    "category": "storage",
+    "tags": ["tủ lạnh", "mùi hôi", "baking soda"]
+  },
+  {
+    "question": "Có thể thay trứng trong bánh bằng gì?",
+    "answer": "Dùng chuối nghiền, hạt lanh ngâm hoặc sữa chua không đường.",
+    "category": "substitution",
+    "tags": ["thay trứng", "bánh", "chuối", "hạt lanh"]
+  },
+  {
+    "question": "Cách làm khoai tây chiên giòn lâu?",
+    "answer": "Ngâm khoai trong nước lạnh 30 phút, lau khô rồi chiên hai lần.",
+    "category": "cooking",
+    "tags": ["khoai tây", "chiên giòn", "ngâm nước"]
+  },
+  {
+    "question": "Làm sao để gọt hành tây không cay mắt?",
+    "answer": "Để hành trong tủ lạnh 15 phút trước khi gọt hoặc gọt dưới vòi nước.",
+    "category": "cooking",
+    "tags": ["hành tây", "không cay mắt"]
+  },
+  {
+    "question": "Bảo quản thịt bò trong tủ lạnh như thế nào?",
+    "answer": "Bọc kín thịt bằng màng bọc thực phẩm, để ngăn mát không quá 3 ngày.",
+    "category": "storage",
+    "tags": ["thịt bò", "tủ lạnh", "bảo quản"]
+  },
+  {
+    "question": "Có thể thay nước mắm bằng gì?",
+    "answer": "Dùng nước tương, nước sốt đậu nành hoặc muối loãng tùy món.",
+    "category": "substitution",
+    "tags": ["nước mắm", "thay thế", "nước tương"]
+  },
+  {
+    "question": "Uống nhiều nước mỗi ngày có lợi ích gì?",
+    "answer": "Giúp thanh lọc cơ thể, hỗ trợ tiêu hóa và duy trì năng lượng.",
+    "category": "nutrition",
+    "tags": ["nước", "lợi ích", "sức khỏe"]
+  },
+  {
+    "question": "Bảo quản cá tươi lâu trong ngăn đá thế nào?",
+    "answer": "Rửa sạch cá, để ráo nước, bọc kín và cấp đông ngay.",
+    "category": "storage",
+    "tags": ["cá", "bảo quản", "ngăn đá"]
+  },
+  {
+    "question": "Có thể thay bột mì bằng gì khi làm bánh?",
+    "answer": "Dùng bột gạo, bột yến mạch hoặc bột hạnh nhân tùy loại bánh.",
+    "category": "substitution",
+    "tags": ["bột mì", "thay thế", "bột gạo"]
+  },
+  {
+    "question": "Ăn sáng có quan trọng không?",
+    "answer": "Có, ăn sáng giúp bổ sung năng lượng và tăng khả năng tập trung.",
+    "category": "nutrition",
+    "tags": ["ăn sáng", "năng lượng"]
+  },
+  {
+    "question": "Cách khử mùi tanh của cá?",
+    "answer": "Ngâm cá với muối, gừng hoặc rượu trắng trong 10 phút.",
+    "category": "cooking",
+    "tags": ["cá", "khử tanh", "gừng", "rượu"]
+  },
+  {
+    "question": "Làm sao để thịt gà luộc không bị đỏ?",
+    "answer": "Thả gà vào nước lạnh, đun sôi từ từ và luộc đủ thời gian.",
+    "category": "cooking",
+    "tags": ["gà luộc", "không đỏ"]
+  },
+  {
+    "question": "Làm sao để chiên trứng ốp la đẹp mắt?",
+    "answer": "Dùng chảo chống dính, cho ít dầu, đập trứng nhẹ và chiên lửa nhỏ để lòng đỏ không vỡ.",
+    "category": "cooking",
+    "tags": ["trứng ốp la", "chiên trứng", "đẹp mắt"]
+  },
+  {
+    "question": "Cách làm bánh mì giòn lâu?",
+    "answer": "Nướng ở nhiệt cao lúc cuối, để nguội trên giá thay vì bọc kín ngay.",
+    "category": "cooking",
+    "tags": ["bánh mì", "giòn lâu", "nướng"]
+  },
+  {
+    "question": "Làm thế nào để nấu cháo không bị trào?",
+    "answer": "Nấu với lửa nhỏ, đặt đũa ngang miệng nồi để giảm sủi bọt trào ra.",
+    "category": "cooking",
+    "tags": ["cháo", "không trào", "lửa nhỏ"]
+  },
+  {
+    "question": "Cách luộc trứng dễ bóc vỏ?",
+    "answer": "Cho chút muối và giấm vào nước luộc, sau khi chín ngâm ngay nước lạnh.",
+    "category": "cooking",
+    "tags": ["trứng luộc", "dễ bóc", "giấm", "muối"]
+  },
+  {
+    "question": "Nên bảo quản hành khô như thế nào?",
+    "answer": "Để nơi khô ráo, thoáng mát, không để tủ lạnh vì dễ mọc mầm.",
+    "category": "storage",
+    "tags": ["hành khô", "bảo quản", "mọc mầm"]
+  },
+  {
+    "question": "Bảo quản cà chua tốt nhất ra sao?",
+    "answer": "Để nơi thoáng mát, không cho vào tủ lạnh để giữ hương vị.",
+    "category": "storage",
+    "tags": ["cà chua", "bảo quản", "thoáng mát"]
+  },
+  {
+    "question": "Có thể thay muối ăn bằng gì?",
+    "answer": "Dùng nước tương ít natri hoặc gia vị thảo mộc như cần tây, rong biển.",
+    "category": "substitution",
+    "tags": ["muối", "thay thế", "gia vị thảo mộc"]
+  },
+  {
+    "question": "Không có bơ thì thay thế bằng gì trong bánh?",
+    "answer": "Có thể dùng dầu dừa, dầu thực vật hoặc sữa chua không đường.",
+    "category": "substitution",
+    "tags": ["bơ", "thay thế", "dầu dừa", "sữa chua"]
+  },
+  {
+    "question": "Ăn nhiều cá có lợi ích gì?",
+    "answer": "Cung cấp omega-3 tốt cho tim mạch và não bộ.",
+    "category": "nutrition",
+    "tags": ["cá", "omega-3", "tim mạch"]
+  },
+  {
+    "question": "Tại sao cần ăn đa dạng thực phẩm?",
+    "answer": "Đa dạng thực phẩm giúp cơ thể nhận đủ vitamin và khoáng chất.",
+    "category": "nutrition",
+    "tags": ["đa dạng", "dinh dưỡng", "vitamin"]
+  },
+  {
+    "question": "Cách khử mùi tỏi trên tay?",
+    "answer": "Chà tay với muối hoặc thìa inox dưới vòi nước.",
+    "category": "general",
+    "tags": ["mùi tỏi", "khử mùi", "thìa inox"]
+  },
+  {
+    "question": "Làm sao để dao bếp luôn sắc bén?",
+    "answer": "Mài định kỳ, không cắt trên mặt kính hay đá cứng.",
+    "category": "general",
+    "tags": ["dao bếp", "sắc bén", "mài dao"]
+  },
+  {
+    "question": "Cách hâm lại pizza để không bị khô?",
+    "answer": "Đặt pizza trên chảo chống dính, đậy nắp và hâm lửa nhỏ.",
+    "category": "cooking",
+    "tags": ["pizza", "hâm nóng", "không khô"]
+  },
+  {
+    "question": "Làm thế nào để nấu mì không bị nát?",
+    "answer": "Luộc mì vừa chín tới, xả nước lạnh rồi để ráo trước khi xào.",
+    "category": "cooking",
+    "tags": ["mì", "không nát", "luộc mì"]
+  },
+  {
+    "question": "Bảo quản bánh quy để giòn lâu thế nào?",
+    "answer": "Cho vào lọ thủy tinh kín, thêm gói hút ẩm hoặc ít gạo sống.",
+    "category": "storage",
+    "tags": ["bánh quy", "giòn lâu", "hút ẩm"]
+  },
+  {
+    "question": "Có thể thay nước cốt dừa bằng gì?",
+    "answer": "Dùng sữa tươi béo hoặc sữa hạnh nhân pha chút dầu dừa.",
+    "category": "substitution",
+    "tags": ["nước cốt dừa", "thay thế", "sữa hạnh nhân"]
+  },
+  {
+    "question": "Uống trà xanh hàng ngày có lợi ích gì?",
+    "answer": "Chứa chất chống oxy hóa, hỗ trợ giảm cân và tốt cho tim mạch.",
+    "category": "nutrition",
+    "tags": ["trà xanh", "lợi ích", "chống oxy hóa"]
+  },
+  {
+    "question": "Có nên để mật ong trong tủ lạnh không?",
+    "answer": "Không nên, nhiệt độ lạnh làm mật ong kết tinh nhanh.",
+    "category": "storage",
+    "tags": ["mật ong", "bảo quản", "kết tinh"]
+  },
+  {
+    "question": "Làm thế nào để nước mắm không bị đổi màu?",
+    "answer": "Đậy kín nắp, để nơi thoáng mát, tránh ánh nắng trực tiếp.",
+    "category": "storage",
+    "tags": ["nước mắm", "đổi màu", "bảo quản"]
+  },
+  {
+    "question": "Cách làm salad rau quả không bị chảy nước?",
+    "answer": "Trộn sốt ngay trước khi ăn và thêm chút muối vào rau để ép nước trước.",
+    "category": "cooking",
+    "tags": ["salad", "rau quả", "chảy nước"]
+  },
+  {
+    "question": "Làm sao để chiên gà giòn mà không bị khô?",
+    "answer": "Ngâm gà trong sữa tươi trước khi chiên, áo bột mỏng và chiên lửa vừa.",
+    "category": "cooking",
+    "tags": ["gà chiên", "giòn", "không khô"]
+  },
+  {
+    "question": "Cách nấu xôi dẻo và thơm?",
+    "answer": "Ngâm nếp ít nhất 4 giờ, cho chút muối và dầu dừa khi hấp.",
+    "category": "cooking",
+    "tags": ["xôi", "nếp", "dẻo", "thơm"]
+  },
+  {
+    "question": "Làm sao để nước canh ngọt tự nhiên?",
+    "answer": "Dùng củ quả như cà rốt, củ cải, bắp ninh cùng xương.",
+    "category": "cooking",
+    "tags": ["canh", "ngọt tự nhiên", "củ quả"]
+  },
+  {
+    "question": "Nướng bánh flan làm sao không bị rỗ?",
+    "answer": "Nướng cách thủy ở nhiệt thấp và che mặt bánh bằng giấy bạc.",
+    "category": "cooking",
+    "tags": ["bánh flan", "không rỗ", "cách thủy"]
+  },
+  {
+    "question": "Bảo quản dưa leo để lâu không hỏng thế nào?",
+    "answer": "Quấn dưa leo bằng khăn giấy khô rồi cho vào túi zip, để ngăn mát.",
+    "category": "storage",
+    "tags": ["dưa leo", "bảo quản", "ngăn mát"]
+  },
+  {
+    "question": "Có nên để hành tây trong tủ lạnh không?",
+    "answer": "Không nên, vì hành tây dễ hút ẩm và mùi, chỉ để nơi khô ráo thoáng mát.",
+    "category": "storage",
+    "tags": ["hành tây", "bảo quản", "tủ lạnh"]
+  },
+  {
+    "question": "Thay thế kem tươi trong nấu ăn bằng gì?",
+    "answer": "Dùng sữa đặc pha với bơ hoặc sữa tươi pha chút bột bắp.",
+    "category": "substitution",
+    "tags": ["kem tươi", "thay thế", "sữa đặc"]
+  },
+  {
+    "question": "Nếu không có nước cốt chanh thì thay bằng gì?",
+    "answer": "Có thể dùng giấm táo hoặc nước cam chua.",
+    "category": "substitution",
+    "tags": ["chanh", "thay thế", "giấm táo"]
+  },
+  {
+    "question": "Ăn nhiều trái cây có lợi gì?",
+    "answer": "Trái cây bổ sung vitamin, chất xơ và chống oxy hóa.",
+    "category": "nutrition",
+    "tags": ["trái cây", "vitamin", "chống oxy hóa"]
+  },
+  {
+    "question": "Vì sao cần ăn đủ chất đạm?",
+    "answer": "Chất đạm giúp xây dựng cơ bắp, tái tạo mô và tăng miễn dịch.",
+    "category": "nutrition",
+    "tags": ["chất đạm", "protein", "cơ bắp"]
+  },
+  {
+    "question": "Cách khử mùi hôi thớt?",
+    "answer": "Chà thớt bằng muối và chanh, sau đó rửa lại bằng nước nóng.",
+    "category": "general",
+    "tags": ["thớt", "mùi hôi", "chà chanh"]
+  },
+  {
+    "question": "Có nên dùng dao cắt thực phẩm đông lạnh không?",
+    "answer": "Không nên, vì dễ làm hỏng dao và nguy hiểm, hãy rã đông trước.",
+    "category": "general",
+    "tags": ["dao", "đông lạnh", "nguy hiểm"]
+  },
+  {
+    "question": "Làm sao để sữa không bị trào khi đun?",
+    "answer": "Đun lửa nhỏ và đặt thìa gỗ ngang miệng nồi.",
+    "category": "cooking",
+    "tags": ["sữa", "không trào", "thìa gỗ"]
+  },
+  {
+    "question": "Cách làm bánh cuốn không bị nát?",
+    "answer": "Pha bột với nước theo tỉ lệ chuẩn và tráng trên nồi hơi nóng đều.",
+    "category": "cooking",
+    "tags": ["bánh cuốn", "không nát", "tráng bột"]
+  },
+  {
+    "question": "Bảo quản gừng tươi như thế nào?",
+    "answer": "Để trong hộp kín ở ngăn mát hoặc ngâm trong rượu trắng.",
+    "category": "storage",
+    "tags": ["gừng", "bảo quản", "ngăn mát"]
+  },
+  {
+    "question": "Có thể thay sữa bò bằng gì cho người dị ứng lactose?",
+    "answer": "Dùng sữa hạnh nhân, sữa đậu nành hoặc sữa yến mạch.",
+    "category": "substitution",
+    "tags": ["sữa bò", "thay thế", "dị ứng lactose"]
+  },
+  {
+    "question": "Uống nước ép rau củ có lợi gì?",
+    "answer": "Cung cấp vitamin nhanh chóng và hỗ trợ thanh lọc cơ thể.",
+    "category": "nutrition",
+    "tags": ["nước ép", "rau củ", "vitamin"]
+  },
+  {
+    "question": "Tại sao nên ăn chậm nhai kỹ?",
+    "answer": "Ăn chậm giúp tiêu hóa tốt hơn và kiểm soát cân nặng.",
+    "category": "nutrition",
+    "tags": ["ăn chậm", "nhai kỹ", "tiêu hóa"]
+  },
+  {
+    "question": "Làm sao để làm sạch nồi bị cháy khét?",
+    "answer": "Đun nước với baking soda trong nồi để bong lớp cháy.",
+    "category": "general",
+    "tags": ["nồi cháy", "làm sạch", "baking soda"]
+  },
+  {
+    "question": "Có nên cho dao vào máy rửa bát không?",
+    "answer": "Không nên vì dễ cùn lưỡi dao, nên rửa bằng tay.",
+    "category": "general",
+    "tags": ["dao", "máy rửa bát", "cùn lưỡi"]
+  },
+  {
+    "question": "Cách rang đậu phộng giòn và thơm?",
+    "answer": "Ngâm đậu trong nước muối loãng 10 phút, để ráo rồi rang lửa nhỏ.",
+    "category": "cooking",
+    "tags": ["đậu phộng", "rang giòn", "thơm"]
+  },
+  {
+    "question": "Làm sao để bánh xèo giòn lâu?",
+    "answer": "Pha bột với bia hoặc nước có ga và chiên trên chảo nóng.",
+    "category": "cooking",
+    "tags": ["bánh xèo", "giòn lâu", "bia"]
+  },
+  {
+    "question": "Cách nấu chè đậu xanh nhanh nhừ?",
+    "answer": "Ngâm đậu xanh vài giờ trước khi nấu và thêm chút muối.",
+    "category": "cooking",
+    "tags": ["chè", "đậu xanh", "nhanh nhừ"]
+  },
+  {
+    "question": "Làm thế nào để bún không bị chua khi để lâu?",
+    "answer": "Tráng bún qua nước sôi, để ráo và bảo quản ngăn mát.",
+    "category": "cooking",
+    "tags": ["bún", "không chua", "ngăn mát"]
+  },
+  {
+    "question": "Bảo quản khoai tây như thế nào để không mọc mầm?",
+    "answer": "Để nơi khô ráo, thoáng mát, tránh ánh sáng trực tiếp.",
+    "category": "storage",
+    "tags": ["khoai tây", "mọc mầm", "bảo quản"]
+  },
+  {
+    "question": "Có nên để cà rốt trong túi nilon kín không?",
+    "answer": "Không nên, hãy để trong hộp thoáng khí ở ngăn mát.",
+    "category": "storage",
+    "tags": ["cà rốt", "bảo quản", "ngăn mát"]
+  },
+  {
+    "question": "Nếu không có bột nở thì thay bằng gì?",
+    "answer": "Dùng baking soda pha với nước cốt chanh hoặc giấm.",
+    "category": "substitution",
+    "tags": ["bột nở", "baking soda", "chanh"]
+  },
+  {
+    "question": "Có thể thay dầu oliu bằng gì?",
+    "answer": "Dùng dầu mè, dầu hạt cải hoặc dầu hướng dương.",
+    "category": "substitution",
+    "tags": ["dầu oliu", "thay thế", "dầu mè"]
+  },
+  {
+    "question": "Ăn nhiều ngũ cốc nguyên hạt có lợi gì?",
+    "answer": "Giúp cung cấp chất xơ, giảm cholesterol và tốt cho tim mạch.",
+    "category": "nutrition",
+    "tags": ["ngũ cốc", "chất xơ", "tim mạch"]
+  },
+  {
+    "question": "Tại sao nên hạn chế ăn đồ chiên rán?",
+    "answer": "Vì chứa nhiều dầu mỡ, dễ gây béo phì và hại tim mạch.",
+    "category": "nutrition",
+    "tags": ["chiên rán", "dầu mỡ", "sức khỏe"]
+  },
+  {
+    "question": "Cách khử mùi hành tỏi trong miệng?",
+    "answer": "Ăn táo, nhai lá bạc hà hoặc uống trà xanh.",
+    "category": "general",
+    "tags": ["mùi hành tỏi", "khử mùi", "bạc hà"]
+  },
+  {
+    "question": "Làm sao để giữ thớt gỗ bền lâu?",
+    "answer": "Thoa dầu ăn lên bề mặt thớt định kỳ để chống nứt.",
+    "category": "general",
+    "tags": ["thớt gỗ", "bền lâu", "dầu ăn"]
+  },
+  {
+    "question": "Cách nướng bánh mì bằng chảo?",
+    "answer": "Cho bánh mì vào chảo khô, áp chảo hai mặt đến khi giòn vàng.",
+    "category": "cooking",
+    "tags": ["bánh mì", "nướng chảo", "giòn vàng"]
+  },
+  {
+    "question": "Làm sao để cà phê phin không bị đắng gắt?",
+    "answer": "Dùng nước sôi khoảng 90°C thay vì 100°C và chọn cà phê xay vừa.",
+    "category": "cooking",
+    "tags": ["cà phê phin", "không đắng", "90 độ"]
+  },
+  {
+    "question": "Bảo quản ớt tươi như thế nào?",
+    "answer": "Rửa sạch, để khô rồi cho vào hộp kín trong ngăn mát.",
+    "category": "storage",
+    "tags": ["ớt tươi", "bảo quản", "ngăn mát"]
+  },
+  {
+    "question": "Có thể thay nước dùng gà bằng gì?",
+    "answer": "Dùng nước rau củ ninh hoặc nước dùng từ nấm.",
+    "category": "substitution",
+    "tags": ["nước dùng gà", "thay thế", "nấm"]
+  },
+  {
+    "question": "Uống sữa vào buổi tối có lợi gì?",
+    "answer": "Giúp ngủ ngon, bổ sung canxi và thư giãn cơ thể.",
+    "category": "nutrition",
+    "tags": ["sữa", "buổi tối", "ngủ ngon"]
+  },
+  {
+    "question": "Có nên uống nước ngọt có ga hàng ngày?",
+    "answer": "Không nên, vì chứa nhiều đường dễ gây tiểu đường và béo phì.",
+    "category": "nutrition",
+    "tags": ["nước ngọt", "đường", "béo phì"]
+  },
+  {
+    "question": "Cách vệ sinh bình nước inox?",
+    "answer": "Rửa bằng nước ấm với baking soda hoặc giấm để khử mùi.",
+    "category": "general",
+    "tags": ["bình nước", "inox", "vệ sinh"]
+  },
+  {
+    "question": "Làm sao để dao không bị gỉ?",
+    "answer": "Giữ dao khô ráo sau khi rửa và thỉnh thoảng thoa ít dầu ăn.",
+    "category": "general",
+    "tags": ["dao", "không gỉ", "bảo quản"]
+  },
+{
+    "question": "Làm sao để nấu phở bò có nước dùng ngọt thanh?",
+    "answer": "Ninh xương bò với quế, hồi, gừng nướng và hớt bọt thường xuyên.",
+    "category": "cooking",
+    "tags": ["phở bò", "nước dùng", "ngọt thanh"]
+  },
+  {
+    "question": "Cách kho cá không bị nát?",
+    "answer": "Chiên sơ cá trước khi kho và nấu lửa nhỏ để cá săn chắc.",
+    "category": "cooking",
+    "tags": ["kho cá", "không nát", "chiên sơ"]
+  },
+  {
+    "question": "Làm sao để bánh bao xốp mềm?",
+    "answer": "Ủ bột đủ thời gian và hấp bằng nồi nhiều hơi nước.",
+    "category": "cooking",
+    "tags": ["bánh bao", "xốp mềm", "ủ bột"]
+  },
+  {
+    "question": "Cách nấu bún riêu có màu đẹp?",
+    "answer": "Phi dầu với hạt điều đỏ rồi cho vào nước dùng.",
+    "category": "cooking",
+    "tags": ["bún riêu", "màu đẹp", "hạt điều đỏ"]
+  },
+  {
+    "question": "Có nên để chuối trong tủ lạnh không?",
+    "answer": "Không nên, chuối sẽ bị thâm vỏ, nên để nơi thoáng mát.",
+    "category": "storage",
+    "tags": ["chuối", "bảo quản", "tủ lạnh"]
+  },
+  {
+    "question": "Bảo quản rau thơm như thế nào?",
+    "answer": "Quấn khăn ẩm quanh gốc rau, cho vào hộp kín ngăn mát.",
+    "category": "storage",
+    "tags": ["rau thơm", "bảo quản", "ngăn mát"]
+  },
+  {
+    "question": "Không có sữa đặc thì thay bằng gì?",
+    "answer": "Dùng sữa tươi đun với đường hoặc sữa bột pha loãng.",
+    "category": "substitution",
+    "tags": ["sữa đặc", "thay thế", "sữa tươi"]
+  },
+  {
+    "question": "Có thể thay gừng bằng gì khi nấu ăn?",
+    "answer": "Dùng bột gừng khô hoặc galangal (riềng) tùy món.",
+    "category": "substitution",
+    "tags": ["gừng", "thay thế", "riềng"]
+  },
+  {
+    "question": "Ăn nhiều thịt đỏ có hại gì?",
+    "answer": "Tiêu thụ quá nhiều dễ tăng cholesterol và nguy cơ tim mạch.",
+    "category": "nutrition",
+    "tags": ["thịt đỏ", "cholesterol", "tim mạch"]
+  },
+  {
+    "question": "Tại sao cần ăn nhiều chất xơ?",
+    "answer": "Chất xơ giúp hệ tiêu hóa khỏe mạnh và ngăn táo bón.",
+    "category": "nutrition",
+    "tags": ["chất xơ", "tiêu hóa", "táo bón"]
+  },
+  {
+    "question": "Cách vệ sinh lò vi sóng nhanh gọn?",
+    "answer": "Đun nóng bát nước chanh trong lò, sau đó lau sạch bằng khăn.",
+    "category": "general",
+    "tags": ["lò vi sóng", "vệ sinh", "nước chanh"]
+  },
+  {
+    "question": "Làm sao để chảo chống dính bền lâu?",
+    "answer": "Không dùng thìa kim loại, chỉ rửa bằng mút mềm.",
+    "category": "general",
+    "tags": ["chảo chống dính", "bền lâu", "mút mềm"]
+  },
+  {
+    "question": "Cách luộc rau củ giữ vitamin?",
+    "answer": "Luộc nhanh trong nước sôi, không đậy nắp quá kín.",
+    "category": "cooking",
+    "tags": ["rau củ", "luộc", "vitamin"]
+  },
+  {
+    "question": "Làm sao để món chiên ít dầu mỡ hơn?",
+    "answer": "Đặt lên giấy thấm dầu ngay sau khi chiên.",
+    "category": "cooking",
+    "tags": ["chiên", "ít dầu", "giấy thấm dầu"]
+  },
+  {
+    "question": "Có nên để dưa hấu trong ngăn đá?",
+    "answer": "Không nên, vì dưa hấu sẽ bở và mất vị ngọt.",
+    "category": "storage",
+    "tags": ["dưa hấu", "bảo quản", "ngăn đá"]
+  },
+  {
+    "question": "Bảo quản cá khô như thế nào?",
+    "answer": "Cho vào túi kín, để nơi khô ráo hoặc ngăn mát tủ lạnh.",
+    "category": "storage",
+    "tags": ["cá khô", "bảo quản", "ngăn mát"]
+  },
+  {
+    "question": "Có thể thay dầu mè bằng gì?",
+    "answer": "Dùng dầu lạc hoặc dầu hướng dương để có mùi gần giống.",
+    "category": "substitution",
+    "tags": ["dầu mè", "thay thế", "dầu lạc"]
+  },
+  {
+    "question": "Có thể thay sữa tươi bằng gì trong nấu ăn?",
+    "answer": "Dùng sữa bột pha loãng hoặc sữa hạt.",
+    "category": "substitution",
+    "tags": ["sữa tươi", "thay thế", "sữa hạt"]
+  },
+  {
+    "question": "Uống cà phê buổi sáng có lợi gì?",
+    "answer": "Giúp tỉnh táo, tăng khả năng tập trung và trao đổi chất.",
+    "category": "nutrition",
+    "tags": ["cà phê", "buổi sáng", "tỉnh táo"]
+  },
+  {
+    "question": "Có nên ăn nhiều muối không?",
+    "answer": "Không, ăn quá nhiều muối dễ gây cao huyết áp.",
+    "category": "nutrition",
+    "tags": ["muối", "huyết áp", "sức khỏe"]
+  },
+  {
+    "question": "Làm sao để ướp thịt nướng đậm đà hơn?",
+    "answer": "Ướp thịt ít nhất 2 giờ hoặc để qua đêm trong tủ lạnh.",
+    "category": "cooking",
+    "tags": ["ướp thịt", "nướng", "đậm đà"]
+  },
+  {
+    "question": "Cách làm nem rán giòn lâu?",
+    "answer": "Cuốn nem chặt tay, chiên 2 lần ở lửa vừa và lớn.",
+    "category": "cooking",
+    "tags": ["nem rán", "giòn lâu", "chiên 2 lần"]
+  },
+  {
+    "question": "Làm sao để bắp rang bơ nổ hết hạt?",
+    "answer": "Đun dầu nóng đều trước khi cho bắp vào, đậy nắp kín và lắc chảo nhẹ.",
+    "category": "cooking",
+    "tags": ["bắp rang bơ", "nổ hết hạt"]
+  },
+  {
+    "question": "Cách nấu chè hạt sen không bị sượng?",
+    "answer": "Ninh hạt sen riêng đến mềm rồi mới cho vào chè.",
+    "category": "cooking",
+    "tags": ["chè hạt sen", "không sượng"]
+  },
+  {
+    "question": "Làm sao để bánh pizza có đế giòn?",
+    "answer": "Nướng sơ vỏ bánh trước khi cho topping.",
+    "category": "cooking",
+    "tags": ["pizza", "đế giòn", "nướng sơ"]
+  },
+  {
+    "question": "Có nên để mật ong gần ánh nắng mặt trời?",
+    "answer": "Không nên, ánh nắng làm mật ong mất chất dinh dưỡng.",
+    "category": "storage",
+    "tags": ["mật ong", "ánh nắng", "dinh dưỡng"]
+  },
+  {
+    "question": "Cách bảo quản sữa chua tự làm?",
+    "answer": "Để trong hộp kín ở ngăn mát, dùng trong 5–7 ngày.",
+    "category": "storage",
+    "tags": ["sữa chua", "bảo quản", "ngăn mát"]
+  },
+  {
+    "question": "Có thể thay gạo nếp bằng gì?",
+    "answer": "Dùng gạo tẻ trộn chút bột nếp để tạo độ dẻo.",
+    "category": "substitution",
+    "tags": ["gạo nếp", "thay thế", "gạo tẻ"]
+  },
+  {
+    "question": "Không có bột ngọt thì thay bằng gì?",
+    "answer": "Dùng nấm hương, rong biển hoặc nước dùng xương.",
+    "category": "substitution",
+    "tags": ["bột ngọt", "thay thế", "nấm hương"]
+  },
+  {
+    "question": "Ăn nhiều trứng có tốt không?",
+    "answer": "Nên ăn 3–5 quả/tuần, ăn quá nhiều dễ tăng cholesterol.",
+    "category": "nutrition",
+    "tags": ["trứng", "cholesterol", "dinh dưỡng"]
+  },
+  {
+    "question": "Tại sao cần hạn chế ăn đồ ngọt?",
+    "answer": "Vì nhiều đường dễ gây tiểu đường và béo phì.",
+    "category": "nutrition",
+    "tags": ["đường", "tiểu đường", "béo phì"]
+  },
+  {
+    "question": "Làm sao để khử mùi tanh của tủ lạnh?",
+    "answer": "Đặt than hoạt tính hoặc bã cà phê trong tủ.",
+    "category": "general",
+    "tags": ["tủ lạnh", "khử mùi", "than hoạt tính"]
+  },
+  {
+    "question": "Có nên dùng dao thái đồ sống và chín chung?",
+    "answer": "Không, để tránh lây nhiễm vi khuẩn chéo.",
+    "category": "general",
+    "tags": ["dao", "đồ sống", "vi khuẩn"]
+  },
+  {
+    "question": "Cách luộc thịt heo trắng và giòn?",
+    "answer": "Cho chút giấm và muối vào nước luộc.",
+    "category": "cooking",
+    "tags": ["thịt heo", "luộc trắng", "giòn"]
+  },
+  {
+    "question": "Làm sao để thịt bò xào mềm?",
+    "answer": "Ướp thịt với chút dầu ăn và bột bắp trước khi xào.",
+    "category": "cooking",
+    "tags": ["thịt bò", "xào mềm", "bột bắp"]
+  },
+  {
+    "question": "Có nên bảo quản sữa trong ngăn đá?",
+    "answer": "Không nên, sữa dễ tách nước và mất vị ngon.",
+    "category": "storage",
+    "tags": ["sữa", "ngăn đá", "bảo quản"]
+  },
+  {
+    "question": "Cách bảo quản phô mai?",
+    "answer": "Bọc bằng giấy nến hoặc giấy bạc, để ngăn mát.",
+    "category": "storage",
+    "tags": ["phô mai", "bảo quản", "ngăn mát"]
+  },
+  {
+    "question": "Nếu không có tiêu đen thì thay bằng gì?",
+    "answer": "Dùng tiêu trắng hoặc ớt bột.",
+    "category": "substitution",
+    "tags": ["tiêu đen", "thay thế", "ớt bột"]
+  },
+  {
+    "question": "Có thể thay bột năng bằng gì?",
+    "answer": "Dùng bột bắp hoặc bột khoai tây.",
+    "category": "substitution",
+    "tags": ["bột năng", "thay thế", "bột bắp"]
+  },
+  {
+    "question": "Ăn nhiều cá hồi có lợi ích gì?",
+    "answer": "Cung cấp omega-3, tốt cho tim mạch và da.",
+    "category": "nutrition",
+    "tags": ["cá hồi", "omega-3", "lợi ích"]
+  },
+  {
+    "question": "Uống nhiều bia rượu gây hại gì?",
+    "answer": "Dễ gây gan nhiễm mỡ, cao huyết áp và bệnh gan.",
+    "category": "nutrition",
+    "tags": ["bia", "rượu", "gan"]
+  },
+  {
+    "question": "Cách vệ sinh máy xay sinh tố?",
+    "answer": "Cho nước ấm và ít xà phòng vào xay 30 giây rồi rửa lại.",
+    "category": "general",
+    "tags": ["máy xay sinh tố", "vệ sinh", "nước ấm"]
+  },
+  {
+    "question": "Có nên cắt rau rồi mới rửa không?",
+    "answer": "Không, nên rửa trước rồi mới cắt để tránh mất vitamin.",
+    "category": "general",
+    "tags": ["rau", "rửa", "vitamin"]
+  },
+  {
+    "question": "Làm sao để chiên bánh khoai giòn vàng?",
+    "answer": "Chiên ngập dầu, lửa vừa và không chiên quá nhiều cùng lúc.",
+    "category": "cooking",
+    "tags": ["bánh khoai", "chiên giòn", "ngập dầu"]
+  },
+  {
+    "question": "Cách hầm xương nhanh nhừ?",
+    "answer": "Chần sơ xương, sau đó hầm bằng nồi áp suất.",
+    "category": "cooking",
+    "tags": ["xương", "hầm nhanh", "nồi áp suất"]
+  },
+  {
+    "question": "Có nên để dưa leo trong ngăn đá?",
+    "answer": "Không nên, vì dưa leo sẽ mềm nhũn và mất vị.",
+    "category": "storage",
+    "tags": ["dưa leo", "ngăn đá", "bảo quản"]
+  },
+  {
+    "question": "Bảo quản trứng gà bao lâu trong tủ lạnh?",
+    "answer": "Khoảng 3 tuần trong ngăn mát.",
+    "category": "storage",
+    "tags": ["trứng gà", "tủ lạnh", "3 tuần"]
+  },
+  {
+    "question": "Có thể thay mật ong bằng gì?",
+    "answer": "Dùng siro agave hoặc siro cây phong.",
+    "category": "substitution",
+    "tags": ["mật ong", "thay thế", "siro agave"]
+  },
+  {
+    "question": "Không có sữa tươi có đường thì thay bằng gì?",
+    "answer": "Dùng sữa đặc pha loãng với nước.",
+    "category": "substitution",
+    "tags": ["sữa tươi", "thay thế", "sữa đặc"]
+  },
+  {
+    "question": "Tại sao cần ăn cá ít nhất 2 lần/tuần?",
+    "answer": "Vì cá cung cấp protein chất lượng cao và omega-3.",
+    "category": "nutrition",
+    "tags": ["cá", "omega-3", "protein"]
+  },
+  {
+    "question": "Ăn nhiều rau củ màu xanh đậm có lợi gì?",
+    "answer": "Giàu sắt, canxi và vitamin K tốt cho xương.",
+    "category": "nutrition",
+    "tags": ["rau xanh đậm", "sắt", "canxi"]
+  },
+  {
+    "question": "Cách khử mùi mốc trong hộp nhựa?",
+    "answer": "Ngâm hộp trong nước nóng pha baking soda.",
+    "category": "general",
+    "tags": ["hộp nhựa", "mùi mốc", "baking soda"]
+  },
+  {
+    "question": "Có nên dùng lại dầu ăn nhiều lần?",
+    "answer": "Không, dầu tái sử dụng dễ sinh chất độc hại.",
+    "category": "general",
+    "tags": ["dầu ăn", "tái sử dụng", "chất độc hại"]
+  },
+  {
+    "question": "Làm sao để bánh flan mềm mịn?",
+    "answer": "Lọc hỗn hợp trứng sữa qua rây trước khi hấp.",
+    "category": "cooking",
+    "tags": ["bánh flan", "mềm mịn", "lọc rây"]
+  },
+  {
+    "question": "Cách nấu cơm tấm dẻo thơm?",
+    "answer": "Vo sạch gạo tấm, ngâm 30 phút trước khi nấu.",
+    "category": "cooking",
+    "tags": ["cơm tấm", "dẻo thơm", "ngâm gạo"]
+  },
+  {
+    "question": "Bảo quản nước mắm lâu ngày thế nào?",
+    "answer": "Đậy kín nắp, để nơi khô ráo và tránh ánh sáng.",
+    "category": "storage",
+    "tags": ["nước mắm", "bảo quản", "khô ráo"]
+  },
+  {
+    "question": "Có nên để sữa chua ở nhiệt độ phòng?",
+    "answer": "Không, nên để ngăn mát để tránh lên men quá mức.",
+    "category": "storage",
+    "tags": ["sữa chua", "bảo quản", "ngăn mát"]
+  },
+  {
+    "question": "Không có hành lá thì thay bằng gì?",
+    "answer": "Dùng hẹ hoặc tỏi tây thái nhỏ.",
+    "category": "substitution",
+    "tags": ["hành lá", "thay thế", "tỏi tây"]
+  },
+  {
+    "question": "Có thể thay gạo tẻ bằng gì?",
+    "answer": "Dùng gạo lứt hoặc gạo nếp tùy món.",
+    "category": "substitution",
+    "tags": ["gạo tẻ", "thay thế", "gạo lứt"]
+  },
+  {
+    "question": "Ăn nhiều hạt khô có lợi ích gì?",
+    "answer": "Cung cấp chất béo tốt, protein và vitamin E.",
+    "category": "nutrition",
+    "tags": ["hạt khô", "chất béo tốt", "vitamin E"]
+  },
+  {
+    "question": "Tại sao nên uống đủ nước mỗi ngày?",
+    "answer": "Giúp điều hòa thân nhiệt, thải độc và hỗ trợ tiêu hóa.",
+    "category": "nutrition",
+    "tags": ["uống nước", "thải độc", "tiêu hóa"]
+  },
+  {
+    "question": "Cách vệ sinh thớt nhựa?",
+    "answer": "Ngâm với nước giấm pha loãng rồi rửa sạch.",
+    "category": "general",
+    "tags": ["thớt nhựa", "vệ sinh", "giấm"]
+  },
+  {
+    "question": "Có nên rửa chảo khi còn nóng?",
+    "answer": "Không, dễ làm hỏng lớp chống dính, nên để nguội rồi rửa.",
+    "category": "general",
+    "tags": ["chảo", "rửa nóng", "chống dính"]
+  },
+{
+    "question": "Cookify là gì?",
+    "answer": "Cookify là website gợi ý món ăn và hướng dẫn nấu ăn cho người không biết nấu. Bạn có thể tìm công thức, mẹo nấu ăn, và nhận gợi ý món theo nguyên liệu sẵn có.",
+    "category": "general",
+    "tags": ["cookify", "giới thiệu", "website"]
+  },
+  {
+    "question": "Bạn có thể làm gì cho tôi?",
+    "answer": "Mình có thể gợi ý công thức, hướng dẫn nấu ăn chi tiết, đưa ra mẹo nấu ăn nhanh và cách bảo quản thực phẩm.",
+    "category": "general",
+    "tags": ["chatbot", "trợ giúp", "gợi ý món"]
+  },
+  {
+    "question": "Ai phát triển Cookify?",
+    "answer": "Cookify được xây dựng bởi Linhh",
+    "category": "general",
+    "tags": ["phát triển", "đồ án", "flask", "ai"]
+  },
+  {
+    "question": "Xin lỗi, mình không hiểu câu hỏi của bạn.",
+    "answer": "Bạn có thể hỏi mình về công thức, mẹo nấu ăn, cách bảo quản hoặc thay thế nguyên liệu nhé.",
+    "category": "general",
+    "tags": ["fallback", "xin lỗi", "không hiểu"]
+  },
+  {
+    "question": "Bạn có thể trả lời mọi câu hỏi không?",
+    "answer": "Xin lỗi, mình chỉ có thể trả lời những câu hỏi liên quan đến nấu ăn, dinh dưỡng và bảo quản thực phẩm.",
+    "category": "general",
+    "tags": ["fallback", "giới hạn", "câu hỏi"]
+  },
+  {
+    "question": "Tại sao bạn không trả lời được?",
+    "answer": "Có thể câu hỏi chưa nằm trong dữ liệu FAQ. Bạn thử hỏi về công thức hoặc nguyên liệu xem nhé.",
+    "category": "general",
+    "tags": ["fallback", "không trả lời", "giới hạn"]
+  }
+]
