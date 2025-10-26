@@ -3,66 +3,64 @@ import { FaQuoteLeft } from "react-icons/fa";
 
 const AboutPage = () => {
   return (
-    <section className="px-6 lg:px-12 py-20">
-      <h1 className="text-center text-3xl pt-10 pb-4 font-semibold text-secondary sm:text-6xl sm:leading-relaxed">
-        About
+    <section className="px-6 lg:px-10 py-10">
+      <h1 className="text-center text-3xl pb-4 text-orange-500 font-semibold sm:text-6xl sm:leading-relaxed">
+        Về Cookify
       </h1>
-      <p className="text-center sm:w-1/2 mx-auto mb-20">
-        Lorem ipsum dolor sit amet consectetur. Praesent mattis nibh vestibulum
-        euismod morbi ullamcorper rutrum. Orci cras in phasellus ultricies.
+      <p className="text-center text-lg sm:w-1/2 mx-auto mb-10">
+        Cookify - Nền tảng chia sẻ công thức nấu ăn thông minh với trợ lý AI, 
+        giúp bạn khám phá và tạo ra những món ăn ngon mỗi ngày.
       </p>
 
-      {/* images */}
-      <article className="relative bg-[url(https://images.unsplash.com/photo-1604014237800-1c9102c219da?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80)] bg-cover bg-center bg-no-repeat rounded-md">
-        <div className="absolute inset-0 bg-white/75 sm:bg-transparent sm:from-white/95 sm:to-white/25 ltr:sm:bg-gradient-to-r rtl:sm:bg-gradient-to-l"></div>
+    <article className="relative bg-[url(https://i.pinimg.com/1200x/81/ad/df/81addf6ac1bccd653561bfd668763b8a.jpg)] bg-cover bg-center bg-no-repeat rounded-md scale-90">
+      {/* overlay gradient ngang + dọc */}
+      <div className="absolute inset-0 bg-gradient-to-br from-black/20 via-black/40 to-black/70"></div>
+      
+      <div className="relative mx-auto max-w-screen-xl px-4 py-32 sm:px-6 lg:flex lg:h-screen lg:items-center lg:px-8">
+        <div className="max-w-xl text-center sm:text-left">
+          <h1 className="text-3xl font-extrabold sm:text-5xl text-white">
+            Hãy để chúng tôi tìm cho bạn
+            <strong className="block font-extrabold text-tomato pt-2">
+              Công thức hoàn hảo
+            </strong>
+          </h1>
 
-        <div className="relative mx-auto max-w-screen-xl px-4 py-32 sm:px-6 lg:flex lg:h-screen lg:items-center lg:px-8">
-          <div className="max-w-xl text-center sm:text-left">
-            <h1 className="text-3xl font-extrabold sm:text-5xl">
-              Let us find your
-              <strong className="block font-extrabold text-white">
-                {" "}
-                Forever Recipes.{" "}
-              </strong>
-            </h1>
+          <p className="mt-4 max-w-lg sm:text-xl/relaxed text-white/90">
+            Với hàng nghìn công thức từ khắp nơi trên thế giới và trợ lý AI thông minh, 
+            Cookify sẽ giúp bạn nấu những món ăn tuyệt vời nhất!
+          </p>
 
-            <p className="mt-4 max-w-lg sm:text-xl/relaxed">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt
-              illo tenetur fuga ducimus numquam ea!
-            </p>
+          <div className="mt-8 flex flex-wrap gap-4 text-center">
+            <a
+              href="/recipes"
+              className="block w-full rounded bg-tomato hover:bg-red-600 px-12 py-3 text-sm font-medium text-white shadow sm:w-auto transition-all duration-300"
+            >
+              Khám phá ngay
+            </a>
 
-            <div className="mt-8 flex flex-wrap gap-4 text-center">
-              <a
-                href="#"
-                className="block w-full rounded bg-btnColor hover:bg-primary hover:text-btnColor px-12 py-3 text-sm font-medium text-white  shadow sm:w-auto transition-all duration-300"
-              >
-                Get Started
-              </a>
-
-              <a
-                href="#"
-                className="block w-full rounded bg-white px-12 py-3 text-sm font-medium text-secondary shadow hover:bg-btnColor hover:text-white focus:outline-none focus:ring sm:w-auto"
-              >
-                Learn More
-              </a>
-            </div>
+            <a
+              href="/contact"
+              className="block w-full rounded bg-white px-12 py-3 text-sm font-medium text-secondary shadow hover:bg-tomato hover:text-white sm:w-auto transition-all duration-300"
+            >
+              Liên hệ
+            </a>
           </div>
         </div>
-      </article>
+      </div>
+    </article>
 
       {/* Quate section */}
       <div className="container m-auto px-6 py-40">
         <div className="flex flex-col md:flex-row items-center justify-between relative w-100 h-auto md:h-64 bg-100 shadow-2xl rounded-lg p-8">
           <div className="w-8/12 text-2xl">
-            <FaQuoteLeft className="float-left mr-2" />
+            <FaQuoteLeft className="float-left mr-2 text-tomato" />
             <span className="flex">
-              We are team of developers with houndreds hours spend on coding, we
-              create professional apps, webs.
+              "Chúng tôi là đội ngũ thích nghiên cứu, tham khảo các công thức nấu ăn và tạo ra những món ăn ngon miệng cho bạn."
             </span>
           </div>
-          <div className="relative shadow-md font-medium my-5 py-2 px-4 text-white cursor-pointer bg-yellow-600 hover:bg-yellow-500 rounded text-lg text-center w-48">
-            <span className="absolute h-3 w-3 right-0 top-0 animate-ping inline-flex rounded-full h-3 w-3 bg-yellow-600"></span>
-            Call now
+          <div className="relative shadow-md font-medium my-5 py-2 px-4 text-white cursor-pointer bg-tomato hover:bg-red-600 rounded text-lg text-center w-48">
+            <span className="absolute h-3 w-3 right-0 top-0 animate-ping inline-flex rounded-full h-3 w-3 bg-tomato"></span>
+            Liên hệ ngay
           </div>
         </div>
       </div>

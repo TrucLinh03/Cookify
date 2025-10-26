@@ -114,6 +114,46 @@ const ManageBlogs = () => {
     }
   };
 
+  // Delete all blogs
+  const deleteAllBlogs = async () => {
+    const confirmMessage = `CẢNH BÁO: Bạn có chắc chắn muốn xóa TẤT CẢ blog?\n\nHành động này sẽ:\n- Xóa vĩnh viễn tất cả ${stats.total || 0} blog\n- Không thể khôi phục\n- Ảnh hưởng đến nội dung website\n\nNhập "XOA TAT CA" để xác nhận:`;
+    
+    const userInput = prompt(confirmMessage);
+    
+    if (userInput !== "XOA TAT CA") {
+      alert('Hủy bỏ thao tác xóa tất cả blog.');
+      return;
+    }
+
+    const finalConfirm = confirm('XÁC NHẬN CUỐI CÙNG: Bạn thực sự muốn xóa tất cả blog? Hành động này KHÔNG THỂ HOÀN TÁC!');
+    
+    if (!finalConfirm) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      
+      const response = await axios.delete(getApiUrl('/api/blog/admin/delete-all'), {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.data.success) {
+        alert(`Đã xóa thành công ${response.data.deletedCount || 0} blog!`);
+        fetchBlogs(1); // Refresh to page 1
+        setCurrentPage(1);
+      }
+    } catch (error) {
+      console.error('Error deleting all blogs:', error);
+      alert('Có lỗi xảy ra khi xóa tất cả blog: ' + (error.response?.data?.message || error.message));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Handle search
   const handleSearch = (e) => {
     e.preventDefault();
@@ -170,152 +210,187 @@ const ManageBlogs = () => {
 
   return (
     <AdminLayout>
-      <div className="max-w-7xl mx-auto p-4">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Quản lý Blog</h1>
+      <div className="max-w-7xl mx-auto p-6">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900 mb-1">Quản lý Blog</h1>
         <p className="text-gray-600">Quản lý tất cả bài viết blog trong hệ thống</p>
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-        <div className="bg-blue-50 p-4 rounded-lg">
-          <div className="flex items-center mb-2">
-            <div className="w-8 h-8 bg-blue-100 rounded-md flex items-center justify-center mr-2">
-              <img src={PencilIcon} alt="Tổng số" className="w-4 h-4" />
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+        <div className="bg-blue-50 p-3 rounded-lg">
+          <div className="flex items-center mb-1">
+            <div className="w-6 h-6 bg-blue-100 rounded-md flex items-center justify-center mr-2">
+              <img src={PencilIcon} alt="Tổng số" className="w-3 h-3" />
             </div>
-            <h3 className="text-sm font-medium text-blue-600">Tổng số</h3>
+            <h3 className="text-xs font-medium text-blue-600">Tổng số</h3>
           </div>
-          <p className="text-2xl font-bold text-blue-800">{stats.total || 0}</p>
+          <p className="text-lg font-bold text-blue-800">{stats.total || 0}</p>
         </div>
-        <div className="bg-green-50 p-4 rounded-lg">
-          <div className="flex items-center mb-2">
-            <div className="w-8 h-8 bg-green-100 rounded-md flex items-center justify-center mr-2">
-              <img src={ThumbsUpIcon} alt="Đã xuất bản" className="w-4 h-4" />
+        <div className="bg-green-50 p-3 rounded-lg">
+          <div className="flex items-center mb-1">
+            <div className="w-6 h-6 bg-green-100 rounded-md flex items-center justify-center mr-2">
+              <img src={ThumbsUpIcon} alt="Đã xuất bản" className="w-3 h-3" />
             </div>
-            <h3 className="text-sm font-medium text-green-600">Đã xuất bản</h3>
+            <h3 className="text-xs font-medium text-green-600">Đã xuất bản</h3>
           </div>
-          <p className="text-2xl font-bold text-green-800">{stats.published || 0}</p>
+          <p className="text-lg font-bold text-green-800">{stats.published || 0}</p>
         </div>
-        <div className="bg-yellow-50 p-4 rounded-lg">
-          <div className="flex items-center mb-2">
-            <div className="w-8 h-8 bg-yellow-100 rounded-md flex items-center justify-center mr-2">
-              <img src={PencilIcon} alt="Bản nháp" className="w-4 h-4" />
+        <div className="bg-yellow-50 p-3 rounded-lg">
+          <div className="flex items-center mb-1">
+            <div className="w-6 h-6 bg-yellow-100 rounded-md flex items-center justify-center mr-2">
+              <img src={PencilIcon} alt="Bản nháp" className="w-3 h-3" />
             </div>
-            <h3 className="text-sm font-medium text-yellow-600">Bản nháp</h3>
+            <h3 className="text-xs font-medium text-yellow-600">Bản nháp</h3>
           </div>
-          <p className="text-2xl font-bold text-yellow-800">{stats.draft || 0}</p>
+          <p className="text-lg font-bold text-yellow-800">{stats.draft || 0}</p>
         </div>
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <div className="flex items-center mb-2">
-            <div className="w-8 h-8 bg-gray-100 rounded-md flex items-center justify-center mr-2">
-              <img src={EyeIcon} alt="Ẩn" className="w-4 h-4 opacity-70" />
+        <div className="bg-gray-50 p-3 rounded-lg">
+          <div className="flex items-center mb-1">
+            <div className="w-6 h-6 bg-gray-100 rounded-md flex items-center justify-center mr-2">
+              <img src={EyeIcon} alt="Ẩn" className="w-3 h-3 opacity-70" />
             </div>
-            <h3 className="text-sm font-medium text-gray-600">Ẩn</h3>
+            <h3 className="text-xs font-medium text-gray-600">Ẩn</h3>
           </div>
-          <p className="text-2xl font-bold text-gray-800">{stats.hidden || 0}</p>
+          <p className="text-lg font-bold text-gray-800">{stats.hidden || 0}</p>
         </div>
-        <div className="bg-red-50 p-4 rounded-lg">
-          <div className="flex items-center mb-2">
-            <div className="w-8 h-8 bg-red-100 rounded-md flex items-center justify-center mr-2">
-              <img src={TrashIcon} alt="Báo cáo" className="w-4 h-4" />
+        <div className="bg-red-50 p-3 rounded-lg">
+          <div className="flex items-center mb-1">
+            <div className="w-6 h-6 bg-red-100 rounded-md flex items-center justify-center mr-2">
+              <img src={TrashIcon} alt="Báo cáo" className="w-3 h-3" />
             </div>
-            <h3 className="text-sm font-medium text-red-600">Báo cáo</h3>
+            <h3 className="text-xs font-medium text-red-600">Báo cáo</h3>
           </div>
-          <p className="text-2xl font-bold text-red-800">{stats.reported || 0}</p>
+          <p className="text-lg font-bold text-red-800">{stats.reported || 0}</p>
         </div>
-        <div className="bg-purple-50 p-4 rounded-lg">
-          <div className="flex items-center mb-2">
-            <div className="w-8 h-8 bg-purple-100 rounded-md flex items-center justify-center mr-2">
-              <img src={LightbulbIcon} alt="Nổi bật" className="w-4 h-4" />
+        <div className="bg-purple-50 p-3 rounded-lg">
+          <div className="flex items-center mb-1">
+            <div className="w-6 h-6 bg-purple-100 rounded-md flex items-center justify-center mr-2">
+              <img src={LightbulbIcon} alt="Nổi bật" className="w-3 h-3" />
             </div>
-            <h3 className="text-sm font-medium text-purple-600">Nổi bật</h3>
+            <h3 className="text-xs font-medium text-purple-600">Nổi bật</h3>
           </div>
-          <p className="text-2xl font-bold text-purple-800">{stats.featured || 0}</p>
+          <p className="text-lg font-bold text-purple-800">{stats.featured || 0}</p>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="bg-white p-6 rounded-lg shadow mb-6">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0 lg:space-x-4">
-          <form onSubmit={handleSearch} className="flex-1 max-w-md">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Tìm kiếm theo tiêu đề, nội dung..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-              />
-              <svg className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+      {/* Search and Filters */}
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-6">
+        <div className="space-y-4">
+          {/* Search Bar */}
+          <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+            <div className="flex-1 w-full lg:max-w-2xl">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm theo tiêu đề, nội dung, tác giả..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
+                />
+                <svg className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
             </div>
-          </form>
+            
+            {/* Delete All Button */}
+            <button
+              onClick={deleteAllBlogs}
+              disabled={loading || !stats.total || stats.total === 0}
+              className={`px-4 py-3 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2 whitespace-nowrap ${
+                loading || !stats.total || stats.total === 0
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 border border-red-200 hover:border-red-300 hover:shadow-md'
+              }`}
+              title={stats.total > 0 ? `Xóa tất cả ${stats.total} blog` : 'Không có blog để xóa'}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              <span>Xóa Tất Cả</span>
+              {stats.total > 0 && (
+                <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full min-w-[20px] text-center">
+                  {stats.total}
+                </span>
+              )}
+            </button>
+          </div>
           
-          <div className="flex flex-wrap gap-4">
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-            >
-              <option value="all">Tất cả trạng thái</option>
-              <option value="published">Đã xuất bản</option>
-              <option value="draft">Bản nháp</option>
-              <option value="hidden">Ẩn</option>
-              <option value="reported">Báo cáo</option>
-            </select>
+          {/* Action Buttons */}
+          <div className="flex flex-wrap gap-3 w-full lg:w-auto">
+            <div className="flex items-center space-x-2">
+              <label className="text-sm font-medium text-gray-700">Trạng thái:</label>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white min-w-[140px]"
+              >
+                <option value="all">Tất cả</option>
+                <option value="published">Đã xuất bản</option>
+                <option value="draft">Bản nháp</option>
+                <option value="hidden">Ẩn</option>
+                <option value="reported">Báo cáo</option>
+              </select>
+            </div>
 
-            <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-            >
-              {categories.map((category) => (
-                <option key={category.value} value={category.value}>
-                  {category.label}
-                </option>
-              ))}
-            </select>
+            <div className="flex items-center space-x-2">
+              <label className="text-sm font-medium text-gray-700">Danh mục:</label>
+              <select
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white min-w-[160px]"
+              >
+                {categories.map((category) => (
+                  <option key={category.value} value={category.value}>
+                    {category.label}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-            >
-              <option value="newest">Mới nhất</option>
-              <option value="oldest">Cũ nhất</option>
-              <option value="most_liked">Nhiều like nhất</option>
-              <option value="most_viewed">Nhiều view nhất</option>
-            </select>
+            <div className="flex items-center space-x-2">
+              <label className="text-sm font-medium text-gray-700">Sắp xếp:</label>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white min-w-[140px]"
+              >
+                <option value="newest">Mới nhất</option>
+                <option value="oldest">Cũ nhất</option>
+                <option value="most_liked">Nhiều like</option>
+                <option value="most_viewed">Nhiều view</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Blogs Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-4 py-2 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">
+                <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Bài viết
                 </th>
-                <th className="px-4 py-2 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">
+                <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Tác giả
                 </th>
-                <th className="px-4 py-2 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">
+                <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Danh mục
                 </th>
-                <th className="px-4 py-2 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">
+                <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Trạng thái
                 </th>
-                <th className="px-4 py-2 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">
+                <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Thống kê
                 </th>
-                <th className="px-4 py-2 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">
+                <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Ngày tạo
                 </th>
-                <th className="px-4 py-2 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">
+                <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Thao tác
                 </th>
               </tr>
@@ -324,29 +399,29 @@ const ManageBlogs = () => {
               {loading ? (
                 [...Array(5)].map((_, index) => (
                   <tr key={index}>
-                    <td className="px-4 py-3">
+                    <td className="px-3 py-2">
                       <div className="animate-pulse">
-                        <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                        <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                        <div className="h-3 bg-gray-200 rounded w-3/4 mb-1"></div>
+                        <div className="h-2 bg-gray-200 rounded w-1/2"></div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <div className="h-4 bg-gray-200 rounded w-20 animate-pulse"></div>
+                    <td className="px-3 py-2 whitespace-nowrap">
+                      <div className="h-3 bg-gray-200 rounded w-16 animate-pulse"></div>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <div className="h-4 bg-gray-200 rounded w-16 animate-pulse"></div>
+                    <td className="px-3 py-2 whitespace-nowrap">
+                      <div className="h-3 bg-gray-200 rounded w-12 animate-pulse"></div>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <div className="h-4 bg-gray-200 rounded w-12 animate-pulse"></div>
+                    <td className="px-3 py-2 whitespace-nowrap">
+                      <div className="h-3 bg-gray-200 rounded w-10 animate-pulse"></div>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <div className="h-4 bg-gray-200 rounded w-16 animate-pulse"></div>
+                    <td className="px-3 py-2 whitespace-nowrap">
+                      <div className="h-3 bg-gray-200 rounded w-12 animate-pulse"></div>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <div className="h-4 bg-gray-200 rounded w-24 animate-pulse"></div>
+                    <td className="px-3 py-2 whitespace-nowrap">
+                      <div className="h-3 bg-gray-200 rounded w-20 animate-pulse"></div>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <div className="h-4 bg-gray-200 rounded w-20 animate-pulse"></div>
+                    <td className="px-3 py-2 whitespace-nowrap">
+                      <div className="h-3 bg-gray-200 rounded w-16 animate-pulse"></div>
                     </td>
                   </tr>
                 ))

@@ -1,5 +1,7 @@
 import React, { useRef } from 'react';
 import { IoSearchOutline, IoImageOutline, IoClose } from "react-icons/io5";
+import bowlFoodIcon from '../assets/bowl-food.svg';
+import carrotIcon from '../assets/carrot.svg';
 import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
@@ -45,7 +47,7 @@ const Hero = () => {
         <div className="absolute bottom-16 right-16 w-20 h-20 bg-orange-300 rounded-full opacity-15 animate-pulse delay-2000"></div>
       </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           
           {/* Left Content */}
@@ -105,7 +107,7 @@ const Hero = () => {
                   {/* Nút tìm kiếm */}
                   <button
                     type="submit"
-                    className="px-8 py-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:from-orange-600 hover:to-amber-600 transition-all duration-200 transform hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-orange-200"
+                    className="px-8 py-4 bg-tomato text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:bg-red-600 transition-all duration-200 transform hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-red-200"
                   >
                     Tìm kiếm
                   </button>
@@ -114,7 +116,7 @@ const Hero = () => {
                 {/* Gợi ý nhỏ */}
                 <div className="flex items-center justify-center mt-4 text-sm text-gray-500">
                   <span className="flex items-center gap-2">
-                    💡 <strong className="font-medium text-orange-500">Mẹo:</strong> Thử “cà chua, trứng, hành” hoặc chụp ảnh món ăn
+                    💡 <strong className="font-medium text-tomato">Mẹo:</strong> Thử “cà chua, trứng, hành” hoặc chụp ảnh món ăn
                   </span>
                 </div>
               </form>
@@ -180,11 +182,19 @@ const Hero = () => {
 
               {/* Biểu tượng nổi */}
               <div className="absolute top-10 right-2 bg-gradient-to-r from-orange-400 to-amber-400 text-white p-3 rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.15)] hover:scale-110 transition-transform duration-300">
-                <span className="text-lg">🍕</span>
+                <img 
+                  src={bowlFoodIcon} 
+                  alt="Bowl Food" 
+                  className="w-6 h-6 filter brightness-0 invert"
+                />
               </div>
 
               <div className="absolute bottom-10 left-0 bg-gradient-to-r from-amber-400 to-orange-500 text-white p-3 rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.15)] hover:scale-110 transition-transform duration-300 delay-1000">
-                <span className="text-lg">🥗</span>
+                <img 
+                  src={carrotIcon} 
+                  alt="Carrot" 
+                  className="w-6 h-6 filter brightness-0 invert"
+                />
               </div>
             </div>
         </div>

@@ -32,7 +32,6 @@ const DesktopNav = ({ menuItems, logo }) => {
     },
   ];
 
-
   // đóng menu khi click outside
   useEffect(() => {
     const handleClickOutside = (event) => {

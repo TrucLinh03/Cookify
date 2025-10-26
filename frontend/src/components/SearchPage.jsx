@@ -239,22 +239,22 @@ const SearchPage = () => {
   };
 
   return (
-    <div className='px-4 lg:px-12 py-12 max-w-7xl mx-auto'>
-      <h1 className='text-center text-3xl py-8 font-semibold text-secondary sm:text-5xl sm:leading-relaxed'>
+    <div className='px-3 sm:px-4 lg:px-12 py-6 sm:py-12 max-w-7xl mx-auto'>
+      <h1 className='text-center text-2xl sm:text-3xl py-4 sm:py-8 font-semibold text-secondary lg:text-5xl lg:leading-relaxed'>
         Tìm kiếm công thức
       </h1>
       
       {/* Search Box */}
-      <div className='space-y-6 max-w-4xl mx-auto'>
-        <div className='bg-white rounded-lg shadow-md p-6'>
+      <div className='space-y-4 sm:space-y-6 max-w-7xl mx-auto'>
+        <div className='bg-white rounded-lg shadow-md p-4 sm:p-6'>
           <div className='flex items-center border-2 border-gray-200 rounded-lg px-4 py-3 focus-within:border-primary-500 transition-colors'>
             <IoSearchOutline className='w-6 h-6 text-gray-400 mr-3 flex-shrink-0' />
             <input
               type='text'
               value={query}
               onChange={handleTextSearch}
-              className='w-full outline-none text-lg text-gray-800 placeholder-gray-400 pr-12'
-              placeholder='Tìm kiếm theo tên món hoặc nguyên liệu (vd: cà chua, trứng)...'
+              className='w-full outline-none text-sm sm:text-lg text-gray-800 placeholder-gray-400 pr-2 sm:pr-12'
+              placeholder='Tìm kiếm món ăn hoặc nguyên liệu...'
             />
             <div className="flex items-center gap-2">
               {isTyping && (

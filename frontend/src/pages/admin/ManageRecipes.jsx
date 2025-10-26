@@ -29,6 +29,26 @@ const ManageRecipes = () => {
   });
 
 
+  // Get category counts
+  const getCategoryCounts = () => {
+    const counts = {
+      all: recipes.length,
+      monchinh: recipes.filter(recipe => recipe.category === 'monchinh').length,
+      monphu: recipes.filter(recipe => recipe.category === 'monphu').length,
+      trangmieng: recipes.filter(recipe => recipe.category === 'trangmieng').length,
+      anvat: recipes.filter(recipe => recipe.category === 'anvat').length,
+      douong: recipes.filter(recipe => recipe.category === 'douong').length
+    };
+    return counts;
+  };
+
+  // Handle refresh
+  const handleRefresh = () => {
+    setSearchTerm('');
+    setSelectedCategory('all');
+    fetchRecipes();
+  };
+
   // Lấy danh sách công thức
   useEffect(() => {
     fetchRecipes();
@@ -257,104 +277,178 @@ const ManageRecipes = () => {
     <AdminLayout>
       <div className="max-w-7xl mx-auto p-4">
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">
-            Quản lý công thức ({filteredRecipes.length})
-          </h1>
-          <button
-            onClick={() => {
-              setEditingRecipe(null);
-              setShowForm(true);
-            }}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2"
-          >
-            <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M12 5v14M5 12h14" />
-            </svg>
-            Thêm công thức
-          </button>
+        {/* Header */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-1">
+                Quản lý công thức 
+              </h1>
+              <p className="text-gray-600">Xem và quản lý công thức nấu ăn</p>
+            </div>
+            <button
+              onClick={() => {
+                setEditingRecipe(null);
+                setShowForm(true);
+              }}
+              className="bg-tomato hover:bg-red-600 text-white px-4 py-3 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 shadow-sm hover:shadow-md"
+            >
+              <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+              Thêm công thức
+            </button>
+          </div>
         </div>
 
         {/* SEARCH AND FILTER SECTION */}
         <div className="bg-white rounded-lg shadow p-6 mb-6">
           {/* Search Bar */}
           <div className="mb-4">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Tìm kiếm công thức theo tên, mô tả hoặc nguyên liệu..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
-              />
-              <svg className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+            <div className="flex gap-3">
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm công thức theo tên, mô tả hoặc nguyên liệu..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                />
+                <svg className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <button
+                onClick={handleRefresh}
+                className="px-4 py-3 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-all duration-200 flex items-center space-x-2 whitespace-nowrap"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <span>Làm mới</span>
+              </button>
             </div>
           </div>
-          
+
           {/* Category Filter Tabs */}
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => setSelectedCategory('all')}
-              className="px-4 py-2 rounded-full text-sm font-medium transition-colors"
-              style={{
-                backgroundColor: selectedCategory === 'all' ? '#374151' : '#f3f4f6',
-                color: selectedCategory === 'all' ? '#ffffff' : '#374151'
-              }}
-            >
-              Tất cả
-            </button>
-            <button
-              onClick={() => setSelectedCategory('monchinh')}
-              className="px-4 py-2 rounded-full text-sm font-medium transition-colors"
-              style={{
-                backgroundColor: selectedCategory === 'monchinh' ? '#1d4ed8' : '#dbeafe',
-                color: selectedCategory === 'monchinh' ? '#ffffff' : '#1d4ed8'
-              }}
-            >
-              Món Chính
-            </button>
-            <button
-              onClick={() => setSelectedCategory('monphu')}
-              className="px-4 py-2 rounded-full text-sm font-medium transition-colors"
-              style={{
-                backgroundColor: selectedCategory === 'monphu' ? '#397a9e' : '#e8f5fa',
-                color: selectedCategory === 'monphu' ? '#ffffff' : '#397a9e'
-              }}
-            >
-              Món Phụ
-            </button>
-            <button
-              onClick={() => setSelectedCategory('trangmieng')}
-              className="px-4 py-2 rounded-full text-sm font-medium transition-colors"
-              style={{
-                backgroundColor: selectedCategory === 'trangmieng' ? '#3c3a8f' : '#efedfa',
-                color: selectedCategory === 'trangmieng' ? '#ffffff' : '#3c3a8f'
-              }}
-            >
-              Tráng Miệng
-            </button>
-            <button
-              onClick={() => setSelectedCategory('anvat')}
-              className="px-4 py-2 rounded-full text-sm font-medium transition-colors"
-              style={{
-                backgroundColor: selectedCategory === 'anvat' ? '#d97706' : '#fef3c7',
-                color: selectedCategory === 'anvat' ? '#ffffff' : '#d97706'
-              }}
-            >
-              Món Ăn Vặt
-            </button>
-            <button
-              onClick={() => setSelectedCategory('douong')}
-              className="px-4 py-2 rounded-full text-sm font-medium transition-colors"
-              style={{
-                backgroundColor: selectedCategory === 'douong' ? '#16a34a' : '#dcfce7',
-                color: selectedCategory === 'douong' ? '#ffffff' : '#16a34a'
-              }}
-            >
-              Đồ Uống
-            </button>
+          <div className="flex flex-wrap gap-3">
+            {(() => {
+              const counts = getCategoryCounts();
+              return (
+                <>
+                  <button
+                    onClick={() => setSelectedCategory('all')}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+                      selectedCategory === 'all'
+                        ? 'bg-gray-800 text-white shadow-md'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    Tất cả
+                    <span className={`px-2 py-1 rounded-full text-xs ${
+                      selectedCategory === 'all' ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-600'
+                    }`}>
+                      {counts.all}
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => setSelectedCategory('monchinh')}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+                      selectedCategory === 'monchinh'
+                        ? 'text-white shadow-md'
+                        : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                    style={{
+                      backgroundColor: selectedCategory === 'monchinh' ? '#1d4ed8' : '#dbeafe',
+                      color: selectedCategory === 'monchinh' ? '#ffffff' : '#1d4ed8'
+                    }}
+                  >
+                    Món Chính
+                    <span className={`px-2 py-1 rounded-full text-xs ${
+                      selectedCategory === 'monchinh' ? 'bg-blue-700 text-white' : 'bg-blue-200 text-blue-600'
+                    }`}>
+                      {counts.monchinh}
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => setSelectedCategory('monphu')}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+                      selectedCategory === 'monphu'
+                        ? 'text-white shadow-md'
+                        : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                    style={{
+                      backgroundColor: selectedCategory === 'monphu' ? '#397a9e' : '#e8f5fa',
+                      color: selectedCategory === 'monphu' ? '#ffffff' : '#397a9e'
+                    }}
+                  >
+                    Món Phụ
+                    <span className={`px-2 py-1 rounded-full text-xs ${
+                      selectedCategory === 'monphu' ? 'bg-teal-700 text-white' : 'bg-teal-200 text-teal-600'
+                    }`}>
+                      {counts.monphu}
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => setSelectedCategory('trangmieng')}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+                      selectedCategory === 'trangmieng'
+                        ? 'text-white shadow-md'
+                        : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                    style={{
+                      backgroundColor: selectedCategory === 'trangmieng' ? '#3c3a8f' : '#efedfa',
+                      color: selectedCategory === 'trangmieng' ? '#ffffff' : '#3c3a8f'
+                    }}
+                  >
+                    Tráng Miệng
+                    <span className={`px-2 py-1 rounded-full text-xs ${
+                      selectedCategory === 'trangmieng' ? 'bg-purple-700 text-white' : 'bg-purple-200 text-purple-600'
+                    }`}>
+                      {counts.trangmieng}
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => setSelectedCategory('anvat')}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+                      selectedCategory === 'anvat'
+                        ? 'text-white shadow-md'
+                        : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                    style={{
+                      backgroundColor: selectedCategory === 'anvat' ? '#c2410c' : '#fed7aa',
+                      color: selectedCategory === 'anvat' ? '#ffffff' : '#c2410c'
+                    }}
+                  >
+                    Món Ăn Vặt
+                    <span className={`px-2 py-1 rounded-full text-xs ${
+                      selectedCategory === 'anvat' ? 'bg-orange-700 text-white' : 'bg-orange-200 text-orange-600'
+                    }`}>
+                      {counts.anvat}
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => setSelectedCategory('douong')}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+                      selectedCategory === 'douong'
+                        ? 'text-white shadow-md'
+                        : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                    style={{
+                      backgroundColor: selectedCategory === 'douong' ? '#16a34a' : '#dcfce7',
+                      color: selectedCategory === 'douong' ? '#ffffff' : '#16a34a'
+                    }}
+                  >
+                    Đồ Uống
+                    <span className={`px-2 py-1 rounded-full text-xs ${
+                      selectedCategory === 'douong' ? 'bg-green-700 text-white' : 'bg-green-200 text-green-600'
+                    }`}>
+                      {counts.douong}
+                    </span>
+                  </button>
+                </>
+              );
+            })()}
           </div>
         </div>
 

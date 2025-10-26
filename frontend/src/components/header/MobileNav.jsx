@@ -48,6 +48,14 @@ const MobileNav = ({ menuItems, logo, onClose, onOpen, hideLeft }) => {
                 if (typeof menuItem === 'object' && menuItem.path) {
                   return `/${menuItem.path}`;
                 }
+                // Handle specific menu items
+                const menuStr = menuItem.toLowerCase();
+                if (menuStr === 'home' || menuStr === 'trang chủ') return '/';
+                if (menuStr === 'recipes' || menuStr === 'công thức') return '/recipes';
+                if (menuStr === 'search' || menuStr === 'tìm kiếm') return '/search';
+                if (menuStr === 'about' || menuStr === 'về chúng tôi') return '/about';
+                if (menuStr === 'contact' || menuStr === 'liên hệ') return '/contact';
+                if (menuStr === 'blog') return '/blog';
                 return `/${menuItem}`;
               };
 
@@ -55,6 +63,14 @@ const MobileNav = ({ menuItems, logo, onClose, onOpen, hideLeft }) => {
                 if (typeof menuItem === 'object' && menuItem.label) {
                   return menuItem.label;
                 }
+                // Convert to Vietnamese labels
+                const menuStr = menuItem.toLowerCase();
+                if (menuStr === 'home') return 'Trang chủ';
+                if (menuStr === 'recipes') return 'Công thức';
+                if (menuStr === 'search') return 'Tìm kiếm';
+                if (menuStr === 'about') return 'Về chúng tôi';
+                if (menuStr === 'contact') return 'Liên hệ';
+                if (menuStr === 'blog') return 'Blog';
                 return menuItem;
               };
 
@@ -82,7 +98,7 @@ const MobileNav = ({ menuItems, logo, onClose, onOpen, hideLeft }) => {
                     window.location.href = '/login';
                   }}
                 >
-                  Log In
+                  Đăng nhập
                 </button>
                 <button
                   className="bg-primary text-secondary px-4 py-2 rounded border"
@@ -91,7 +107,7 @@ const MobileNav = ({ menuItems, logo, onClose, onOpen, hideLeft }) => {
                     window.location.href = '/register';
                   }}
                 >
-                  Sign Up
+                  Đăng ký
                 </button>
               </div>
             ) : (
@@ -110,7 +126,7 @@ const MobileNav = ({ menuItems, logo, onClose, onOpen, hideLeft }) => {
                     className="text-secondary px-4 py-2 rounded border border-secondary"
                     onClick={onClose}
                   >
-                    Profile
+                    Hồ sơ
                   </Link>
                   {user?.role !== 'admin' && (
                     <Link
@@ -118,14 +134,14 @@ const MobileNav = ({ menuItems, logo, onClose, onOpen, hideLeft }) => {
                       className="text-secondary px-4 py-2 rounded border border-secondary"
                       onClick={onClose}
                     >
-                      Saved Recipes
+                      Yêu thích
                     </Link>
                   )}
                   <button
                     onClick={handleLogout}
                     className="text-red-400 px-4 py-2 rounded border border-red-400"
                   >
-                    Log Out
+                    Đăng xuất
                   </button>
                 </div>
               </>

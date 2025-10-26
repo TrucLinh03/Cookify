@@ -50,7 +50,7 @@ app.use(cors({
     }
     
     // Block other origins
-    console.warn(`❌ CORS blocked request from origin: ${origin}`);
+    console.warn(`CORS blocked request from origin: ${origin}`);
     callback(new Error('CORS blocked: This origin is not allowed'));
   },
   credentials: true,

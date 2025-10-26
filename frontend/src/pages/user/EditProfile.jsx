@@ -295,7 +295,7 @@ const EditProfile = () => {
                     <img src={ChefHatIcon} alt="Avatar placeholder" className="w-16 h-16 opacity-70" />
                   )}
                 </div>
-                <label className="absolute bottom-0 right-0 bg-orange-500 text-white p-2 rounded-full cursor-pointer hover:bg-orange-600 transition-colors shadow">
+                <label className="absolute bottom-0 right-0 bg-tomato text-white p-2 rounded-full cursor-pointer hover:bg-red-600 transition-colors shadow">
                   <img src={EditIcon} alt="Chỉnh sửa" className="w-4 h-4 invert" />
                   <input
                     type="file"

@@ -129,20 +129,15 @@ const Favourite = () => {
 
   // Filter recipes by category
   const filterRecipes = (recipes, category) => {
-    console.log('Filtering recipes by category:', category);
-    console.log('Total recipes:', recipes.length);
-    
+
     if (category === 'tatca') {
       setFilteredRecipes(recipes);
-      console.log('Showing all recipes:', recipes.length);
     } else {
       const filtered = recipes.filter(recipe => {
         const recipeCategory = getCategoryKey(recipe.category);
-        console.log(`Recipe "${recipe.name}": backend category="${recipe.category}" -> frontend key="${recipeCategory}"`);
         return recipeCategory === category;
       });
       setFilteredRecipes(filtered);
-      console.log(`Filtered recipes for "${category}":`, filtered.length);
     }
   };
 
@@ -194,7 +189,7 @@ const Favourite = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats - UPDATED VERSION */}
         {favouriteRecipes.length > 0 && (
-          <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl shadow-sm p-6 mb-6">
+          <div className="bg-peachLight rounded-xl shadow-sm p-6 mb-6">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-bold text-gray-900 flex items-center">
                 Thống kê yêu thích
@@ -206,8 +201,8 @@ const Favourite = () => {
             
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {/* Total Recipes */}
-              <div className="bg-white rounded-lg p-4 text-center shadow-sm border border-orange-100">
-                <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-3">
+              <div className="bg-white rounded-lg p-4 text-center shadow-sm border border-peach">
+                <div className="w-12 h-12 bg-tomato rounded-full flex items-center justify-center mx-auto mb-3">
                   <span className="text-white text-xl font-bold">{favouriteRecipes.length}</span>
                 </div>
                 <div className="text-sm font-medium text-gray-900">Tổng công thức</div>
@@ -302,7 +297,7 @@ const Favourite = () => {
             </p>
             <button
               onClick={() => handleCategoryFilter('tatca')}
-              className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+              className="bg-tomato hover:bg-red-600 text-white px-6 py-3 rounded-lg font-medium transition-colors"
             >
               Xem tất cả
             </button>
@@ -317,7 +312,7 @@ const Favourite = () => {
             </p>
             <button
               onClick={() => navigate('/recipes')}
-              className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+              className="bg-tomato hover:bg-red-600 text-white px-6 py-3 rounded-lg font-medium transition-colors"
             >
               Khám phá công thức
             </button>
@@ -387,7 +382,7 @@ const Favourite = () => {
                   <div className="flex space-x-3">
                     <button
                       onClick={() => navigate(`/recipes/${recipe._id}`)}
-                      className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg flex items-center justify-center"
+                      className="flex-1 bg-tomato hover:bg-red-600 text-white px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg flex items-center justify-center"
                     >
                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />

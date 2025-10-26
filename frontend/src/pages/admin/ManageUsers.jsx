@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import AdminLayout from '../../components/layout/AdminLayout';
+import UsersIcon from '../../assets/users-three.svg';
+import ThumbsUpIcon from '../../assets/thumbs-up.svg';
+import TrashIcon from '../../assets/trash.svg';
+import CrownIcon from '../../assets/chef-hat.svg';
 import { getApiUrl } from '../../config/api.js';
 
 const ManageUsers = () => {
@@ -144,56 +148,146 @@ const ManageUsers = () => {
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-        <div className="bg-white p-3 rounded-lg shadow border-l-4 border-blue-500">
-          <p className="text-xs font-medium text-gray-600">Tổng</p>
-          <p className="text-xl font-bold text-gray-900">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        <div className="bg-blue-50 p-3 rounded-lg">
+          <div className="flex items-center mb-1">
+            <div className="w-6 h-6 bg-blue-100 rounded-md flex items-center justify-center mr-2">
+              <img src={UsersIcon} alt="Tổng số" className="w-3 h-3" />
+            </div>
+            <h3 className="text-xs font-medium text-blue-600">Tổng số</h3>
+          </div>
+          <p className="text-lg font-bold text-blue-800">
             {users.filter(u => u.status === 'active').length + users.filter(u => u.status === 'banned').length}
           </p>
         </div>
-        <div className="bg-white p-3 rounded-lg shadow border-l-4 border-green-500">
-          <p className="text-xs font-medium text-gray-600">Hoạt động</p>
-          <p className="text-xl font-bold text-green-600">{users.filter(u => u.status === 'active').length}</p>
+        <div className="bg-green-50 p-3 rounded-lg">
+          <div className="flex items-center mb-1">
+            <div className="w-6 h-6 bg-green-100 rounded-md flex items-center justify-center mr-2">
+              <img src={ThumbsUpIcon} alt="Hoạt động" className="w-3 h-3" />
+            </div>
+            <h3 className="text-xs font-medium text-green-600">Hoạt động</h3>
+          </div>
+          <p className="text-lg font-bold text-green-800">{users.filter(u => u.status === 'active').length}</p>
         </div>
-        <div className="bg-white p-3 rounded-lg shadow border-l-4 border-red-500">
-          <p className="text-xs font-medium text-gray-600">Bị cấm</p>
-          <p className="text-xl font-bold text-red-600">{users.filter(u => u.status === 'banned').length}</p>
+        <div className="bg-red-50 p-3 rounded-lg">
+          <div className="flex items-center mb-1">
+            <div className="w-6 h-6 bg-red-100 rounded-md flex items-center justify-center mr-2">
+              <img src={TrashIcon} alt="Bị cấm" className="w-3 h-3" />
+            </div>
+            <h3 className="text-xs font-medium text-red-600">Bị cấm</h3>
+          </div>
+          <p className="text-lg font-bold text-red-800">{users.filter(u => u.status === 'banned').length}</p>
         </div>
-        <div className="bg-white p-3 rounded-lg shadow border-l-4 border-purple-500">
-          <p className="text-xs font-medium text-gray-600">Admin</p>
-          <p className="text-xl font-bold text-purple-600">{users.filter(u => u.role === 'admin').length}</p>
+        <div className="bg-purple-50 p-3 rounded-lg">
+          <div className="flex items-center mb-1">
+            <div className="w-6 h-6 bg-purple-100 rounded-md flex items-center justify-center mr-2">
+              <img src={CrownIcon} alt="Admin" className="w-3 h-3" />
+            </div>
+            <h3 className="text-xs font-medium text-purple-600">Admin</h3>
+          </div>
+          <p className="text-lg font-bold text-purple-800">{users.filter(u => u.role === 'admin').length}</p>
         </div>
       </div>
 
-      {/* Search */}
-      <div className="bg-white p-4 rounded-lg shadow mb-4">
-        <form onSubmit={handleSearch} className="flex gap-3">
-          <div className="flex-1 relative">
-            <input
-              type="text"
-              placeholder="Tìm kiếm theo tên hoặc email..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-            />
-            <svg className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+      {/* Search and Filters */}
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-6">
+        <div className="space-y-4">
+          {/* Search Bar */}
+          <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+            <form onSubmit={handleSearch} className="flex-1 w-full lg:max-w-2xl">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm theo tên, email hoặc ID..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-tomato focus:border-tomato transition-all duration-200"
+                />
+                <svg className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+            </form>
+            
+            {/* Action Buttons */}
+            <div className="flex gap-3 w-full lg:w-auto justify-end">
+              <button
+                type="submit"
+                onClick={handleSearch}
+                className="px-4 py-3 bg-tomato text-white rounded-xl hover:bg-red-600 transition-all duration-200 flex items-center space-x-2 text-sm font-medium"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <span>Tìm kiếm</span>
+              </button>
+              
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  fetchUsers(1, '');
+                  setCurrentPage(1);
+                }}
+                className="px-4 py-3 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 transition-all duration-200 flex items-center space-x-2 text-sm font-medium whitespace-nowrap"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <span>Làm mới</span>
+              </button>
+            </div>
           </div>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 text-sm"
-          >
-            Tìm
-          </button>
-        </form>
+          
+          {/* Filter Controls */}
+          <div className="flex flex-wrap gap-3">
+            <div className="flex items-center space-x-2">
+              <label className="text-sm font-medium text-gray-700">Trạng thái:</label>
+              <select
+                onChange={(e) => {
+                  const status = e.target.value;
+                  if (status === 'all') {
+                    fetchUsers(1, searchTerm);
+                  } else {
+                    // Filter users by status locally for now
+                    fetchUsers(1, searchTerm);
+                  }
+                }}
+                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-tomato focus:border-tomato bg-white min-w-[120px]"
+              >
+                <option value="all">Tất cả</option>
+                <option value="active">Hoạt động</option>
+                <option value="banned">Bị cấm</option>
+              </select>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <label className="text-sm font-medium text-gray-700">Vai trò:</label>
+              <select
+                onChange={(e) => {
+                  const role = e.target.value;
+                  if (role === 'all') {
+                    fetchUsers(1, searchTerm);
+                  } else {
+                    // Filter users by role locally for now
+                    fetchUsers(1, searchTerm);
+                  }
+                }}
+                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-tomato focus:border-tomato bg-white min-w-[120px]"
+              >
+                <option value="all">Tất cả</option>
+                <option value="user">Người dùng</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Users Table */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
         {loading ? (
           <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-tomato"></div>
           </div>
         ) : users.length === 0 ? (
           <div className="p-8 text-center">
@@ -237,7 +331,7 @@ const ManageUsers = () => {
                             {user.avatar ? (
                               <img className="h-6 w-6 rounded-full object-cover" src={user.avatar} alt={user.name} />
                             ) : (
-                              <div className="h-6 w-6 rounded-full bg-orange-500 flex items-center justify-center">
+                              <div className="h-6 w-6 rounded-full bg-tomato flex items-center justify-center">
                                 <span className="text-white text-xs font-medium">{user.name?.charAt(0)?.toUpperCase() || 'U'}</span>
                               </div>
                             )}

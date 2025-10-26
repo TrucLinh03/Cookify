@@ -458,7 +458,7 @@ const SingleProduct = () => {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500 mx-auto mb-4"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-tomato mx-auto mb-4"></div>
                     <p className="text-lg text-gray-600">Đang tải công thức...</p>
                 </div>
             </div>
@@ -478,7 +478,7 @@ const SingleProduct = () => {
                     <p className="text-gray-600 mb-6">{error || 'Không tìm thấy công thức'}</p>
                     <button
                         onClick={() => window.history.back()}
-                        className="inline-flex items-center px-4 py-2 bg-orange-600 text-white font-medium rounded-lg hover:bg-orange-700 transition-colors duration-200"
+                        className="inline-flex items-center px-4 py-2 bg-tomato text-white font-medium rounded-lg hover:bg-red-600 transition-colors duration-200"
                     >
                         <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
@@ -536,7 +536,7 @@ const SingleProduct = () => {
               {/* Thông tin món ăn */}
               <div className="order-1 md:order-2">
                 <div className="mb-3">
-                  <span className="inline-block bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm font-medium">
+                  <span className="inline-block bg-peachLight text-tomato px-3 py-1 rounded-full text-sm font-medium">
                     {item.category === 'monchinh' ? 'Món Chính' :
                      item.category === 'monphu' ? 'Món Phụ' :
                      item.category === 'trangmieng' ? 'Tráng Miệng' :
@@ -554,7 +554,7 @@ const SingleProduct = () => {
                 )}
                 <button
                   onClick={() => window.history.back()}
-                  className="inline-flex items-center px-4 py-2 bg-transparent text-secondary font-medium rounded-lg border-2 border-[#9c702a] hover:bg-btnColor hover:text-white transition ease-in duration-300 hover:shadow-lg transform hover:-translate-y-1"
+                  className="inline-flex items-center px-4 py-2 bg-transparent text-secondary font-medium rounded-lg border-2 border-tomato hover:bg-tomato hover:text-white transition ease-in duration-300 hover:shadow-lg transform hover:-translate-y-1"
                   >
                   <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
@@ -667,7 +667,7 @@ const SingleProduct = () => {
                   {item.instructions.split('\n').map((step, index) => (
                     step.trim() && (
                       <div key={index} className="flex items-start">
-                        <div className="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-xs font-medium mr-4 mt-1 flex-shrink-0">
+                        <div className="w-6 h-6 bg-tomato text-white rounded-full flex items-center justify-center text-xs font-medium mr-4 mt-1 flex-shrink-0">
                           {index + 1}
                         </div>
                         <p className="text-gray-700 leading-relaxed flex-1">{step.trim()}</p>
@@ -698,7 +698,7 @@ const SingleProduct = () => {
           
           {!item && (
             <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-orange-500 mx-auto"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-tomato mx-auto"></div>
               <p className="mt-2 text-gray-500">Đang tải thông tin công thức...</p>
             </div>
           )}
@@ -714,7 +714,7 @@ const SingleProduct = () => {
             
             {loadingRelated ? (
               <div className="flex justify-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-orange-500"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-tomato"></div>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -761,7 +761,7 @@ const SingleProduct = () => {
                     </div>
                     <div className="p-4">
                       <div className="mb-2">
-                        <span className="inline-block bg-orange-100 text-orange-700 px-2 py-1 rounded-full text-xs font-medium">
+                        <span className="inline-block bg-peachLight text-tomato px-2 py-1 rounded-full text-xs font-medium">
                           {recipe.category === 'monchinh' ? 'Món Chính' :
                            recipe.category === 'monphu' ? 'Món Phụ' :
                            recipe.category === 'trangmieng' ? 'Tráng Miệng' :

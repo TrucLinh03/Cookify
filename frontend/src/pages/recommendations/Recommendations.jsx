@@ -171,7 +171,7 @@ const Recommendations = () => {
               </div>
               <button 
                 onClick={() => window.location.reload()}
-                className="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+                className="px-6 py-3 bg-tomato text-white rounded-lg hover:bg-red-600 transition-colors"
               >
                 Thử Lại
               </button>
@@ -252,7 +252,7 @@ const Recommendations = () => {
           {/* View More Button */}
           {!loading && !error && recipes.length > 0 && (
             <div className="text-center mt-12">
-              <button className="px-8 py-4 bg-gradient-to-r from-orange-500 to-yellow-500 text-white font-semibold rounded-xl hover:from-orange-600 hover:to-yellow-600 transition-all duration-300 transform hover:scale-105 shadow-lg">
+              <button className="px-8 py-4 bg-tomato text-white font-semibold rounded-xl hover:bg-red-600 transition-all duration-300 transform hover:scale-105 shadow-lg">
                 Xem Thêm Gợi Ý
               </button>
             </div>

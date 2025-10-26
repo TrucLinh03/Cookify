@@ -18,11 +18,9 @@ const ragApi = axios.create({
 // Add request interceptor for debugging
 ragApi.interceptors.request.use(
   (config) => {
-    console.log(`🤖 Chatbot API Request: ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`);
     return config;
   },
   (error) => {
-    console.error('❌ Chatbot Request Error:', error);
     return Promise.reject(error);
   }
 );
@@ -30,11 +28,10 @@ ragApi.interceptors.request.use(
 // Add response interceptor for better error handling
 ragApi.interceptors.response.use(
   (response) => {
-    console.log(`✅ Chatbot API Response: ${response.status}`);
     return response;
   },
   (error) => {
-    console.error('❌ Chatbot API Error:', error.response?.status, error.message);
+    console.error('Chatbot API Error:', error.response?.status, error.message);
     return Promise.reject(error);
   }
 );
@@ -42,7 +39,7 @@ ragApi.interceptors.response.use(
 // Fallback responses for when RAG API is unavailable
 const fallbackResponses = {
   greeting: [
-    'Xin chào! Tôi là Chef AI Assistant của Cookify. Tôi có thể giúp bạn tìm công thức nấu ăn và tư vấn món ăn. Hôm nay bạn muốn nấu gì? 😊',
+    'Xin chào! Tôi là phụ bếp AI của Cookify. Tôi có thể giúp bạn tìm công thức nấu ăn và tư vấn món ăn. Hôm nay bạn muốn nấu gì? 😊',
     'Chào bạn! Tôi sẵn sàng hỗ trợ bạn về nấu ăn. Bạn cần tư vấn món gì không? 👨‍🍳',
     'Hello! Tôi là trợ lý ảo chuyên về nấu ăn. Hãy cho tôi biết bạn muốn nấu món gì nhé! 🍳'
   ],
@@ -52,9 +49,9 @@ const fallbackResponses = {
     'Đang có lỗi xảy ra. Bạn có thể thử hỏi lại không? 🤔'
   ],
   default: [
-    'Tôi hiểu bạn muốn tìm hiểu về món ăn này! Hãy cho tôi biết cụ thể hơn về nguyên liệu bạn có hoặc loại món bạn muốn nấu nhé. 😊',
-    'Bạn có thể mô tả rõ hơn về món ăn bạn muốn không? Tôi sẽ tư vấn công thức phù hợp! 👩‍🍳',
-    'Hãy cho tôi biết thêm chi tiết để tôi có thể gợi ý món ăn ngon cho bạn! 🍽️'
+    'Tôi hiểu bạn muốn tìm hiểu về món ăn này! Hãy cho tôi biết cụ thể hơn: • Nguyên liệu bạn có sẵn. • Loại món bạn muốn nấu. • Thời gian bạn có để nấu. 😊',
+    'Bạn có thể mô tả rõ hơn về món ăn bạn muốn không? Tôi có thể tư vấn: • Công thức chi tiết. • Mẹo nấu ăn hay. • Thay thế nguyên liệu. 👩‍🍳',
+    'Hãy cho tôi biết thêm chi tiết để tôi có thể gợi ý món ăn ngon cho bạn! Ví dụ: • Món Việt hay món Tây? • Cho bao nhiêu người ăn? • Có nguyên liệu gì sẵn? 🍽️'
   ]
 };
 
@@ -62,10 +59,9 @@ const fallbackResponses = {
 const checkRagApiHealth = async () => {
   try {
     const response = await ragApi.get('/health', { timeout: 5000 });
-    console.log('✅ Chatbot API health check passed');
     return response.status === 200;
   } catch (error) {
-    console.warn('❌ RAG API health check failed:', error.message);
+    console.warn(' RAG API health check failed:', error.message);
     return false;
   }
 };
@@ -73,6 +69,32 @@ const checkRagApiHealth = async () => {
 // Get random response from array
 const getRandomResponse = (responses) => {
   return responses[Math.floor(Math.random() * responses.length)];
+};
+
+// Clean response text by removing markdown formatting and adding line breaks
+const cleanResponseText = (text) => {
+  if (!text) return text;
+  
+  return text
+    // Remove bold markdown (**text**)
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    // Remove italic markdown (*text*)
+    .replace(/\*(.*?)\*/g, '$1')
+    // Remove other common markdown
+    .replace(/`(.*?)`/g, '$1')
+    // Add line breaks after sentences ending with punctuation
+    .replace(/([.!?])\s+/g, '$1\n\n')
+    // Add line breaks after colons (for lists)
+    .replace(/:\s+/g, ':\n')
+    // Add line breaks before numbered lists
+    .replace(/(\d+\.)\s+/g, '\n$1 ')
+    // Add line breaks before bullet points
+    .replace(/[-•]\s+/g, '\n• ')
+    // Clean up multiple line breaks
+    .replace(/\n{3,}/g, '\n\n')
+    // Clean up extra spaces but preserve line breaks
+    .replace(/[ \t]+/g, ' ')
+    .trim();
 };
 
 // Detect greeting messages
@@ -88,79 +110,24 @@ const generateFallbackResponse = (userMessage) => {
   
   if (isGreeting(lowerMessage)) {
     return {
-      text: getRandomResponse(fallbackResponses.greeting),
+      text: cleanResponseText(getRandomResponse(fallbackResponses.greeting)),
       suggestions: ['Món nhanh 30 phút', 'Món cho gia đình', 'Mẹo nấu ăn', 'Tư vấn nguyên liệu'],
       source: 'fallback_greeting'
     };
   }
   
-  // Check for specific cooking terms
-  if (lowerMessage.includes('phở') || lowerMessage.includes('pho')) {
-    return {
-      text: 'Phở là món ăn truyền thống tuyệt vời! 🍜\n\n**Phở Bò cơ bản:**\n- Xương bò: 1kg\n- Thịt bò: 500g\n- Bánh phở: 400g\n- Hành tây, gừng, thảo quả\n\n**Cách làm:**\n1. Ninh xương 3-4 tiếng\n2. Nướng hành, gừng cho thơm\n3. Gia vị: muối, đường, nước mắm\n4. Trụng bánh phở, xếp thịt, chan nước dùng\n\nBạn cần hướng dẫn chi tiết hơn không? 😊',
-      suggestions: ['Phở bò', 'Phở gà', 'Cách nấu nước dùng phở'],
-      source: 'fallback_recipe'
-    };
-  }
   
   if (lowerMessage.includes('nhanh') || lowerMessage.includes('30 phút')) {
     return {
-      text: 'Tôi gợi ý một số món nhanh: Mì xào giòn (20 phút), Cơm chiên dương châu (15 phút), hoặc Bún thịt nướng (25 phút). Bạn chọn món nào? ⚡',
+      text: cleanResponseText('Tôi gợi ý một số món nhanh: 1. Mì xào giòn (20 phút). 2. Cơm chiên dương châu (15 phút). 3. Bún thịt nướng (25 phút). Bạn chọn món nào? ⚡'),
       suggestions: ['Mì xào giòn', 'Cơm chiên dương châu', 'Bún thịt nướng'],
       source: 'fallback_quick'
     };
   }
 
-  if (lowerMessage.includes('cơm chiên')) {
-    return {
-      text: '🍚 **Cơm Chiên Dương Châu:**\n\n**Nguyên liệu:**\n- Cơm nguội: 2 bát\n- Trứng: 2 quả\n- Xúc xích: 100g\n- Tôm khô: 50g\n- Hành tây, tỏi\n\n**Cách làm:**\n1. Đánh trứng, chiên tơi\n2. Phi thơm hành tỏi\n3. Cho cơm vào xào\n4. Thêm xúc xích, tôm khô\n5. Nêm nếm vừa ăn\n\nMón này rất dễ làm và ngon! 😋',
-      suggestions: ['Cơm chiên hải sản', 'Cơm chiên thập cẩm', 'Mẹo chiên cơm ngon'],
-      source: 'fallback_recipe'
-    };
-  }
-
-  if (lowerMessage.includes('bánh mì')) {
-    return {
-      text: '🥖 **Bánh Mì Việt Nam:**\n\n**Nguyên liệu:**\n- Bánh mì: 2 ổ\n- Pate gan: 100g\n- Thịt nguội: 100g\n- Rau thơm, dưa chua\n- Tương ớt, mayonnaise\n\n**Cách làm:**\n1. Nướng bánh mì giòn\n2. Phết pate và mayonnaise\n3. Thêm thịt nguội\n4. Rau thơm, dưa chua\n5. Chấm tương ớt\n\nBánh mì Việt Nam nổi tiếng thế giới! 🌍',
-      suggestions: ['Bánh mì thịt nướng', 'Bánh mì chả cá', 'Cách làm dưa chua'],
-      source: 'fallback_recipe'
-    };
-  }
-
-  if (lowerMessage.includes('bún bò') || lowerMessage.includes('bún bò huế')) {
-    return {
-      text: '🍜 **Bún Bò Huế:**\n\n**Nguyên liệu:**\n- Bún bò: 500g\n- Xương heo: 500g\n- Thịt bò: 300g\n- Chả cua: 200g\n- Mắm ruốc, sa tế\n\n**Cách làm:**\n1. Ninh xương 2-3 tiếng\n2. Thêm mắm ruốc, sa tế\n3. Luộc bún qua nước sôi\n4. Thái thịt bò, chả cua\n5. Trình bày và thưởng thức\n\nMón đặc sản xứ Huế! 👑',
-      suggestions: ['Bún bò Huế cay', 'Cách làm sa tế', 'Mắm ruốc tôm'],
-      source: 'fallback_recipe'
-    };
-  }
-
-  if (lowerMessage.includes('gỏi cuốn') || lowerMessage.includes('nem cuốn')) {
-    return {
-      text: '🥬 **Gỏi Cuốn Tôm Thịt:**\n\n**Nguyên liệu:**\n- Bánh tráng: 20 tờ\n- Tôm luộc: 300g\n- Thịt ba chỉ: 200g\n- Rau sống, bún tươi\n- Nước chấm chua ngọt\n\n**Cách làm:**\n1. Luộc tôm, thịt chín\n2. Chuẩn bị rau sống\n3. Ướt bánh tráng\n4. Cuốn tôm, thịt, rau\n5. Chấm nước mắm chua ngọt\n\nMón ăn nhẹ, healthy! 🥗',
-      suggestions: ['Gỏi cuốn chay', 'Nước chấm gỏi cuốn', 'Bánh tráng cuốn'],
-      source: 'fallback_recipe'
-    };
-  }
-
-  if (lowerMessage.includes('canh') || lowerMessage.includes('soup')) {
-    return {
-      text: '🍲 **Canh Chua Cá:**\n\n**Nguyên liệu:**\n- Cá basa: 500g\n- Cà chua: 2 quả\n- Dứa: 100g\n- Đậu bắp, giá đỗ\n- Me, tôm khô\n\n**Cách làm:**\n1. Phi thơm tôm khô\n2. Cho nước, me vào nấu\n3. Thêm cà chua, dứa\n4. Cho cá vào nấu chín\n5. Nêm nếm vừa ăn\n\nCanh chua thanh mát! 🌿',
-      suggestions: ['Canh chua tôm', 'Canh khổ qua', 'Canh rau muống'],
-      source: 'fallback_recipe'
-    };
-  }
-
-  if (lowerMessage.includes('chả cá') || lowerMessage.includes('cha ca')) {
-    return {
-      text: '🐟 **Chả Cá Lã Vọng:**\n\n**Nguyên liệu:**\n- Cá lăng: 1kg\n- Nghệ tươi: 50g\n- Thì là, hành lá\n- Bún tươi, bánh tráng\n- Mắm tôm, tương\n\n**Cách làm:**\n1. Ướp cá với nghệ\n2. Nướng cá vàng đều\n3. Xào với thì là, hành\n4. Ăn kèm bún, bánh tráng\n5. Chấm mắm tôm pha\n\nĐặc sản Hà Nội! 🏮',
-      suggestions: ['Chả cá nướng', 'Bún chả cá', 'Mắm tôm pha'],
-      source: 'fallback_recipe'
-    };
-  }
   
   return {
-    text: getRandomResponse(fallbackResponses.default),
+    text: cleanResponseText(getRandomResponse(fallbackResponses.default)),
     suggestions: ['Món nhanh', 'Món chính', 'Tráng miệng', 'Đồ uống'],
     source: 'fallback_default'
   };
@@ -168,17 +135,12 @@ const generateFallbackResponse = (userMessage) => {
 
 // Main function to get RAG-powered chat response
 export const getRagChatBotResponse = async (userMessage, conversationId = null) => {
-  try {
-    console.log('🤖 Processing RAG query:', userMessage);
-    
+  try {    
     // Check if RAG API is available first
     const isRagAvailable = await checkRagApiHealth();
     
     if (isRagAvailable) {
-      console.log('🚀 Using AI chatbot service');
     } else if (FALLBACK_ENABLED) {
-      console.log('⚠️ AI service unavailable, using fallback responses');
-      console.log('💡 Hỏi về: phở, cơm chiên, bánh mì, bún bò huế, gỏi cuốn, canh chua, chả cá...');
       return generateFallbackResponse(userMessage);
     } else {
       throw new Error('RAG API is not available and fallback is disabled');
@@ -190,24 +152,17 @@ export const getRagChatBotResponse = async (userMessage, conversationId = null) 
       user_id: null, // Can be set from user context if available
       conversation_id: conversationId
     };
-    
-    console.log('Calling Node.js Chatbot API with:', requestData);
-    
+        
     const response = await ragApi.post('/ask', requestData);
     const ragResponse = response.data;
     
-    console.log('Node.js Chatbot API response:', {
-      confidence: ragResponse.confidence,
-      sourcesCount: ragResponse.sources?.length || 0,
-      processingTime: ragResponse.processing_time_ms
-    });
-    
+      
     // Extract suggestions from sources (recipe names, blog titles, etc.)
     const suggestions = ragResponse.sources?.slice(0, 4).map(s => s.name) || [];
     
     // Format response for frontend
     return {
-      text: ragResponse.response,
+      text: cleanResponseText(ragResponse.response),
       suggestions: suggestions,
       source: 'node_chatbot',
       score: ragResponse.confidence?.score || 0,
@@ -236,7 +191,7 @@ export const getRagChatBotResponse = async (userMessage, conversationId = null) 
     
     if (error.response?.status === 400) {
       return {
-        text: 'Xin lỗi, câu hỏi của bạn không hợp lệ. Vui lòng thử lại với câu hỏi khác! 😅',
+        text: cleanResponseText('Xin lỗi, câu hỏi của bạn không hợp lệ. Vui lòng thử lại với câu hỏi khác! 😅'),
         suggestions: ['Thử câu hỏi khác', 'Món ăn phổ biến', 'Mẹo nấu ăn'],
         source: 'error_validation'
       };
@@ -244,7 +199,7 @@ export const getRagChatBotResponse = async (userMessage, conversationId = null) 
     
     if (error.response?.status >= 500) {
       return {
-        text: getRandomResponse(fallbackResponses.error),
+        text: cleanResponseText(getRandomResponse(fallbackResponses.error)),
         suggestions: ['Thử lại', 'Hỏi câu khác', 'Liên hệ hỗ trợ'],
         source: 'error_server'
       };
@@ -294,6 +249,14 @@ export const getRagApiStatus = async () => {
       error: error.message
     };
   }
+};
+
+// Test text cleaning function
+export const testTextCleaning = () => {
+  const testText = "**Món phở bò** rất *ngon*! Bạn cần: 1. Xương bò. 2. Bánh phở. 3. Hành tây. Cách làm: • Ninh xương 3 tiếng. • Trần bánh phở. • Thái hành lá.";
+  console.log("Original:", testText);
+  console.log("Cleaned:", cleanResponseText(testText));
+  return cleanResponseText(testText);
 };
 
 // Test RAG API with sample queries

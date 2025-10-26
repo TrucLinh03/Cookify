@@ -18,9 +18,6 @@ router.get('/recipe/:recipeId', async (req, res) => {
   try {
     const { recipeId } = req.params;
     const { page = 1, limit = 10 } = req.query;
-
-    console.log('Getting feedbacks for recipe:', recipeId);
-
     const skip = (page - 1) * limit;
 
     // Lấy feedback với thông tin user
@@ -32,8 +29,6 @@ router.get('/recipe/:recipeId', async (req, res) => {
     .sort({ created_at: -1 })
     .skip(skip)
     .limit(parseInt(limit));
-
-    console.log('Found feedbacks:', feedbacks.length);
 
     // Đếm tổng số feedback
     const total = await Feedback.countDocuments({ 
@@ -91,10 +86,6 @@ router.post('/', verifyToken, async (req, res) => {
     const { recipe_id, rating, comment } = req.body;
     const user_id = req.user.id;
 
-    console.log('Creating feedback:', { recipe_id, rating, comment, user_id });
-    console.log('Request body:', req.body);
-    console.log('User from token:', req.user);
-
     // Validate dữ liệu
     if (!recipe_id || !rating || !comment) {
       return res.status(400).json({
@@ -120,7 +111,6 @@ router.post('/', verifyToken, async (req, res) => {
     // Kiểm tra xem user đã đánh giá recipe này chưa
     const existingFeedback = await Feedback.findOne({ user_id, recipe_id });
     if (existingFeedback) {
-      console.log('User already rated this recipe:', { user_id, recipe_id });
       return res.status(400).json({
         success: false,
         message: 'Bạn đã đánh giá công thức này rồi. Mỗi người chỉ được đánh giá 1 lần cho mỗi công thức.'
@@ -137,7 +127,6 @@ router.post('/', verifyToken, async (req, res) => {
     });
 
     await newFeedback.save();
-    console.log('Feedback saved successfully:', newFeedback._id);
 
     // Populate user info để trả về
     await newFeedback.populate('user_id', 'name email');
@@ -163,8 +152,6 @@ router.put('/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
     const { rating, comment } = req.body;
     const user_id = req.user.id;
-
-    console.log('Updating feedback:', { id, rating, comment, user_id });
 
     // Tìm feedback
     const feedback = await Feedback.findById(id);
@@ -206,8 +193,6 @@ router.put('/:id', verifyToken, async (req, res) => {
     await feedback.save();
     await feedback.populate('user_id', 'name email');
 
-    console.log('Feedback updated successfully:', feedback._id);
-
     res.json({
       success: true,
       data: feedback,
@@ -230,8 +215,6 @@ router.delete('/:id', verifyToken, async (req, res) => {
     const user_id = req.user.id;
     const user_role = req.user.role;
 
-    console.log('Deleting feedback:', { id, user_id, user_role });
-
     // Tìm feedback
     const feedback = await Feedback.findById(id);
     if (!feedback) {
@@ -250,8 +233,6 @@ router.delete('/:id', verifyToken, async (req, res) => {
     }
 
     await Feedback.findByIdAndDelete(id);
-    console.log('Feedback deleted successfully:', id);
-
     res.json({
       success: true,
       message: 'Đánh giá đã được xóa'
@@ -271,8 +252,6 @@ router.get('/check/:recipeId', verifyToken, async (req, res) => {
   try {
     const { recipeId } = req.params;
     const user_id = req.user.id;
-
-    console.log('Checking if user already rated recipe:', { user_id, recipeId });
 
     const existingFeedback = await Feedback.findOne({ 
       user_id, 
@@ -303,8 +282,6 @@ router.get('/user/my', verifyToken, async (req, res) => {
     const user_id = req.user.id;
     const { page = 1, limit = 10 } = req.query;
     const skip = (page - 1) * limit;
-
-    console.log('Getting user feedbacks:', { user_id, page, limit });
 
     const feedbacks = await Feedback.find({ user_id })
       .populate('recipe_id', 'name imageUrl category')
@@ -357,8 +334,6 @@ router.get('/admin/all', verifyToken, verifyAdmin, async (req, res) => {
         { comment: { $regex: search, $options: 'i' } }
       ];
     }
-
-    console.log('Admin getting all feedbacks:', { query, page, limit });
 
     const feedbacks = await Feedback.find(query)
       .populate('user_id', 'name email')
@@ -432,8 +407,6 @@ router.patch('/admin/manage/:id', verifyToken, verifyAdmin, async (req, res) => 
       });
     }
 
-    console.log('Admin updating feedback status:', { id, status });
-
     const feedback = await Feedback.findByIdAndUpdate(
       id,
       { 
@@ -471,8 +444,6 @@ router.delete('/admin/manage/:id', verifyToken, verifyAdmin, async (req, res) =>
   try {
     const { id } = req.params;
 
-    console.log('Admin deleting feedback:', { id });
-
     const feedback = await Feedback.findByIdAndDelete(id);
 
     if (!feedback) {
@@ -499,8 +470,6 @@ router.delete('/admin/manage/:id', verifyToken, verifyAdmin, async (req, res) =>
 // DELETE /api/feedback/admin/delete-all - Xóa tất cả feedback (admin only)
 router.delete('/admin/delete-all', verifyToken, verifyAdmin, async (req, res) => {
   try {
-    console.log('Admin deleting all feedbacks');
-
     // Đếm số feedback trước khi xóa
     const totalCount = await Feedback.countDocuments();
     
@@ -514,11 +483,6 @@ router.delete('/admin/delete-all', verifyToken, verifyAdmin, async (req, res) =>
 
     // Xóa tất cả feedback
     const result = await Feedback.deleteMany({});
-
-    console.log('Deleted all feedbacks:', {
-      totalCount,
-      deletedCount: result.deletedCount
-    });
 
     res.json({
       success: true,

@@ -63,7 +63,7 @@ const FeaturedSection = () => {
   }
 
   return (
-    <div className="overflow-hidden flex md:flex-row flex-col justify-between items-center sm:my-20 my-4 md:gap-20 gap-12 px-5 xl:px-10">
+    <div className="overflow-hidden flex md:flex-row flex-col justify-between items-center sm:my-10 my-4 md:gap-20 gap-12 px-5 xl:px-10">
       <div className="relative md:w-1/2 w-full">
         <div className="absolute top-6 left-6 bg-white text-secondary px-4 py-2 rounded-lg uppercase tracking-wider text-sm font-semibold shadow-md z-10">
           Yêu Thích Nhất
@@ -123,7 +123,7 @@ const FeaturedSection = () => {
           <div className="mt-8 lg:mt-12 inline-flex">
             <Link
               to={featuredRecipe ? `/recipes/${featuredRecipe._id}` : "/recipes"}
-              className="py-4 px-8 hover:bg-btnColor hover:text-white text-secondary transition ease-in duration-300 text-center text-base font-semibold border-2 border-[#9c702a] focus:outline-none rounded-xl inline-block hover:shadow-lg transform hover:-translate-y-1"
+              className="py-4 px-8 hover:bg-tomato hover:text-white text-secondary transition ease-in duration-300 text-center text-base font-semibold border-2 border-[#FF6347] focus:outline-none rounded-xl inline-block hover:shadow-lg transform hover:-translate-y-1"
             >
               Xem Công Thức
             </Link>

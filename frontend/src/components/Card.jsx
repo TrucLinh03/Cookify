@@ -124,7 +124,6 @@ const Card = ({ item }) => {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         
-        console.log('Remove favorite response:', response.data);
         if (response.data.success) {
           setIsFavorited(false);
           toast.success('Đã bỏ yêu thích công thức!');
@@ -144,7 +143,6 @@ const Card = ({ item }) => {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         
-        console.log('Add favorite response:', response.data);
         if (response.data.success) {
           setIsFavorited(true);
           toast.success('Đã thêm vào danh sách yêu thích!');
@@ -192,7 +190,6 @@ const Card = ({ item }) => {
       } else {
         // For other errors, fallback to localStorage
         toast.error('Có lỗi xảy ra: ' + (error.response?.data?.message || error.message));
-        console.log('Falling back to localStorage');
         
         const favorites = JSON.parse(localStorage.getItem(`favorites_${user._id}`) || '[]');
         let updatedFavorites;

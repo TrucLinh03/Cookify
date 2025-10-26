@@ -25,6 +25,11 @@ const ChatWindow = ({ onClose }) => {
   const [size, setSize] = useState({ width: 384, height: 500 }); // Default: w-96 (384px), h-[500px]
   const [isResizing, setIsResizing] = useState(false);
   
+  // Drag states - Initialize with null to use CSS positioning initially
+  const [position, setPosition] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  
   const messagesEndRef = useRef(null);
   const chatWindowRef = useRef(null);
 
@@ -106,12 +111,12 @@ const ChatWindow = ({ onClose }) => {
   // Helper function to get status indicator
   const getStatusIndicator = () => {
     if (ragStatus.checking) {
-      return { text: 'Đang kiểm tra...', color: 'text-orange-600', icon: MagnifyingGlassIcon };
+      return { text: 'Đang kiểm tra...', color: 'text-peachDark', icon: MagnifyingGlassIcon };
     }
     if (ragStatus.healthy) {
-      return { text: 'RAG AI Sẵn sàng', color: 'text-orange-600', icon: chefHatIcon };
+      return { text: 'RAG AI Sẵn sàng', color: 'text-peachDark', icon: chefHatIcon };
     }
-    return { text: 'Chế độ cơ bản', color: 'text-orange-600', icon: LightbulbIcon };
+    return { text: 'Chế độ cơ bản', color: 'text-peachDark', icon: LightbulbIcon };
   };
 
   const handleSuggestionClick = (suggestion) => {
@@ -124,6 +129,59 @@ const ChatWindow = ({ onClose }) => {
       handleSendMessage();
     }
   };
+
+  // Drag handlers for moving the window
+  const handleDragStart = (e) => {
+    // Prevent event from bubbling up and closing the chat
+    e.preventDefault();
+    e.stopPropagation();
+    
+    setIsDragging(true);
+    const rect = chatWindowRef.current.getBoundingClientRect();
+    setDragStart({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    });
+  };
+
+  const handleDragMove = (e) => {
+    if (isDragging) {
+      // Get current position from the element if position state is null
+      if (position === null) {
+        const rect = chatWindowRef.current.getBoundingClientRect();
+        setPosition({ x: rect.left, y: rect.top });
+        return;
+      }
+      
+      const newX = e.clientX - dragStart.x;
+      const newY = e.clientY - dragStart.y;
+      
+      // Keep window within viewport bounds
+      const maxX = window.innerWidth - size.width;
+      const maxY = window.innerHeight - size.height;
+      
+      setPosition({
+        x: Math.max(0, Math.min(newX, maxX)),
+        y: Math.max(0, Math.min(newY, maxY))
+      });
+    }
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
+
+  // Add drag event listeners
+  useEffect(() => {
+    if (isDragging) {
+      document.addEventListener('mousemove', handleDragMove);
+      document.addEventListener('mouseup', handleDragEnd);
+      return () => {
+        document.removeEventListener('mousemove', handleDragMove);
+        document.removeEventListener('mouseup', handleDragEnd);
+      };
+    }
+  }, [isDragging, dragStart, size]);
 
   // Resize handlers
   const handleResizeStart = (e, direction) => {
@@ -174,15 +232,30 @@ const ChatWindow = ({ onClose }) => {
   return (
     <div 
       ref={chatWindowRef}
-      className="bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-gray-200 relative"
+      className={`bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-gray-200 relative transition-shadow duration-200 ${
+        isDragging ? 'cursor-grabbing shadow-3xl' : 'shadow-2xl'
+      }`}
       style={{ 
         width: `${size.width}px`, 
         height: `${size.height}px`,
-        userSelect: isResizing ? 'none' : 'auto'
+        ...(position && {
+          position: 'fixed',
+          left: `${position.x}px`,
+          top: `${position.y}px`,
+          transform: 'none'
+        }),
+        userSelect: (isResizing || isDragging) ? 'none' : 'auto',
+        zIndex: isDragging ? 60 : 50
       }}
     >
-      {/* Header */}
-      <div className="bg-orange-100 p-4 flex items-center justify-between border-b border-orange-200">
+      {/* Header - Draggable */}
+      <div 
+        className={`bg-peachLight p-4 flex items-center justify-between border-b border-peach ${
+          isDragging ? 'cursor-grabbing' : 'cursor-grab'
+        }`}
+        onMouseDown={handleDragStart}
+        title="Kéo để di chuyển cửa sổ chat"
+      >
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
             <img
@@ -193,7 +266,12 @@ const ChatWindow = ({ onClose }) => {
             />
           </div>
           <div>
-            <h3 className="text-orange-700 font-semibold">Chef AI Assistant</h3>
+            <h3 className="text-orange-600 font-semibold flex items-center">
+              Chef AI Assistant
+              <svg className="w-4 h-4 ml-2 text-peachDark opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+              </svg>
+            </h3>
             <p className={`text-xs ${getStatusIndicator().color} flex items-center`}>
               <img src={getStatusIndicator().icon} alt="status" className="w-3.5 h-3.5 mr-1 opacity-90" />
               {getStatusIndicator().text}
@@ -202,7 +280,7 @@ const ChatWindow = ({ onClose }) => {
         </div>
         <button
           onClick={onClose}
-          className="text-orange-700 hover:text-orange-800 transition-colors"
+          className="text-peachDark hover:text-peachDark transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -218,8 +296,8 @@ const ChatWindow = ({ onClose }) => {
             <button
               key={index}
               onClick={() => handleSuggestionClick(suggestion)}
-              className="flex items-center space-x-1 bg-white hover:bg-orange-50 border border-gray-200 
-                         hover:border-orange-300 rounded-lg p-2 text-xs transition-colors"
+              className="flex items-center space-x-1 bg-white hover:bg-peachLight border border-gray-200 
+                         hover:border-peach rounded-lg p-2 text-xs transition-colors"
             >
               <img src={suggestion.icon} alt="suggestion" className="w-4 h-4 mr-1 opacity-80" />
               <span className="text-gray-700 truncate">{suggestion.text}</span>
@@ -238,13 +316,13 @@ const ChatWindow = ({ onClose }) => {
               <div
                 className={`max-w-[80%] rounded-2xl px-3 py-2 ${
                   message.type === 'user'
-                    ? 'bg-orange-500 text-white rounded-br-md'
+                    ? 'bg-tomato text-white rounded-br-md'
                     : 'bg-gray-100 text-gray-800 rounded-bl-md'
                 }`}
               >
                 <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
                 <div className={`flex items-center justify-between mt-1 ${
-                  message.type === 'user' ? 'text-orange-100' : 'text-gray-500'
+                  message.type === 'user' ? 'text-peachLight' : 'text-gray-500'
                 }`}>
                   <p className="text-xs">{message.timestamp}</p>
                   {message.type === 'bot' && message.source && (
@@ -319,12 +397,12 @@ const ChatWindow = ({ onClose }) => {
             onKeyPress={handleKeyPress}
             placeholder="Bạn muốn nấu món gì hôm nay?..."
             className="flex-1 border border-gray-300 rounded-full px-4 py-2 text-sm 
-                       focus:outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-400"
+                       focus:outline-none focus:border-peach focus:ring-1 focus:ring-peach"
           />
           <button
             onClick={() => handleSendMessage()}
             disabled={!inputMessage.trim()}
-            className="bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 
+            className="bg-tomato hover:bg-red-600 disabled:bg-gray-300 
                        text-white rounded-full p-2 transition-colors"
           >
             <svg className="w-4 h-4 transform rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -340,49 +418,49 @@ const ChatWindow = ({ onClose }) => {
       {/* Resize Handles */}
       {/* Top */}
       <div
-        className="absolute top-0 left-0 right-0 h-1 cursor-ns-resize hover:bg-orange-300 transition-colors"
+        className="absolute top-0 left-0 right-0 h-1 cursor-ns-resize hover:bg-peach transition-colors"
         onMouseDown={(e) => handleResizeStart(e, 'top')}
       />
       
       {/* Right */}
       <div
-        className="absolute top-0 right-0 bottom-0 w-1 cursor-ew-resize hover:bg-orange-300 transition-colors"
+        className="absolute top-0 right-0 bottom-0 w-1 cursor-ew-resize hover:bg-peach transition-colors"
         onMouseDown={(e) => handleResizeStart(e, 'right')}
       />
       
       {/* Bottom */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-1 cursor-ns-resize hover:bg-orange-300 transition-colors"
+        className="absolute bottom-0 left-0 right-0 h-1 cursor-ns-resize hover:bg-peach transition-colors"
         onMouseDown={(e) => handleResizeStart(e, 'bottom')}
       />
       
       {/* Left */}
       <div
-        className="absolute top-0 left-0 bottom-0 w-1 cursor-ew-resize hover:bg-orange-300 transition-colors"
+        className="absolute top-0 left-0 bottom-0 w-1 cursor-ew-resize hover:bg-peach transition-colors"
         onMouseDown={(e) => handleResizeStart(e, 'left')}
       />
       
       {/* Top-Left Corner */}
       <div
-        className="absolute top-0 left-0 w-3 h-3 cursor-nwse-resize hover:bg-orange-400 rounded-tl-2xl"
+        className="absolute top-0 left-0 w-3 h-3 cursor-nwse-resize hover:bg-peachDark rounded-tl-2xl"
         onMouseDown={(e) => handleResizeStart(e, 'top-left')}
       />
       
       {/* Top-Right Corner */}
       <div
-        className="absolute top-0 right-0 w-3 h-3 cursor-nesw-resize hover:bg-orange-400 rounded-tr-2xl"
+        className="absolute top-0 right-0 w-3 h-3 cursor-nesw-resize hover:bg-peachDark rounded-tr-2xl"
         onMouseDown={(e) => handleResizeStart(e, 'top-right')}
       />
       
       {/* Bottom-Right Corner */}
       <div
-        className="absolute bottom-0 right-0 w-3 h-3 cursor-nwse-resize hover:bg-orange-400 rounded-br-2xl"
+        className="absolute bottom-0 right-0 w-3 h-3 cursor-nwse-resize hover:bg-peachDark rounded-br-2xl"
         onMouseDown={(e) => handleResizeStart(e, 'bottom-right')}
       />
       
       {/* Bottom-Left Corner */}
       <div
-        className="absolute bottom-0 left-0 w-3 h-3 cursor-nesw-resize hover:bg-orange-400 rounded-bl-2xl"
+        className="absolute bottom-0 left-0 w-3 h-3 cursor-nesw-resize hover:bg-peachDark rounded-bl-2xl"
         onMouseDown={(e) => handleResizeStart(e, 'bottom-left')}
       />
     </div>

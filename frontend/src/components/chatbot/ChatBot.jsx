@@ -1,12 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import ChatWindow from './ChatWindow';
 import chefHatIcon from '../../assets/chef-hat.svg';
 
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [userRole, setUserRole] = useState(null);
+  const location = useLocation();
   const [position, setPosition] = useState({ edge: 'bottom', offset: 16 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+
+  // Check user role on component mount
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        setUserRole(payload.role);
+      } catch (error) {
+        console.error('Error parsing token:', error);
+        setUserRole('user'); // Default to user if error
+      }
+    } else {
+      setUserRole('user'); // Default to user if no token
+    }
+  }, []);
 
   const toggleChat = () => {
     setIsOpen(!isOpen);
@@ -119,6 +138,13 @@ const ChatBot = () => {
     }
   };
 
+  // Don't render chatbot for admin users or auth pages
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
+  
+  if (userRole === 'admin' || isAuthPage) {
+    return null;
+  }
+
   return (
     <>
       {/* Chat Window */}
@@ -131,43 +157,53 @@ const ChatBot = () => {
         </div>
       )}
 
-      {/* Chat Button */}
-      <div 
-        className={`fixed z-50 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
-        style={{
-          ...(position.edge === 'left' && { left: '16px', top: `${position.offset}px` }),
-          ...(position.edge === 'right' && { right: '16px', top: `${position.offset}px` }),
-          ...(position.edge === 'top' && { top: '16px', left: `${position.offset}px` }),
-          ...(position.edge === 'bottom' && { bottom: '16px', right: '16px' })
-        }}
-        onMouseDown={handleMouseDown}
-      >
-        <button
-          onClick={toggleChat}
-          className={`
-            relative bg-gradient-to-r from-orange-500 to-amber-500 
-            text-white p-3 sm:p-4 rounded-full shadow-lg 
-            hover:shadow-xl hover:scale-110 
-            transition-all duration-300 ease-out
-            min-h-[56px] min-w-[56px] sm:min-h-[64px] sm:min-w-[64px]
-            flex items-center justify-center
-            ${isOpen ? 'rotate-180' : 'animate-pulse-slow'}
-          `}
-          title="Chef AI Assistant - Hỏi đáp về nấu ăn"
-          aria-label="Mở trợ lý AI nấu ăn"
+      {/* Chat Button - Hiển thị để dễ di chuyển */}
+      {(
+        <div 
+          className={`fixed z-50 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+          style={{
+            ...(position.edge === 'left' && { left: '16px', top: `${position.offset}px` }),
+            ...(position.edge === 'right' && { right: '16px', top: `${position.offset}px` }),
+            ...(position.edge === 'top' && { top: '16px', left: `${position.offset}px` }),
+            ...(position.edge === 'bottom' && { bottom: '16px', right: '16px' })
+          }}
+          onMouseDown={handleMouseDown}
         >
-          <img 
-            src={chefHatIcon} 
-            alt="Chef AI" 
-            className="w-6 h-6 sm:w-8 sm:h-8 filter brightness-0 invert"
-          />
-          
-          {/* Notification dot */}
-          {!isOpen && (
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-ping"></div>
-          )}
-        </button>
-      </div>
+          <button
+            onClick={toggleChat}
+            className={`
+              relative bg-orange-600
+              text-white p-3 sm:p-4 rounded-full shadow-lg 
+              hover:shadow-xl hover:scale-110 hover:bg-orange-600
+              transition-all duration-300 ease-out
+              min-h-[56px] min-w-[56px] sm:min-h-[64px] sm:min-w-[64px]
+              flex items-center justify-center
+              ${!isOpen ? 'animate-pulse-slow' : ''}
+            `}
+            title={isOpen ? "Đóng trợ lý AI" : "Chef AI Assistant - Hỏi đáp về nấu ăn"}
+            aria-label={isOpen ? "Đóng trợ lý AI nấu ăn" : "Mở trợ lý AI nấu ăn"}
+          >
+            {isOpen ? (
+              // Close icon when chat is open
+              <svg className="w-6 h-6 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              // Chef hat icon when chat is closed
+              <img 
+                src={chefHatIcon} 
+                alt="Chef AI" 
+                className="w-6 h-6 sm:w-8 sm:h-8 filter brightness-0 invert"
+              />
+            )}
+            
+            {/* Notification dot - only show when closed */}
+            {!isOpen && (
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-tomato rounded-full animate-ping"></div>
+            )}
+          </button>
+        </div>
+      )}
     </>
   );
 };

@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { updateUser } from "../../redux/features/auth/authSlice";
 import { getApiUrl } from '../../config/api.js';
+import EditIcon from '../../assets/pencil.svg';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -150,7 +151,7 @@ const Profile = () => {
           title: "Quản lý công thức",
           description: "Quản lý tất cả công thức",
           action: () => navigate("/dashboard/recipes"),
-          color: "bg-orange-50 text-orange-600 hover:bg-orange-100"
+          color: "bg-peachLight text-tomato hover:bg-peach"
         },
         {
           title: "Quản lý người dùng",
@@ -226,19 +227,19 @@ const Profile = () => {
       )}
       
       {/* Cover Photo Section */}
-      <div className="relative h-64 overflow-hidden">
+      <div className="relative h-48 sm:h-64 overflow-hidden">
         {/* Background Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage: profileData.role === 'admin' 
-              ? "url('https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1200')" 
-              : "url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200')"
+              ? "url('https://i.pinimg.com/1200x/9b/7b/5b/9b7b5b494bef013a462b4fb04664fe9d.jpg')" 
+              : "url('https://i.pinimg.com/1200x/96/9d/77/969d770d6d6f017f2745a1f5aebe846b.jpg')"
           }}
         ></div>
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-black/60"></div>
-        <div className="absolute bottom-0 left-0 right-0 p-6">
-          <div className="max-w-6xl mx-auto flex items-end space-x-6">
+        <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
+          <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center sm:items-end space-y-4 sm:space-y-0 sm:space-x-6">
             {/* Avatar */}
             <div className="relative">
               {profileData.avatar ? (
@@ -254,6 +255,13 @@ const Profile = () => {
                   </svg>
                 </div>
               )}
+              {/* Edit button */}
+              <button
+                onClick={() => navigate('/edit-profile')}
+                className="absolute bottom-0 right-0 bg-tomato text-white p-2 rounded-full hover:bg-red-600 transition-colors shadow-lg"
+              >
+                <img src={EditIcon} alt="Chỉnh sửa" className="w-4 h-4 invert" />
+              </button>
             </div>
             
             {/* User Info */}

@@ -14,13 +14,13 @@ function loadFAQData(faqPath) {
   try {
     const fullPath = path.resolve(faqPath);
     if (!fs.existsSync(fullPath)) {
-      console.warn(`⚠️  FAQ file not found: ${fullPath}`);
+      console.warn(`FAQ file not found: ${fullPath}`);
       return false;
     }
     
     const rawData = fs.readFileSync(fullPath, 'utf-8');
     faqData = JSON.parse(rawData);
-    console.log(`✅ Loaded ${faqData.length} FAQ entries`);
+    console.log(`Loaded ${faqData.length} FAQ entries`);
     return true;
   } catch (error) {
     console.error('Error loading FAQ data:', error.message);

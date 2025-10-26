@@ -405,12 +405,12 @@ const Feedback = ({ recipeId, onFeedbackSubmitted }) => {
           ) : !showForm ? (
             <button
               onClick={() => setShowForm(true)}
-              className="w-full bg-orange-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-orange-700 transition-colors"
+              className="w-full bg-tomato text-white py-3 px-4 rounded-lg font-medium hover:bg-red-600 transition-colors"
             >
               Viết đánh giá
             </button>
           ) : (
-            <form onSubmit={handleSubmitFeedback} className="bg-orange-50 rounded-lg p-4">
+            <form onSubmit={handleSubmitFeedback} className="bg-peachLight rounded-lg p-4">
               <h4 className="font-semibold text-gray-900 mb-3">Viết đánh giá của bạn</h4>
               
               {/* Rating Stars */}
@@ -446,7 +446,7 @@ const Feedback = ({ recipeId, onFeedbackSubmitted }) => {
                 <button 
                   type="submit"
                   disabled={submitting || !newFeedback.rating || newFeedback.comment.trim().length < 10}
-                  className="flex-1 bg-orange-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-orange-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 bg-tomato text-white py-2 px-4 rounded-lg font-medium hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {submitting ? 'Đang gửi...' : 'Gửi đánh giá'}
                 </button>
@@ -484,7 +484,7 @@ const Feedback = ({ recipeId, onFeedbackSubmitted }) => {
                   // Edit Form
                   <form onSubmit={handleUpdateFeedback} className="space-y-4">
                     <div className="flex items-start space-x-3">
-                      <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                      <div className="w-8 h-8 bg-tomato rounded-full flex items-center justify-center text-white text-sm font-medium">
                         {getAvatarLetter(feedback.user_id?.name)}
                       </div>
                       <div className="flex-1">
@@ -513,7 +513,7 @@ const Feedback = ({ recipeId, onFeedbackSubmitted }) => {
                           <button 
                             type="submit"
                             disabled={submitting || !editForm.rating || editForm.comment.trim().length < 10}
-                            className="bg-orange-600 text-white py-1 px-3 rounded text-sm font-medium hover:bg-orange-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="bg-tomato text-white py-1 px-3 rounded text-sm font-medium hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             {submitting ? 'Đang cập nhật...' : 'Cập nhật'}
                           </button>
@@ -531,7 +531,7 @@ const Feedback = ({ recipeId, onFeedbackSubmitted }) => {
                 ) : (
                   // Display Mode
                   <div className="flex items-start space-x-3">
-                    <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                    <div className="w-8 h-8 bg-tomato rounded-full flex items-center justify-center text-white text-sm font-medium">
                       {getAvatarLetter(feedback.user_id?.name)}
                     </div>
                     <div className="flex-1">

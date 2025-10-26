@@ -302,7 +302,6 @@ router.patch('/edit-profile', verifyToken, async (req, res) => {
         const { name, avatar, currentPassword, newPassword } = req.body;
         const userId = req.user.id;
 
-        console.log('Profile update request:', { userId, name, hasAvatar: !!avatar, hasCurrentPassword: !!currentPassword, hasNewPassword: !!newPassword });
 
         const user = await User.findById(userId);
         if (!user) {
@@ -315,7 +314,6 @@ router.patch('/edit-profile', verifyToken, async (req, res) => {
         // Update basic fields
         if (name !== undefined && name.trim()) {
             user.name = name.trim();
-            console.log('Updated name:', user.name);
         }
         if (avatar !== undefined) {
             // Validate avatar if it's a base64 string
@@ -329,15 +327,12 @@ router.patch('/edit-profile', verifyToken, async (req, res) => {
                         });
                     }
                     user.avatar = avatar;
-                    console.log('Updated avatar, length:', avatar.length);
                 } else if (avatar.length > 0) {
                     // Assume it's a URL
                     user.avatar = avatar;
-                    console.log('Updated avatar URL:', avatar);
                 } else {
                     // Empty string to remove avatar
                     user.avatar = '';
-                    console.log('Removed avatar');
                 }
             }
         }
@@ -371,9 +366,7 @@ router.patch('/edit-profile', verifyToken, async (req, res) => {
             user.password = newPassword; // Will be hashed by pre-save middleware
         }
 
-        console.log('Saving user to database...');
         await user.save();
-        console.log('User saved successfully');
 
         const responseUser = {
             _id: user._id,
@@ -387,12 +380,6 @@ router.patch('/edit-profile', verifyToken, async (req, res) => {
             createdAt: user.createdAt,
             updatedAt: user.updatedAt
         };
-
-        console.log('Sending response:', {
-            success: true,
-            hasAvatar: !!responseUser.avatar,
-            avatarLength: responseUser.avatar ? responseUser.avatar.length : 0
-        });
 
         res.status(200).json({
             success: true,
@@ -557,7 +544,6 @@ router.delete('/favourites/:recipeId', verifyToken, async (req, res) => {
 // GET /api/users/test-db - Test database connection (admin only)
 router.get('/test-db', verifyToken, verifyAdmin, async (req, res) => {
   try {
-    console.log('Testing database...');
     
     const User = require('../model/userModel');
     const Recipe = require('../model/recipeModel');
@@ -738,8 +724,6 @@ router.patch('/manage/:id', verifyToken, verifyAdmin, async (req, res) => {
       });
     }
 
-    console.log('Admin updating user:', { id, role, status });
-
     const updateData = {};
     if (role) updateData.role = role;
     if (status) updateData.status = status;
@@ -784,8 +768,6 @@ router.delete('/manage/:id', verifyToken, verifyAdmin, async (req, res) => {
         message: 'Không thể tự xóa tài khoản của mình'
       });
     }
-
-    console.log('Admin deleting user:', { id });
 
     const user = await User.findByIdAndDelete(id);
 

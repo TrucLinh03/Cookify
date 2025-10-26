@@ -121,9 +121,9 @@ const Blog = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-cream-50 to-yellow-50">
+    <div className="min-h-screen bg-peachLight">
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-r from-orange-400 via-orange-300 to-yellow-300 py-20">
+      <div className="relative bg-gradient-to-r from-peach via-lightOrange to-peachDark py-20">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative max-w-7xl mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
@@ -136,7 +136,7 @@ const Blog = () => {
           {user && (
             <Link
               to="/blog/create"
-              className="inline-flex items-center px-8 py-4 bg-white text-orange-600 font-semibold rounded-full hover:bg-orange-50 transition-all duration-300 transform hover:scale-105 shadow-lg"
+              className="inline-flex items-center px-8 py-4 bg-tomato text-white font-semibold rounded-full hover:bg-red-600 transition-all duration-300 transform hover:scale-105 shadow-lg"
             >
               <img src={PencilIcon} alt="Tạo bài viết" className="w-5 h-5 mr-2" />
               Chia sẻ câu chuyện của bạn
@@ -163,7 +163,7 @@ const Blog = () => {
                         className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                       <div className="absolute top-4 left-4">
-                        <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                        <span className="bg-tomato text-white px-3 py-1 rounded-full text-sm font-medium">
                           Nổi bật
                         </span>
                       </div>
@@ -174,7 +174,7 @@ const Blog = () => {
                       </div>
                     </div>
                     <div className="p-6">
-                      <h3 className="text-xl font-bold text-gray-800 mb-3 line-clamp-2 group-hover:text-orange-600 transition-colors">
+                      <h3 className="text-xl font-bold text-gray-800 mb-3 line-clamp-2 group-hover:text-tomato transition-colors">
                         {blog.title}
                       </h3>
                       <p className="text-gray-600 mb-4 line-clamp-3">
@@ -199,8 +199,8 @@ const Blog = () => {
                       </div>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center">
-                          <div className="w-8 h-8 bg-orange-200 rounded-full flex items-center justify-center mr-3">
-                            <span className="text-orange-600 font-semibold text-sm">
+                          <div className="w-8 h-8 bg-peachLight rounded-full flex items-center justify-center mr-3">
+                            <span className="text-tomato font-semibold text-sm">
                               {blog.author?.name?.charAt(0) || 'U'}
                             </span>
                           </div>
@@ -208,7 +208,7 @@ const Blog = () => {
                         </div>
                         <Link
                           to={`/blog/${blog._id}`}
-                          className="text-orange-600 hover:text-orange-700 font-medium text-sm flex items-center"
+                          className="text-tomato hover:text-red-600 font-medium text-sm flex items-center"
                         >
                           Đọc thêm
                           <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -237,8 +237,8 @@ const Blog = () => {
                     onClick={() => setSelectedCategory(category.value)}
                     className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                       selectedCategory === category.value
-                        ? 'bg-orange-500 text-white shadow-lg'
-                        : 'bg-gray-100 text-gray-700 hover:bg-orange-100 hover:text-orange-600'
+                        ? 'bg-tomato text-white shadow-lg'
+                        : 'bg-gray-100 text-gray-700 hover:bg-peachLight hover:text-tomato'
                     }`}
                   >
                     <span className="inline-flex items-center">
@@ -252,7 +252,7 @@ const Blog = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent min-w-[150px]"
+                className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-tomato focus:border-transparent min-w-[150px]"
               >
                 {sortOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -270,7 +270,7 @@ const Blog = () => {
                   placeholder="Tìm kiếm câu chuyện theo tiêu đề, nội dung hoặc tác giả..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent text-lg"
+                  className="w-full pl-12 pr-4 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-tomato focus:border-transparent text-lg"
                 />
               </div>
             </form>
@@ -314,7 +314,7 @@ const Blog = () => {
                       </div>
                     </div>
                     <div className="p-6">
-                      <h3 className="text-xl font-bold text-gray-800 mb-3 line-clamp-2 group-hover:text-orange-600 transition-colors">
+                      <h3 className="text-xl font-bold text-gray-800 mb-3 line-clamp-2 group-hover:text-tomato transition-colors">
                         {blog.title}
                       </h3>
                       <p className="text-gray-600 mb-4 line-clamp-3">
@@ -346,8 +346,8 @@ const Blog = () => {
                       </div>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center">
-                          <div className="w-8 h-8 bg-orange-200 rounded-full flex items-center justify-center mr-3">
-                            <span className="text-orange-600 font-semibold text-sm">
+                          <div className="w-8 h-8 bg-peachLight rounded-full flex items-center justify-center mr-3">
+                            <span className="text-tomato font-semibold text-sm">
                               {blog.author?.name?.charAt(0) || 'U'}
                             </span>
                           </div>
@@ -355,7 +355,7 @@ const Blog = () => {
                         </div>
                         <Link
                           to={`/blog/${blog._id}`}
-                          className="text-orange-600 hover:text-orange-700 font-medium text-sm flex items-center"
+                          className="text-tomato hover:text-red-600 font-medium text-sm flex items-center"
                         >
                           Đọc thêm
                           <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -378,7 +378,7 @@ const Blog = () => {
                   className={`px-4 py-2 rounded-lg ${
                     currentPage === 1
                       ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      : 'bg-orange-500 text-white hover:bg-orange-600'
+                      : 'bg-tomato text-white hover:bg-red-600'
                   }`}
                 >
                   Trước
@@ -397,8 +397,8 @@ const Blog = () => {
                         onClick={() => fetchBlogs(page)}
                         className={`px-4 py-2 rounded-lg ${
                           currentPage === page
-                            ? 'bg-orange-500 text-white'
-                            : 'bg-gray-200 text-gray-700 hover:bg-orange-100'
+                            ? 'bg-tomato text-white'
+                            : 'bg-gray-200 text-gray-700 hover:bg-peachLight'
                         }`}
                       >
                         {page}
@@ -419,7 +419,7 @@ const Blog = () => {
                   className={`px-4 py-2 rounded-lg ${
                     currentPage === totalPages
                       ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      : 'bg-orange-500 text-white hover:bg-orange-600'
+                      : 'bg-tomato text-white hover:bg-red-600'
                   }`}
                 >
                   Sau
@@ -439,7 +439,7 @@ const Blog = () => {
             {user && (
               <Link
                 to="/blog/create"
-                className="inline-flex items-center px-6 py-3 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 transition-colors"
+                className="inline-flex items-center px-6 py-3 bg-tomato text-white font-semibold rounded-lg hover:bg-red-600 transition-colors"
               >
                 <img src={PencilIcon} alt="Tạo bài viết" className="w-5 h-5 mr-2" />
                 Viết câu chuyện đầu tiên

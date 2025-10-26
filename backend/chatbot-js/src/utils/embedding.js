@@ -20,9 +20,9 @@ function initializeGemini(apiKey, embeddingModelName, generationModelName) {
   embeddingModel = (embeddingModelName || 'text-embedding-004').replace('models/', '');
   generationModel = (generationModelName || 'gemini-1.5-flash').replace('models/', '');
   
-  console.log('✅ Gemini API initialized');
-  console.log(`   - Embedding model: ${embeddingModel}`);
-  console.log(`   - Generation model: ${generationModel}`);
+  console.log('Gemini API initialized');
+  console.log(`Embedding model: ${embeddingModel}`);
+  console.log(`Generation model: ${generationModel}`);
 }
 
 /**

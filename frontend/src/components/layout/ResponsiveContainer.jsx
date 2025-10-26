@@ -1,9 +1,5 @@
 import React from 'react';
 
-/**
- * Responsive Container Component
- * Provides consistent mobile-first responsive layout
- */
 const ResponsiveContainer = ({ 
   children, 
   className = '', 
@@ -44,9 +40,7 @@ const ResponsiveContainer = ({
   );
 };
 
-/**
- * Responsive Grid Component
- */
+
 export const ResponsiveGrid = ({ 
   children, 
   cols = { base: 1, sm: 2, lg: 3, xl: 4 },
@@ -79,9 +73,6 @@ export const ResponsiveGrid = ({
   );
 };
 
-/**
- * Mobile-First Section Component
- */
 export const ResponsiveSection = ({ 
   children, 
   className = '',
@@ -99,7 +90,7 @@ export const ResponsiveSection = ({
     transparent: '',
     white: 'bg-white',
     gray: 'bg-gray-50',
-    orange: 'bg-orange-50'
+    orange: 'bg-peachLight'
   };
 
   return (

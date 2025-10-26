@@ -173,7 +173,7 @@ const CreateBlog = () => {
                 value={formData.title}
                 onChange={handleInputChange}
                 placeholder="Nhập tiêu đề hấp dẫn cho bài viết của bạn..."
-                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all ${
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-tomato focus:border-transparent transition-all ${
                   errors.title ? 'border-red-500' : 'border-gray-300'
                 }`}
                 maxLength={200}
@@ -197,8 +197,8 @@ const CreateBlog = () => {
                     key={category.value}
                     className={`flex items-center p-4 border rounded-xl cursor-pointer transition-all ${
                       formData.category === category.value
-                        ? 'border-orange-500 bg-orange-50 text-orange-700'
-                        : 'border-gray-300 hover:border-orange-300 hover:bg-orange-50'
+                        ? 'border-tomato bg-peachLight text-tomato'
+                        : 'border-gray-300 hover:border-tomato hover:bg-peachLight'
                     }`}
                   >
                     <input
@@ -228,7 +228,7 @@ const CreateBlog = () => {
                 value={formData.imageUrl}
                 onChange={handleInputChange}
                 placeholder="https://example.com/image.jpg"
-                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all ${
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-tomato focus:border-transparent transition-all ${
                   errors.imageUrl ? 'border-red-500' : 'border-gray-300'
                 }`}
               />
@@ -258,13 +258,13 @@ const CreateBlog = () => {
                 {formData.tags.map((tag, index) => (
                   <span
                     key={index}
-                    className="inline-flex items-center px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm"
+                    className="inline-flex items-center px-3 py-1 bg-peachLight text-tomato rounded-full text-sm"
                   >
                     #{tag}
                     <button
                       type="button"
                       onClick={() => handleRemoveTag(tag)}
-                      className="ml-2 text-orange-500 hover:text-orange-700"
+                      className="ml-2 text-tomato hover:text-red-600"
                     >
                       ×
                     </button>
@@ -277,7 +277,7 @@ const CreateBlog = () => {
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
                   placeholder="Nhập tag và nhấn Enter"
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-l-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="flex-1 px-4 py-3 border border-gray-300 rounded-l-xl focus:ring-2 focus:ring-tomato focus:border-transparent"
                   onKeyPress={(e) => {
                     if (e.key === 'Enter') {
                       handleAddTag(e);
@@ -289,7 +289,7 @@ const CreateBlog = () => {
                   type="button"
                   onClick={handleAddTag}
                   disabled={formData.tags.length >= 10 || !tagInput.trim()}
-                  className="px-6 py-3 bg-orange-500 text-white rounded-r-xl hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                  className="px-6 py-3 bg-tomato text-white rounded-r-xl hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
                 >
                   Thêm
                 </button>
@@ -308,7 +308,7 @@ const CreateBlog = () => {
                 onChange={handleInputChange}
                 placeholder="Hãy chia sẻ câu chuyện, công thức, hoặc kinh nghiệm nấu ăn của bạn một cách chi tiết và sinh động..."
                 rows={15}
-                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all resize-vertical ${
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-tomato focus:border-transparent transition-all resize-vertical ${
                   errors.content ? 'border-red-500' : 'border-gray-300'
                 }`}
               />
@@ -328,7 +328,7 @@ const CreateBlog = () => {
                 </h3>
                 <div className="bg-gray-50 rounded-xl p-6">
                   <div className="flex items-center mb-4">
-                    <span className="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm inline-flex items-center">
+                    <span className="bg-peachLight text-tomato px-3 py-1 rounded-full text-sm inline-flex items-center">
                       <img src={getCategoryInfo(formData.category).icon} alt="Danh mục" className="w-4 h-4 mr-2" /> {getCategoryInfo(formData.category).label}
                     </span>
                   </div>
@@ -354,7 +354,7 @@ const CreateBlog = () => {
                       {formData.tags.map((tag, index) => (
                         <span
                           key={index}
-                          className="text-orange-600 text-sm"
+                          className="text-tomato text-sm"
                         >
                           #{tag}
                         </span>
@@ -380,7 +380,7 @@ const CreateBlog = () => {
                 className={`flex-1 px-6 py-3 rounded-xl font-semibold transition-all ${
                   loading || !formData.title.trim() || !formData.content.trim() || formData.content.length < 50
                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    : 'bg-orange-500 text-white hover:bg-orange-600 transform hover:scale-105'
+                    : 'bg-tomato text-white hover:bg-red-600 transform hover:scale-105'
                 }`}
               >
                 {loading ? (

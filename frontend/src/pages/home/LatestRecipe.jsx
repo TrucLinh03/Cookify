@@ -50,7 +50,7 @@ const LatestRecipe = () => {
     }, [])
 
   return (
-    <div className='px-5 xl:px-10 py-16'>
+    <div className='px-5 xl:px-5 py-5'>
         <h2 className='text-3xl mb-8 font-semibold text-secondary sm:text-5xl sm:leading-relaxed'>Công thức mới nhất</h2>
 
         {/* get all items */}
@@ -71,7 +71,7 @@ const LatestRecipe = () => {
         <div className='sm:w-64 mx-auto mt-16'>
             <Link
                 to="/recipes"
-                className="py-4 px-8 hover:bg-btnColor hover:text-white text-secondary w-full transition ease-in duration-200 text-center text-base font-semibold border border-[#9c702a] focus:outline-none rounded-lg inline-block"
+                className="py-4 px-8 hover:bg-tomato hover:text-white text-secondary w-full transition ease-in duration-200 text-center text-base font-semibold border border-[#FF6347] focus:outline-none rounded-lg inline-block"
             >
                 Xem Tất Cả Công Thức
             </Link>

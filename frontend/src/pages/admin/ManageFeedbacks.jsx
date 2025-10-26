@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AdminLayout from '../../components/layout/AdminLayout';
+import ChatDotsIcon from '../../assets/chat-circle-dots.svg';
+import ThumbsUpIcon from '../../assets/thumbs-up.svg';
+import EyeIcon from '../../assets/eye.svg';
+import TrashIcon from '../../assets/trash.svg';
 import { getApiUrl } from '../../config/api.js';
 
 const ManageFeedbacks = () => {
@@ -204,7 +208,7 @@ const ManageFeedbacks = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-tomato"></div>
       </div>
     );
   }
@@ -218,46 +222,66 @@ const ManageFeedbacks = () => {
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-        <div className="bg-white p-3 rounded-lg shadow border-l-4 border-blue-500">
-          <p className="text-xs font-medium text-gray-600">Tổng</p>
-          <p className="text-xl font-bold text-gray-900">{stats.total || 0}</p>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        <div className="bg-blue-50 p-3 rounded-lg">
+          <div className="flex items-center mb-1">
+            <div className="w-6 h-6 bg-blue-100 rounded-md flex items-center justify-center mr-2">
+              <img src={ChatDotsIcon} alt="Tổng số" className="w-3 h-3" />
+            </div>
+            <h3 className="text-xs font-medium text-blue-600">Tổng số</h3>
+          </div>
+          <p className="text-lg font-bold text-blue-800">{stats.total || 0}</p>
         </div>
-        <div className="bg-white p-3 rounded-lg shadow border-l-4 border-green-500">
-          <p className="text-xs font-medium text-gray-600">Hiển thị</p>
-          <p className="text-xl font-bold text-green-600">{stats.visible || 0}</p>
+        <div className="bg-green-50 p-3 rounded-lg">
+          <div className="flex items-center mb-1">
+            <div className="w-6 h-6 bg-green-100 rounded-md flex items-center justify-center mr-2">
+              <img src={ThumbsUpIcon} alt="Hiển thị" className="w-3 h-3" />
+            </div>
+            <h3 className="text-xs font-medium text-green-600">Hiển thị</h3>
+          </div>
+          <p className="text-lg font-bold text-green-800">{stats.visible || 0}</p>
         </div>
-        <div className="bg-white p-3 rounded-lg shadow border-l-4 border-yellow-500">
-          <p className="text-xs font-medium text-gray-600">Ẩn</p>
-          <p className="text-xl font-bold text-yellow-600">{stats.hidden || 0}</p>
+        <div className="bg-yellow-50 p-3 rounded-lg">
+          <div className="flex items-center mb-1">
+            <div className="w-6 h-6 bg-yellow-100 rounded-md flex items-center justify-center mr-2">
+              <img src={EyeIcon} alt="Ẩn" className="w-3 h-3 opacity-70" />
+            </div>
+            <h3 className="text-xs font-medium text-yellow-600">Ẩn</h3>
+          </div>
+          <p className="text-lg font-bold text-yellow-800">{stats.hidden || 0}</p>
         </div>
-        <div className="bg-white p-3 rounded-lg shadow border-l-4 border-red-500">
-          <p className="text-xs font-medium text-gray-600">Báo cáo</p>
-          <p className="text-xl font-bold text-red-600">{stats.reported || 0}</p>
+        <div className="bg-red-50 p-3 rounded-lg">
+          <div className="flex items-center mb-1">
+            <div className="w-6 h-6 bg-red-100 rounded-md flex items-center justify-center mr-2">
+              <img src={TrashIcon} alt="Báo cáo" className="w-3 h-3" />
+            </div>
+            <h3 className="text-xs font-medium text-red-600">Báo cáo</h3>
+          </div>
+          <p className="text-lg font-bold text-red-800">{stats.reported || 0}</p>
         </div>
       </div>
 
       {/* Search and Filter */}
       <div className="bg-white p-4 rounded-lg shadow mb-6">
-        <div className="flex flex-col md:flex-row gap-4">
-          <form onSubmit={handleSearch} className="flex-1">
+          <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+            <div className="flex-1 w-full lg:max-w-2xl">
             <div className="relative">
               <input
                 type="text"
                 placeholder="Tìm kiếm theo nội dung bình luận..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tomato focus:border-tomato"
               />
               <svg className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
-          </form>
+          </div>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tomato focus:border-tomato"
           >
             <option value="all">Tất cả trạng thái</option>
             <option value="visible">Hiển thị</option>
@@ -336,7 +360,7 @@ const ManageFeedbacks = () => {
                   <tr key={feedback._id} className="hover:bg-gray-50">
                     <td className="px-4 py-3 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs font-medium">
+                        <div className="w-6 h-6 bg-tomato rounded-full flex items-center justify-center text-white text-xs font-medium">
                           {feedback.user_id?.name?.charAt(0)?.toUpperCase() || 'U'}
                         </div>
                         <div className="ml-2">
@@ -484,9 +508,9 @@ const ManageFeedbacks = () => {
                   <p className="text-xs"><strong>Người dùng:</strong> {selectedFeedback.user_id?.name}</p>
                   <p className="text-xs"><strong>Bình luận:</strong> "{selectedFeedback.comment.substring(0, 30)}..."</p>
                 </div>
-                <div className="flex justify-center space-x-2">
-                  <button onClick={() => { setShowModal(false); setSelectedFeedback(null); }} className="px-3 py-1 text-xs text-gray-600 border border-gray-300 rounded hover:bg-gray-50">Hủy</button>
-                  <button onClick={() => deleteFeedback(selectedFeedback._id)} className="px-3 py-1 text-xs text-white bg-red-600 rounded hover:bg-red-700">Xóa</button>
+                <div className="flex gap-3 w-full lg:w-auto justify-center space-x-2">
+                  <button onClick={() => { setShowModal(false); setSelectedFeedback(null); }} className="w-full lg:w-auto text-left px-3 py-1 text-xs text-gray-600 border border-gray-300 rounded hover:bg-gray-50">Hủy</button>
+                  <button onClick={() => deleteFeedback(selectedFeedback._id)} className="w-full lg:w-auto text-left px-3 py-1 text-xs text-white bg-red-600 rounded hover:bg-red-700">Xóa</button>
                 </div>
               </div>
             )}

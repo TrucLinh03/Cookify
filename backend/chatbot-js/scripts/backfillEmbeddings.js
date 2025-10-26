@@ -17,29 +17,29 @@ const BATCH_SIZE = 50; // Process 50 documents at a time
 const DELAY_BETWEEN_BATCHES = 2000; // 2 seconds delay to avoid rate limits
 
 async function backfillCollection(db, collectionName, sourceType) {
-  console.log(`\n📦 Processing collection: ${collectionName}`);
+  console.log(`\n Processing collection: ${collectionName}`);
   console.log('='.repeat(60));
   
   const collection = db.collection(collectionName);
   
   // Count total documents
   const totalDocs = await collection.countDocuments();
-  console.log(`   Total documents: ${totalDocs}`);
+  console.log(`Total documents: ${totalDocs}`);
   
   // Count documents without embeddings
   const docsWithoutEmbedding = await collection.countDocuments({ 
     embedding: { $exists: false } 
   });
-  console.log(`   Documents without embedding: ${docsWithoutEmbedding}`);
+  console.log(`Documents without embedding: ${docsWithoutEmbedding}`);
   
   if (docsWithoutEmbedding === 0) {
-    console.log('   ✅ All documents already have embeddings. Skipping.');
+    console.log('All documents already have embeddings. Skipping.');
     return { processed: 0, updated: 0, errors: 0 };
   }
   
   // Fetch documents without embeddings
   const docs = await collection.find({ embedding: { $exists: false } }).toArray();
-  console.log(`   📄 Fetched ${docs.length} documents to process`);
+  console.log(`Fetched ${docs.length} documents to process`);
   
   let processed = 0;
   let updated = 0;
@@ -51,18 +51,18 @@ async function backfillCollection(db, collectionName, sourceType) {
     const batchNum = Math.floor(i / BATCH_SIZE) + 1;
     const totalBatches = Math.ceil(docs.length / BATCH_SIZE);
     
-    console.log(`\n   🔄 Batch ${batchNum}/${totalBatches} (${batch.length} documents)`);
+    console.log(`\nBatch ${batchNum}/${totalBatches} (${batch.length} documents)`);
     
     try {
       // Build searchable texts for the batch
       const searchableTexts = batch.map(doc => buildSearchableText(doc, sourceType));
       
       // Create embeddings
-      console.log(`      Creating embeddings...`);
+      console.log(`Creating embeddings...`);
       const embeddings = await embedBatch(searchableTexts, batch.length);
       
       // Update documents with embeddings
-      console.log(`      Updating documents in database...`);
+      console.log(` Updating documents in database...`);
       const bulkOps = batch.map((doc, idx) => ({
         updateOne: {
           filter: { _id: doc._id },
@@ -79,28 +79,28 @@ async function backfillCollection(db, collectionName, sourceType) {
       updated += result.modifiedCount;
       processed += batch.length;
       
-      console.log(`      ✅ Updated ${result.modifiedCount}/${batch.length} documents`);
+      console.log(`Updated ${result.modifiedCount}/${batch.length} documents`);
       
     } catch (error) {
-      console.error(`      ❌ Error processing batch:`, error.message);
+      console.error(`Error processing batch:`, error.message);
       errors += batch.length;
     }
     
     // Progress report
     const progress = Math.round((processed / docs.length) * 100);
-    console.log(`      Progress: ${processed}/${docs.length} (${progress}%)`);
+    console.log(`Progress: ${processed}/${docs.length} (${progress}%)`);
     
     // Delay between batches to avoid rate limits
     if (i + BATCH_SIZE < docs.length) {
-      console.log(`      ⏳ Waiting ${DELAY_BETWEEN_BATCHES / 1000}s before next batch...`);
+      console.log(`Waiting ${DELAY_BETWEEN_BATCHES / 1000}s before next batch...`);
       await new Promise(resolve => setTimeout(resolve, DELAY_BETWEEN_BATCHES));
     }
   }
   
-  console.log(`\n   ✅ Collection ${collectionName} completed:`);
-  console.log(`      - Processed: ${processed}`);
-  console.log(`      - Updated: ${updated}`);
-  console.log(`      - Errors: ${errors}`);
+  console.log(`\nCollection ${collectionName} completed:`);
+  console.log(`Processed: ${processed}`);
+  console.log(`Updated: ${updated}`);
+  console.log(`Errors: ${errors}`);
   
   return { processed, updated, errors };
 }
@@ -109,7 +109,7 @@ async function main() {
   let mongoClient = null;
   
   try {
-    console.log('🚀 Starting Embedding Backfill Process');
+    console.log('Starting Embedding Backfill Process');
     console.log('='.repeat(60));
     
     // Get target collection from command line
@@ -117,7 +117,7 @@ async function main() {
     console.log(`Target: ${targetCollection}`);
     
     // Initialize Gemini
-    console.log('\n📡 Initializing Gemini API...');
+    console.log('\nInitializing Gemini API...');
     initializeGemini(
       process.env.GOOGLE_API_KEY,
       process.env.MODEL_EMBEDDING,
@@ -125,11 +125,11 @@ async function main() {
     );
     
     // Connect to MongoDB
-    console.log('\n🔌 Connecting to MongoDB...');
+    console.log('\nConnecting to MongoDB...');
     mongoClient = new MongoClient(process.env.MONGODB_URI);
     await mongoClient.connect();
     const db = mongoClient.db(process.env.DB_NAME || 'Cookify');
-    console.log(`✅ Connected to database: ${db.databaseName}`);
+    console.log(`Connected to database: ${db.databaseName}`);
     
     // Define collections to process
     const collectionsToProcess = [
@@ -145,7 +145,7 @@ async function main() {
       : collectionsToProcess.filter(c => c.name === targetCollection);
     
     if (collections.length === 0) {
-      console.error(`❌ Invalid collection name: ${targetCollection}`);
+      console.error(`Invalid collection name: ${targetCollection}`);
       console.log('Valid options: recipes, blogs, feedbacks, favourites, all');
       process.exit(1);
     }
@@ -161,7 +161,7 @@ async function main() {
     // Final summary
     const totalTime = Math.round((Date.now() - startTime) / 1000);
     console.log('\n' + '='.repeat(60));
-    console.log('🎉 BACKFILL COMPLETED');
+    console.log('BACKFILL COMPLETED');
     console.log('='.repeat(60));
     console.log(`Total time: ${totalTime}s`);
     console.log('\nSummary by collection:');
@@ -181,19 +181,19 @@ async function main() {
       totalErrors += result.errors;
     }
     
-    console.log(`\n  TOTAL:`);
-    console.log(`    - Processed: ${totalProcessed}`);
-    console.log(`    - Updated: ${totalUpdated}`);
-    console.log(`    - Errors: ${totalErrors}`);
+    console.log(`\nTOTAL:`);
+    console.log(`Processed: ${totalProcessed}`);
+    console.log(`Updated: ${totalUpdated}`);
+    console.log(`Errors: ${totalErrors}`);
     console.log('');
     
   } catch (error) {
-    console.error('\n❌ Fatal error:', error);
+    console.error('\nFatal error:', error);
     process.exit(1);
   } finally {
     if (mongoClient) {
       await mongoClient.close();
-      console.log('🔌 MongoDB connection closed');
+      console.log('MongoDB connection closed');
     }
   }
 }

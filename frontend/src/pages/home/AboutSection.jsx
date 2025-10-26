@@ -4,7 +4,7 @@ import AboutImg from '../../assets/about-image.jpg'
 
 const AboutSection = () => {
   return (
-    <section className="relative py-16 sm:py-24 bg-gradient-to-br from-orange-50 to-yellow-50">
+    <section className="relative py-15 sm:py-5 bg-gradient-to-br from-orange-50 to-yellow-50">
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-orange-200 rounded-full opacity-20 blur-3xl"></div>
@@ -12,7 +12,7 @@ const AboutSection = () => {
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="grid lg:grid-cols-2 py-10 gap-12 lg:gap-16 items-center">
           
           {/* Content Section */}
           <div className="space-y-8 lg:pr-8">
@@ -41,26 +41,26 @@ const AboutSection = () => {
             {/* Features */}
             <div className="grid sm:grid-cols-2 gap-4 py-4">
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-                  <span className="text-orange-600 font-bold">✓</span>
+                <div className="w-8 h-8 bg-peachLight rounded-full flex items-center justify-center">
+                  <span className="text-tomato font-bold">✓</span>
                 </div>
                 <span className="text-gray-700">Công thức truyền thống</span>
               </div>
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-                  <span className="text-orange-600 font-bold">✓</span>
+                <div className="w-8 h-8 bg-peachLight rounded-full flex items-center justify-center">
+                  <span className="text-tomato font-bold">✓</span>
                 </div>
                 <span className="text-gray-700">Dễ thực hiện</span>
               </div>
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-                  <span className="text-orange-600 font-bold">✓</span>
+                <div className="w-8 h-8 bg-peachLight rounded-full flex items-center justify-center">
+                  <span className="text-tomato font-bold">✓</span>
                 </div>
                 <span className="text-gray-700">Nguyên liệu quen thuộc</span>
               </div>
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-                  <span className="text-orange-600 font-bold">✓</span>
+                <div className="w-8 h-8 bg-peachLight rounded-full flex items-center justify-center">
+                  <span className="text-tomato font-bold">✓</span>
                 </div>
                 <span className="text-gray-700">Hương vị đặc trưng</span>
               </div>
@@ -70,7 +70,7 @@ const AboutSection = () => {
             <div className="pt-4">
               <Link
                 to="/categories/monchinh"
-                className="py-4 px-8 hover:bg-btnColor hover:text-white text-secondary w-full transition ease-in duration-200 text-center text-base font-semibold border border-[#9c702a] focus:outline-none rounded-lg inline-block"
+                className="py-4 px-8 hover:bg-tomato hover:text-white text-secondary w-full transition ease-in duration-200 text-center text-base font-semibold border border-[#FF6347] focus:outline-none rounded-lg inline-block"
               >
                 Khám phá công thức
               </Link>

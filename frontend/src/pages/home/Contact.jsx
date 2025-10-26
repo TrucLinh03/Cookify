@@ -28,7 +28,7 @@ const Contact = () => {
               />
               <button
                 type="submit"
-                className="flex-none rounded-md bg-btnColor px-8 py-4 text-sm font-semibold text-white shadow-sm hover:bg-white hover:text-btnColor hover:border-btnColor hover:border"
+                className="flex-none rounded-md bg-tomato px-8 py-4 text-sm font-semibold text-white shadow-sm hover:bg-white hover:text-tomato hover:border-tomato hover:border"
               >
                 Đăng ký
               </button>

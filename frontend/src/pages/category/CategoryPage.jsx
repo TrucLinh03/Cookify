@@ -27,17 +27,14 @@ const CategoryPage = () => {
     
     const fetchCategoryData = async () => {
       if (!category) {
-        console.log('⚠️ No category provided, skipping fetch');
         return;
       }
       
       if (fetchInProgress) {
-        console.log('⚠️ Fetch already in progress, skipping');
         return;
       }
       
       fetchInProgress = true;
-      console.log(`🔍 Starting fetch for category: ${category}`);
       
       if (isMounted) {
         setLoading(true);
@@ -54,27 +51,20 @@ const CategoryPage = () => {
         
         if (!isMounted) return; // Component unmounted, don't update state
         
-        console.log('✅ API Response received:', response.status);
-        
         // Check if response has the expected structure
         if (response.data && response.data.success && response.data.data) {
           const allRecipes = response.data.data;
-          console.log(`📊 Total recipes received: ${allRecipes.length}`);
           
           const filteredItems = category === 'tatca' 
             ? allRecipes 
             : allRecipes.filter(item => item.category === category);
           
-          console.log(`🎯 Filtered recipes for "${category}": ${filteredItems.length}`);
           setItems(filteredItems);
         } else {
-          console.error('❌ Invalid response format:', response.data);
           setError('Định dạng dữ liệu không đúng');
         }
       } catch (err) {
         if (!isMounted) return; // Component unmounted, don't update state
-        
-        console.error('❌ Error fetching recipes:', err);
         
         if (err.code === 'ECONNREFUSED') {
           setError('Không thể kết nối đến server. Vui lòng kiểm tra server đã chạy chưa.');
@@ -92,7 +82,6 @@ const CategoryPage = () => {
         if (isMounted) {
           setLoading(false);
         }
-        console.log(`✅ Fetch completed for category: ${category}`);
       }
     };
 
@@ -105,7 +94,6 @@ const CategoryPage = () => {
     return () => {
       isMounted = false;
       clearTimeout(timeoutId);
-      console.log(`🧹 Cleanup for category: ${category}`);
     };
   }, [category]);
 

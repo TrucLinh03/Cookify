@@ -150,9 +150,7 @@ const BlogDetail = () => {
     return date.toLocaleDateString('vi-VN', {
       year: 'numeric',
       month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      day: 'numeric'
     });
   };
 
@@ -162,7 +160,7 @@ const BlogDetail = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-cream-50 to-yellow-50 py-12">
+      <div className="min-h-screen bg-peachLight py-12">
         <div className="max-w-4xl mx-auto px-4">
           <div className="bg-white rounded-2xl shadow-xl p-8">
             <div className="animate-pulse">
@@ -180,7 +178,7 @@ const BlogDetail = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-cream-50 to-yellow-50 py-12">
+      <div className="min-h-screen bg-peachLight py-12">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <div className="bg-white rounded-2xl shadow-xl p-8">
             <img src={ChefHatIcon} alt="Error" className="w-16 h-16 mb-4 opacity-80 mx-auto" />
@@ -203,13 +201,13 @@ const BlogDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-cream-50 to-yellow-50 py-12">
+    <div className="min-h-screen bg-peachLight py-12">
       <div className="max-w-4xl mx-auto px-4">
         {/* Back Button */}
         <div className="mb-6">
           <Link
             to="/blog"
-            className="inline-flex items-center text-orange-600 hover:text-orange-700 font-medium"
+            className="inline-flex items-center text-tomato hover:text-red-600 font-medium"
           >
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -223,7 +221,7 @@ const BlogDetail = () => {
           {/* Header */}
           <div className="p-8 pb-6">
             <div className="flex items-center mb-4">
-              <span className="bg-orange-100 text-orange-700 px-4 py-2 rounded-full text-sm font-medium inline-flex items-center">
+              <span className="bg-peachLight text-tomato px-4 py-2 rounded-full text-sm font-medium inline-flex items-center">
                 <img src={getCategoryInfo(blog.category).icon} alt="Danh mục" className="w-4 h-4 mr-2" /> {getCategoryInfo(blog.category).label}
               </span>
             </div>
@@ -235,8 +233,8 @@ const BlogDetail = () => {
             {/* Author and Meta Info */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm text-gray-600 mb-6">
               <div className="flex items-center mb-4 sm:mb-0">
-                <div className="w-12 h-12 bg-orange-200 rounded-full flex items-center justify-center mr-4">
-                  <span className="text-orange-600 font-semibold text-lg">
+                <div className="w-12 h-12 bg-peachLight rounded-full flex items-center justify-center mr-4">
+                  <span className="text-tomato font-semibold text-lg">
                     {blog.author?.name?.charAt(0) || 'U'}
                   </span>
                 </div>
@@ -306,8 +304,8 @@ const BlogDetail = () => {
           {user ? (
             <form onSubmit={handleComment} className="mb-8">
               <div className="flex items-start space-x-4">
-                <div className="w-10 h-10 bg-orange-200 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-orange-600 font-semibold">
+                <div className="w-10 h-10 bg-peachLight rounded-full flex items-center justify-center flex-shrink-0">
+                  <span className="text-tomato font-semibold">
                     {user.name?.charAt(0) || 'U'}
                   </span>
                 </div>
@@ -317,7 +315,7 @@ const BlogDetail = () => {
                     onChange={(e) => setCommentContent(e.target.value)}
                     placeholder="Chia sẻ suy nghĩ của bạn về bài viết này..."
                     rows={3}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-tomato focus:border-transparent resize-none"
                     maxLength={500}
                   />
                   <div className="flex items-center justify-between mt-3">
@@ -330,7 +328,7 @@ const BlogDetail = () => {
                       className={`px-6 py-2 rounded-lg font-medium transition-all ${
                         submittingComment || !commentContent.trim()
                           ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                          : 'bg-orange-500 text-white hover:bg-orange-600'
+                          : 'bg-tomato text-white hover:bg-red-600'
                       }`}
                     >
                       {submittingComment ? 'Đang gửi...' : 'Gửi bình luận'}
@@ -356,8 +354,8 @@ const BlogDetail = () => {
             <div className="space-y-6">
               {blog.comments.map((comment) => (
                 <div key={comment._id} className="flex items-start space-x-4">
-                  <div className="w-10 h-10 bg-orange-200 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-orange-600 font-semibold text-sm">
+                  <div className="w-10 h-10 bg-peachLight rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-tomato font-semibold text-sm">
                       {comment.user?.name?.charAt(0) || 'U'}
                     </span>
                   </div>
@@ -405,7 +403,7 @@ const BlogDetail = () => {
                       className="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     <div className="p-4">
-                      <h4 className="font-semibold text-gray-800 mb-2 line-clamp-2 group-hover:text-orange-600 transition-colors">
+                      <h4 className="font-semibold text-gray-800 mb-2 line-clamp-2 group-hover:text-tomato transition-colors">
                         {relatedBlog.title}
                       </h4>
                       <p className="text-sm text-gray-600 line-clamp-2">
@@ -413,7 +411,7 @@ const BlogDetail = () => {
                       </p>
                       <div className="flex items-center justify-between mt-3 text-xs text-gray-500">
                         <span>{relatedBlog.author?.name}</span>
-                        <span>{formatDate(relatedBlog.createdAt).split(' ')[0]}</span>
+                        <span>{formatDate(relatedBlog.createdAt)}</span>
                       </div>
                     </div>
                   </div>

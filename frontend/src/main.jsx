@@ -96,11 +96,36 @@ const router = createBrowserRouter([
       },
       { path: "/login", element: <Login/> },
       { path: "/register", element: <Register/> },
-      { path: "/dashboard/admin", element: <AdminDashboard /> },
-      { path: "/dashboard/recipes", element: <ManageRecipes /> },
-      { path: "/dashboard/users", element: <ManageUsers /> },
-      { path: "/dashboard/feedbacks", element: <ManageFeedbacks /> },
-      { path: "/dashboard/blogs", element: <ManageBlogs /> },
+      { 
+        path: "/dashboard/admin", 
+        element: (
+          <AdminDashboard />
+        )
+      },
+      { 
+        path: "/dashboard/recipes", 
+        element: (
+          <ManageRecipes />
+        )
+      },
+      { 
+        path: "/dashboard/users", 
+        element: (
+          <ManageUsers />
+        )
+      },
+      { 
+        path: "/dashboard/feedbacks", 
+        element: (
+          <ManageFeedbacks />
+        )
+      },
+      { 
+        path: "/dashboard/blogs", 
+        element: (
+          <ManageBlogs />
+        )
+      },
       {
         path: "/recipes/:id",
         element: <SingleProduct/>,
@@ -114,15 +139,21 @@ const router = createBrowserRouter([
       },
       {
         path: "/profile",
-        element: <Profile/>,
+        element: (
+          <Profile/>
+        ),
       },
       {
         path: "/favourites",
-        element: <Favourite/>,
+        element: (
+          <Favourite/>
+        ),
       },
       {
         path: "/edit-profile",
-        element: <EditProfile/>,
+        element: (
+          <EditProfile/>
+        ),
       },
     ],
   },

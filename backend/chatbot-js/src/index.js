@@ -59,23 +59,23 @@ let isReady = false;
  */
 async function initializeMongoDB() {
   try {
-    console.log('🔌 Connecting to MongoDB...');
+    console.log('Connecting to MongoDB...');
     mongoClient = new MongoClient(process.env.MONGODB_URI);
     await mongoClient.connect();
     db = mongoClient.db(process.env.DB_NAME || 'Cookify');
     
     // Test connection
     await db.admin().ping();
-    console.log('✅ MongoDB connected successfully');
-    console.log(`   Database: ${db.databaseName}`);
+    console.log('MongoDB connected successfully');
+    console.log(`Database: ${db.databaseName}`);
     
     // List available collections
     const collections = await db.listCollections().toArray();
-    console.log(`   Collections: ${collections.map(c => c.name).join(', ')}`);
+    console.log(`Collections: ${collections.map(c => c.name).join(', ')}`);
     
     return true;
   } catch (error) {
-    console.error('❌ MongoDB connection failed:', error.message);
+    console.error('MongoDB connection failed:', error.message);
     return false;
   }
 }
@@ -85,7 +85,7 @@ async function initializeMongoDB() {
  */
 async function initialize() {
   try {
-    console.log('🚀 Initializing Cookify Chatbot Service...');
+    console.log('Initializing Cookify Chatbot Service...');
     
     // Initialize Gemini API
     initializeGemini(
@@ -105,10 +105,10 @@ async function initialize() {
     loadFAQData(faqPath);
     
     isReady = true;
-    console.log('🎉 Chatbot service initialized successfully!');
+    console.log('Chatbot service initialized successfully!');
     
   } catch (error) {
-    console.error('❌ Initialization failed:', error.message);
+    console.error('Initialization failed:', error.message);
     process.exit(1);
   }
 }
@@ -249,9 +249,9 @@ app.post('/ask', async (req, res) => {
     const startTime = Date.now();
     
     // 1. Create query embedding
-    console.log(`📥 Query: "${message}"`);
+    console.log(`Query: "${message}"`);
     const queryVector = await embedText(message);
-    console.log(`   Embedding created (${queryVector.length}D)`);
+    console.log(`Embedding created (${queryVector.length}D)`);
     
     // 2. Vector search across collections
     const searchResults = await multiCollectionSearch(db, queryVector, {
@@ -260,7 +260,7 @@ app.post('/ask', async (req, res) => {
       threshold: parseFloat(process.env.CONFIDENCE_THRESHOLD) || 0.3
     });
     
-    console.log(`   Found ${searchResults.length} relevant documents`);
+    console.log(` Found ${searchResults.length} relevant documents`);
     
     // 3. Build prompt and generate response
     const prompt = buildContextPrompt(message, searchResults);
@@ -314,7 +314,7 @@ app.post('/ask', async (req, res) => {
       processing_time_ms: processingTime
     });
     
-    console.log(`✅ Response sent (${processingTime}ms, confidence: ${Math.round(avgScore * 100)}%)`);
+    console.log(`Response sent (${processingTime}ms, confidence: ${Math.round(avgScore * 100)}%)`);
     
   } catch (error) {
     console.error('Error in /ask:', error);
@@ -501,7 +501,7 @@ app.post('/sync', async (req, res) => {
     const { collections: targetCollections } = req.body;
     const collectionsToSync = targetCollections || ['recipes', 'blogs', 'feedbacks'];
     
-    console.log(`🔄 Starting incremental sync for: ${collectionsToSync.join(', ')}`);
+    console.log(`Starting incremental sync for: ${collectionsToSync.join(', ')}`);
     
     const results = {};
     const startTime = Date.now();
@@ -520,7 +520,7 @@ app.post('/sync', async (req, res) => {
           continue;
         }
         
-        console.log(`   Processing ${docsWithoutEmbedding.length} documents from ${collName}...`);
+        console.log(`Processing ${docsWithoutEmbedding.length} documents from ${collName}...`);
         
         // Build searchable texts
         const searchableTexts = docsWithoutEmbedding.map(doc => buildSearchableText(doc, sourceType));
@@ -548,10 +548,10 @@ app.post('/sync', async (req, res) => {
           total_without_embedding: docsWithoutEmbedding.length
         };
         
-        console.log(`   ✅ Synced ${bulkResult.modifiedCount} documents in ${collName}`);
+        console.log(`Synced ${bulkResult.modifiedCount} documents in ${collName}`);
         
       } catch (error) {
-        console.error(`   ❌ Error syncing ${collName}:`, error.message);
+        console.error(`Error syncing ${collName}:`, error.message);
         results[collName] = { error: error.message };
       }
     }
@@ -566,7 +566,7 @@ app.post('/sync', async (req, res) => {
       timestamp: new Date().toISOString()
     });
     
-    console.log(`🎉 Sync completed in ${totalTime}ms`);
+    console.log(`Sync completed in ${totalTime}ms`);
     
   } catch (error) {
     console.error('Error in /sync:', error);
@@ -594,10 +594,10 @@ app.get('/', (req, res) => {
 
 // Graceful shutdown
 process.on('SIGINT', async () => {
-  console.log('\n🛑 Shutting down gracefully...');
+  console.log('\n Shutting down gracefully...');
   if (mongoClient) {
     await mongoClient.close();
-    console.log('✅ MongoDB connection closed');
+    console.log(' MongoDB connection closed');
   }
   process.exit(0);
 });
@@ -605,7 +605,7 @@ process.on('SIGINT', async () => {
 // Start server
 initialize().then(() => {
   app.listen(PORT, () => {
-    console.log(`\n🚀 Cookify Chatbot Service running on http://localhost:${PORT}`);
+    console.log(`\nCookify Chatbot Service running on http://localhost:${PORT}`);
     console.log(`   API docs: http://localhost:${PORT}/`);
     console.log(`   Health check: http://localhost:${PORT}/health`);
     console.log(`   Stats: http://localhost:${PORT}/stats\n`);

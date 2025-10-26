@@ -1,7 +1,3 @@
-/**
- * Smart API Configuration - Auto-detect Development/Production
- */
-
 // Environment detection
 const isDevelopment = import.meta.env.DEV || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const isProduction = !isDevelopment;
@@ -51,14 +47,4 @@ export const getRagUrl = (endpoint = '') => {
 
 // Legacy support
 export const getBaseUrl = () => API_CONFIG.BASE_URL;
-
-// Debug logging
-console.log('🔧 API Configuration:', {
-  environment: isDevelopment ? 'DEVELOPMENT' : 'PRODUCTION',
-  hostname: window.location.hostname,
-  baseUrl: API_CONFIG.BASE_URL,
-  chatbotUrl: API_CONFIG.CHATBOT_URL,
-  ragUrl: API_CONFIG.RAG_URL
-});
-
 export default API_CONFIG;
