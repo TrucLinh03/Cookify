@@ -17,24 +17,32 @@ const MobileNav = ({ menuItems, logo, onClose, onOpen, hideLeft }) => {
 
   return (
     <>
-      <div className="h-20 flex justify-between items-center px-6 lg:px-12">
+      <div className="h-16 sm:h-20 flex justify-between items-center px-4 sm:px-6">
         <a href="/" className="flex items-center">
-          <img src={logo} alt="flex site logo" className="h-12 w-auto" />
+          <img src={logo} alt="Cookify Logo" className="h-8 sm:h-12 w-auto" />
         </a>
-        <button className="border border-orange-500 rounded p-2 hover:bg-orange-50 transition-colors duration-200" onClick={onOpen}>
-          <HiOutlineBars3BottomRight className="w-7 h-7 text-orange-500" />
+        <button 
+          className="border border-orange-500 rounded-lg p-2 hover:bg-orange-50 transition-colors duration-200 min-h-[44px] min-w-[44px] flex items-center justify-center" 
+          onClick={onOpen}
+          aria-label="Mở menu"
+        >
+          <HiOutlineBars3BottomRight className="w-6 h-6 sm:w-7 sm:h-7 text-orange-500" />
         </button>
       </div>
 
       <div
-        className={`transition-all w-full h-full fixed bg-primary z-50 top-0 ${hideLeft} flex justify-center items-center`}
+        className={`transition-all duration-300 w-full h-full fixed bg-primary z-50 top-0 ${hideLeft} flex justify-center items-center`}
       >
-        <button className="absolute right-8 top-32" onClick={onClose}>
-          <RiCloseCircleLine className="w-7 h-6" />
+        <button 
+          className="absolute right-4 sm:right-8 top-4 sm:top-8 p-2 hover:bg-white/10 rounded-full transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center" 
+          onClick={onClose}
+          aria-label="Đóng menu"
+        >
+          <RiCloseCircleLine className="w-8 h-8 text-white" />
         </button>
 
-        <div className="text-center">
-          <ul className="flex flex-col gap-5">
+        <div className="text-center px-4 w-full max-w-md">
+          <ul className="flex flex-col gap-6 mb-8">
             {menuItems?.map((menu, index) => {
               const getMenuPath = (menuItem) => {
                 if (typeof menuItem === 'object' && menuItem.path) {
@@ -54,7 +62,7 @@ const MobileNav = ({ menuItems, logo, onClose, onOpen, hideLeft }) => {
                 <li key={index}>
                   <Link
                     to={getMenuPath(menu)}
-                    className="font-medium capitalize text-secondary text-2xl"
+                    className="block font-medium capitalize text-secondary text-xl sm:text-2xl py-3 px-4 rounded-lg hover:bg-white/10 transition-colors min-h-[44px] flex items-center justify-center"
                     onClick={onClose}
                   >
                     {getMenuLabel(menu)}

@@ -6,8 +6,7 @@ import LatestRecipe from './LatestRecipe';
 import Hero from '../../components/Hero';
 import AboutSection from './AboutSection';
 import Contact from './Contact';
-
-
+import ResponsiveContainer, { ResponsiveSection } from '../../components/layout/ResponsiveContainer';
 
 const Home = () => {
   return (
@@ -16,17 +15,29 @@ const Home = () => {
       <Hero/>
       
       {/* Category Section */}
-      <div className="container mx-auto px-4 py-4">
+      <ResponsiveSection spacing="sm" background="white">
         <CategoryWrapper/>
-      </div>
+      </ResponsiveSection>
 
-      {/* Other Sections */}
-      <div className="container mx-auto px-4">
+      {/* Featured Section */}
+      <ResponsiveSection spacing="default" background="gray">
         <FeaturedSection/>
+      </ResponsiveSection>
+
+      {/* Latest Recipe Section */}
+      <ResponsiveSection spacing="default" background="white">
         <LatestRecipe/>
+      </ResponsiveSection>
+
+      {/* About Section */}
+      <ResponsiveSection spacing="default" background="orange">
         <AboutSection/>
+      </ResponsiveSection>
+
+      {/* Contact Section */}
+      <ResponsiveSection spacing="default" background="white">
         <Contact/>
-      </div>
+      </ResponsiveSection>
     </div>
   )
 }

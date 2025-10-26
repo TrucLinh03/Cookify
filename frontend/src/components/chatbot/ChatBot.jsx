@@ -144,45 +144,29 @@ const ChatBot = () => {
       >
         <button
           onClick={toggleChat}
-          className="bg-orange-100 hover:bg-orange-200 text-orange-600 rounded-full p-4 shadow-xl hover:shadow-2xl
-                     border border-orange-300 ring-1 ring-orange-200 transition-all duration-300 transform
-                     hover:scale-110 group select-none"
+          className={`
+            relative bg-gradient-to-r from-orange-500 to-amber-500 
+            text-white p-3 sm:p-4 rounded-full shadow-lg 
+            hover:shadow-xl hover:scale-110 
+            transition-all duration-300 ease-out
+            min-h-[56px] min-w-[56px] sm:min-h-[64px] sm:min-w-[64px]
+            flex items-center justify-center
+            ${isOpen ? 'rotate-180' : 'animate-pulse-slow'}
+          `}
+          title="Chef AI Assistant - Hỏi đáp về nấu ăn"
+          aria-label="Mở trợ lý AI nấu ăn"
         >
-          {isOpen ? (
-            // Close icon
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          ) : (
-            // Chef hat icon từ file SVG
-            <img
-              src={chefHatIcon}
-              alt="Chef Hat"
-              className="w-6 h-6"
-            />
+          <img 
+            src={chefHatIcon} 
+            alt="Chef AI" 
+            className="w-6 h-6 sm:w-8 sm:h-8 filter brightness-0 invert"
+          />
+          
+          {/* Notification dot */}
+          {!isOpen && (
+            <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-ping"></div>
           )}
         </button>
-
-        {/* Tooltip */}
-        {!isOpen && (
-          <div className="absolute bottom-full right-0 mb-2 px-3 py-1 bg-gray-800 text-white text-sm
-                          rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300
-                          whitespace-nowrap">
-            Chef AI Assistant
-            <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4
-                            border-transparent border-t-gray-800"></div>
-          </div>
-        )}
       </div>
     </>
   );
