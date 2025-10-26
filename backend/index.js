@@ -28,13 +28,28 @@ app.use(express.json({ limit: '10mb' })); // Increase JSON payload limit for bas
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // CORS configuration - Allow all origins for development
+const allowedOrigins = [
+  process.env.CORS_ORIGIN || "https://cookifychef.netlify.app"
+];
+
 app.use(cors({
-  origin: true, // Allow all origins in development
+  origin: (origin, callback) => {
+    // Cho phép các request từ Netlify hoặc localhost trong dev
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS blocked: This origin is not allowed'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
   optionsSuccessStatus: 200
 }));
+
+// Handle preflight requests
+app.options('*', cors());
+
 
 // Handle preflight requests
 app.options('*', cors());
