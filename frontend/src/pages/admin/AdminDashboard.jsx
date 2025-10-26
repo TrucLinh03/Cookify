@@ -5,6 +5,7 @@ import RecipesIcon from '../../assets/knife.svg';
 import UsersIcon from '../../assets/users-three.svg';
 import FeedbackIcon from '../../assets/chat-circle-dots.svg';
 import BlogsIcon from '../../assets/pencil.svg';
+import { getApiUrl } from '../../config/api.js';
 
 const defaultStats = [
   {
@@ -64,13 +65,13 @@ const AdminDashboard = () => {
 
       // Get stats from multiple APIs
       const [usersResponse, feedbackResponse, blogsResponse] = await Promise.all([
-        axios.get('http://localhost:5000/api/users/stats', {
+        axios.get(getApiUrl('/api/users/stats'), {
           headers: { 'Authorization': `Bearer ${token}` }
         }).catch(err => ({ data: { success: false, error: err.message } })),
-        axios.get('http://localhost:5000/api/feedback/admin/all?page=1&limit=1', {
+        axios.get(getApiUrl('/api/feedback/admin/all?page=1&limit=1'), {
           headers: { 'Authorization': `Bearer ${token}` }
         }).catch(err => ({ data: { success: false, error: err.message } })),
-        axios.get('http://localhost:5000/api/blog/admin/all?page=1&limit=1', {
+        axios.get(getApiUrl('/api/blog/admin/all?page=1&limit=1'), {
           headers: { 'Authorization': `Bearer ${token}` }
         }).catch(err => ({ data: { success: false, error: err.message } }))
       ]);

@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { updateUser } from "../../redux/features/auth/authSlice";
+import { getApiUrl } from '../../config/api.js';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -66,7 +67,7 @@ const Profile = () => {
     try {
       setLoading(true);
       const config = getAxiosConfig();
-      const response = await axios.get("http://localhost:5000/api/users/profile", config);
+      const response = await axios.get(getApiUrl('/api/users/profile'), config);
       
       if (response.data.success) {
         const userData = response.data.user;
@@ -90,21 +91,21 @@ const Profile = () => {
             
             // 1) Favourites: use current user endpoint
             const favRes = await axios.get(
-              "http://localhost:5000/api/favourites/current",
+              getApiUrl('/api/favourites/current'),
               config
             );
             const favCount = favRes?.data?.totalFavorites ?? (favRes?.data?.favourites?.length ?? 0);
             
             // 2) Feedbacks: current user's feedbacks
             const fbRes = await axios.get(
-              "http://localhost:5000/api/feedback/user/my",
+              getApiUrl('/api/feedback/user/my'),
               config
             );
             const reviewsCount = fbRes?.data?.data?.pagination?.totalItems ?? (fbRes?.data?.data?.feedbacks?.length ?? 0);
             
             // 3) Blogs: user's published blogs
             const blogRes = await axios.get(
-              `http://localhost:5000/api/blog/user/${userId}?page=1&limit=1`
+              getApiUrl('/api/blog/user/${userId}?page=1&limit=1')
             );
             const blogsCount = blogRes?.data?.data?.pagination?.totalItems ?? (blogRes?.data?.data?.blogs?.length ?? 0);
             

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Card from '../../components/Card';
 import CategoryWrapper from './CategoryWrapper';
+import { getApiUrl } from '../../config/api.js';
 
 const CategoryPage = () => {
   const { category } = useParams();
@@ -44,7 +45,7 @@ const CategoryPage = () => {
       }
       
       try {
-        const response = await axios.get('http://localhost:5000/api/recipes', {
+        const response = await axios.get(getApiUrl('/api/recipes'), {
           timeout: 10000, // 10 second timeout
           headers: {
             'Content-Type': 'application/json',

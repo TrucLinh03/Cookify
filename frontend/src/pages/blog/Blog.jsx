@@ -12,6 +12,7 @@ import SmileyIcon from '../../assets/smiley.svg';
 import HeartIcon from '../../assets/heart.svg';
 import EyeIcon from '../../assets/eye.svg';
 import PencilIcon from '../../assets/pencil.svg';
+import { getApiUrl } from '../../config/api.js';
 
 const Blog = () => {
   const [blogs, setBlogs] = useState([]);
@@ -57,7 +58,7 @@ const Blog = () => {
         params.search = searchTerm.trim();
       }
 
-      const response = await axios.get('http://localhost:5000/api/blog', { params });
+      const response = await axios.get(getApiUrl('/api/blog'), { params });
 
       if (response.data.success) {
         setBlogs(response.data.data.blogs);
@@ -74,7 +75,7 @@ const Blog = () => {
   // Fetch featured blogs
   const fetchFeaturedBlogs = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/blog/featured?limit=3');
+      const response = await axios.get(getApiUrl('/api/blog/featured?limit=3'));
       if (response.data.success) {
         setFeaturedBlogs(response.data.data);
       }

@@ -1,9 +1,9 @@
 // RAG-powered chat bot responses for Cookify
 import axios from 'axios';
+import { getChatbotUrl } from '../../config/api.js';
 
 // Configuration
-// Configuration
-const RAG_API_BASE_URL = import.meta.env.VITE_CHATBOT_API_BASE_URL || 'https://cookify-auiz.onrender.com';
+const RAG_API_BASE_URL = getChatbotUrl();
 const FALLBACK_ENABLED = true;
 
 // Create axios instance with default config

@@ -11,6 +11,7 @@ import SmileyIcon from '../../assets/smiley.svg';
 import EyeIcon from '../../assets/eye.svg';
 import ClockIcon from '../../assets/clock.svg';
 import HeartIcon from '../../assets/heart.svg';
+import { getApiUrl } from '../../config/api.js';
 
 const BlogDetail = () => {
   const { id } = useParams();
@@ -43,7 +44,7 @@ const BlogDetail = () => {
   const fetchBlogDetail = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:5000/api/blog/${id}`);
+      const response = await axios.get(getApiUrl('/api/blog/${id}'));
       
       if (response.data.success) {
         const blogData = response.data.data;
@@ -65,7 +66,7 @@ const BlogDetail = () => {
 
   const fetchRelatedBlogs = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/blog?limit=4`);
+      const response = await axios.get(getApiUrl('/api/blog?limit=4'));
       if (response.data.success) {
         // Filter out current blog
         const filtered = response.data.data.blogs.filter(b => b._id !== id);
@@ -85,7 +86,7 @@ const BlogDetail = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        `http://localhost:5000/api/blog/${id}/like`,
+        getApiUrl('/api/blog/${id}/like'),
         {},
         {
           headers: {
@@ -121,7 +122,7 @@ const BlogDetail = () => {
       setSubmittingComment(true);
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        `http://localhost:5000/api/blog/${id}/comment`,
+        getApiUrl('/api/blog/${id}/comment'),
         { content: commentContent.trim() },
         {
           headers: {

@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useFavoritesContext } from '../contexts/FavoritesContext';
+import { getApiUrl } from '../config/api.js';
 
 const Card = ({ item }) => {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const Card = ({ item }) => {
         if (!token) return;
 
         try {
-          const response = await axios.get(`http://localhost:5000/api/favourites/check/${item._id}`, {
+          const response = await axios.get(getApiUrl('/api/favourites/check/${item._id}'), {
             headers: { 'Authorization': `Bearer ${token}` }
           });
           
@@ -119,7 +120,7 @@ const Card = ({ item }) => {
     try {
       if (isFavorited) {
         // Remove from favorites
-        const response = await axios.delete(`http://localhost:5000/api/users/favourites/${item._id}`, {
+        const response = await axios.delete(getApiUrl('/api/users/favourites/${item._id}'), {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         
@@ -139,7 +140,7 @@ const Card = ({ item }) => {
         }
       } else {
         // Add to favorites
-        const response = await axios.post(`http://localhost:5000/api/users/favourites/${item._id}`, {}, {
+        const response = await axios.post(getApiUrl('/api/users/favourites/${item._id}'), {}, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { useFavoritesContext } from '../contexts/FavoritesContext';
+import { getApiUrl } from '../config/api.js';
 
 export const useFavorites = () => {
   const { user } = useSelector((state) => state.auth);
@@ -22,7 +23,7 @@ export const useFavorites = () => {
 
     setIsLoading(true);
     try {
-      const response = await axios.get('http://localhost:5000/api/users/favourites', {
+      const response = await axios.get(getApiUrl('/api/users/favourites'), {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
@@ -47,7 +48,7 @@ export const useFavorites = () => {
     if (!token) return false;
 
     try {
-      const response = await axios.post(`http://localhost:5000/api/users/favourites/${recipeId}`, {}, {
+      const response = await axios.post(getApiUrl(`/api/users/favourites/${recipeId}`), {}, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
@@ -73,7 +74,7 @@ export const useFavorites = () => {
     if (!token) return false;
 
     try {
-      const response = await axios.delete(`http://localhost:5000/api/users/favourites/${recipeId}`, {
+      const response = await axios.delete(getApiUrl(`/api/users/favourites/${recipeId}`), {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
@@ -99,7 +100,7 @@ export const useFavorites = () => {
     if (!token) return false;
 
     try {
-      const response = await axios.get(`http://localhost:5000/api/favourites/check/${recipeId}`, {
+      const response = await axios.get(getApiUrl(`/api/favourites/check/${recipeId}`), {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       

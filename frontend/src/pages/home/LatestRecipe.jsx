@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import Card from '../../components/Card';
+import { getApiUrl } from '../../config/api.js';
 
 const LatestRecipe = () => {
     const [items, setItems] = useState([]);
@@ -18,7 +19,7 @@ const LatestRecipe = () => {
                 
                 if (recentlyViewed.length === 0) {
                     // Nếu chưa xem công thức nào, hiển thị 4 công thức mới nhất
-                    const response = await axios.get('http://localhost:5000/api/recipes');
+                    const response = await axios.get(getApiUrl('/api/recipes'));
                     if (response.data.success) {
                         setItems(response.data.data.slice(0, 4));
                     }
@@ -27,7 +28,7 @@ const LatestRecipe = () => {
                     const recentRecipes = [];
                     for (const recipeId of recentlyViewed.slice(0, 4)) {
                         try {
-                            const response = await axios.get(`http://localhost:5000/api/recipes/${recipeId}`);
+                            const response = await axios.get(getApiUrl('/api/recipes/${recipeId}'));
                             if (response.data.success) {
                                 recentRecipes.push(response.data.data);
                             }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import featuredImg from "../../assets/featured.webp"
+import { getApiUrl } from '../../config/api.js';
 
 const FeaturedSection = () => {
   const [featuredRecipe, setFeaturedRecipe] = useState(null);
@@ -12,14 +13,14 @@ const FeaturedSection = () => {
       try {
         setLoading(true);
         // Sử dụng API recommendations/favorites để lấy món được yêu thích nhất
-        const response = await axios.get('http://localhost:5000/api/recommendations/favorites?limit=1');
+        const response = await axios.get(getApiUrl('/api/recommendations/favorites?limit=1'));
         
         if (response.data.success && response.data.data.length > 0) {
           // Lấy món được yêu thích nhiều nhất (đầu tiên trong danh sách)
           setFeaturedRecipe(response.data.data[0]);
         } else {
           // Fallback: Nếu không có món yêu thích, lấy món mới nhất
-          const fallbackResponse = await axios.get('http://localhost:5000/api/recipes?limit=1');
+          const fallbackResponse = await axios.get(getApiUrl('/api/recipes?limit=1'));
           if (fallbackResponse.data.success && fallbackResponse.data.data.length > 0) {
             setFeaturedRecipe(fallbackResponse.data.data[0]);
           }
@@ -28,7 +29,7 @@ const FeaturedSection = () => {
         console.error('Lỗi khi tải món được yêu thích nhất:', error);
         // Fallback: Thử lấy món mới nhất nếu API recommendations lỗi
         try {
-          const fallbackResponse = await axios.get('http://localhost:5000/api/recipes?limit=1');
+          const fallbackResponse = await axios.get(getApiUrl('/api/recipes?limit=1'));
           if (fallbackResponse.data.success && fallbackResponse.data.data.length > 0) {
             setFeaturedRecipe(fallbackResponse.data.data[0]);
           }

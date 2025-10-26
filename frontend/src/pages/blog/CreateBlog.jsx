@@ -8,6 +8,7 @@ import ChatDotsIcon from '../../assets/chat-circle-dots.svg';
 import KnifeIcon from '../../assets/knife.svg';
 import CarrotIcon from '../../assets/carrot.svg';
 import SmileyIcon from '../../assets/smiley.svg';
+import { getApiUrl } from '../../config/api.js';
 
 const CreateBlog = () => {
   const [formData, setFormData] = useState({
@@ -118,7 +119,7 @@ const CreateBlog = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        'http://localhost:5000/api/blog',
+        getApiUrl('/api/blog'),
         formData,
         {
           headers: {

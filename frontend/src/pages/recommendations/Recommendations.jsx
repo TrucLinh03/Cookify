@@ -8,6 +8,7 @@ import LightbulbIcon from '../../assets/lightbulb-filament.svg';
 import BowlFoodIcon from '../../assets/bowl-food.svg';
 import MagnifyingGlassIcon from '../../assets/magnifying-glass.svg';
 import ChefHatIcon from '../../assets/chef-hat.svg';
+import { getApiUrl } from '../../config/api.js';
 
 const Recommendations = () => {
   const [activeTab, setActiveTab] = useState('popular');
@@ -57,7 +58,7 @@ const Recommendations = () => {
 
         // Make API call to specific recommendation endpoint
         const response = await axios.get(
-          `http://localhost:5000/api/recommendations${currentTab.endpoint}`,
+          getApiUrl('/api/recommendations${currentTab.endpoint}'),
           config
         );
         

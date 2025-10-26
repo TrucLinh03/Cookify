@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import AdminLayout from '../../components/layout/AdminLayout';
+import { getApiUrl } from '../../config/api.js';
 
 const ManageUsers = () => {
   const [users, setUsers] = useState([]);
@@ -32,7 +33,7 @@ const ManageUsers = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://localhost:5000/api/users/all?page=${page}&limit=10&search=${search}`,
+        getApiUrl('/api/users/all?page=${page}&limit=10&search=${search}'),
         getAxiosConfig()
       );
 
@@ -59,7 +60,7 @@ const ManageUsers = () => {
   const updateUser = async (userId, updateData) => {
     try {
       const response = await axios.patch(
-        `http://localhost:5000/api/users/manage/${userId}`,
+        getApiUrl('/api/users/manage/${userId}'),
         updateData,
         getAxiosConfig()
       );
@@ -83,7 +84,7 @@ const ManageUsers = () => {
 
     try {
       const response = await axios.delete(
-        `http://localhost:5000/api/users/manage/${userId}`,
+        getApiUrl('/api/users/manage/${userId}'),
         getAxiosConfig()
       );
 

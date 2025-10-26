@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { getApiUrl } from '../../config/api.js';
 
 const Feedback = ({ recipeId, onFeedbackSubmitted }) => {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -24,7 +25,7 @@ const Feedback = ({ recipeId, onFeedbackSubmitted }) => {
   const fetchFeedbacks = async (page = 1) => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:5000/api/feedback/recipe/${recipeId}`, {
+      const response = await axios.get(getApiUrl('/api/feedback/recipe/${recipeId}'), {
         params: { page, limit: 5 }
       });
 
@@ -47,7 +48,7 @@ const Feedback = ({ recipeId, onFeedbackSubmitted }) => {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      const response = await axios.get(`http://localhost:5000/api/feedback/check/${recipeId}`, {
+      const response = await axios.get(getApiUrl('/api/feedback/check/${recipeId}'), {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -118,7 +119,7 @@ const Feedback = ({ recipeId, onFeedbackSubmitted }) => {
         return;
       }
 
-      const response = await axios.delete(`http://localhost:5000/api/feedback/${feedbackId}`, {
+      const response = await axios.delete(getApiUrl('/api/feedback/${feedbackId}'), {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -168,7 +169,7 @@ const Feedback = ({ recipeId, onFeedbackSubmitted }) => {
         comment: editForm.comment.trim()
       };
 
-      const response = await axios.put(`http://localhost:5000/api/feedback/${editingFeedback}`, payload, {
+      const response = await axios.put(getApiUrl('/api/feedback/${editingFeedback}'), payload, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -230,7 +231,7 @@ const Feedback = ({ recipeId, onFeedbackSubmitted }) => {
         comment: newFeedback.comment.trim()
       };
       
-      const response = await axios.post('http://localhost:5000/api/feedback', payload, {
+      const response = await axios.post(getApiUrl('/api/feedback'), payload, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

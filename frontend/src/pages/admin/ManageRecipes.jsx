@@ -7,6 +7,7 @@ import CakeIcon from '../../assets/cake.svg';
 import CookieIcon from '../../assets/cookie.svg';
 import CoffeeIcon from '../../assets/coffee.svg';
 import ChefHatIcon from '../../assets/chef-hat.svg';
+import { getApiUrl } from '../../config/api.js';
 
 const ManageRecipes = () => {
   const [recipes, setRecipes] = useState([]);
@@ -57,7 +58,7 @@ const ManageRecipes = () => {
 
   const fetchRecipes = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/recipes');
+      const res = await axios.get(getApiUrl('/api/recipes'));
       if (res.data.success && res.data.data) {
         setRecipes(res.data.data);
       } else {
@@ -132,7 +133,7 @@ const ManageRecipes = () => {
       
       if (editingRecipe) {
         // Cập nhật công thức
-        const response = await axios.put(`http://localhost:5000/api/recipes/${editingRecipe._id}`, submitData, config);
+        const response = await axios.put(getApiUrl('/api/recipes/${editingRecipe._id}'), submitData, config);
         if (response.data.success) {
           alert("Cập nhật công thức thành công!");
         } else {
@@ -140,7 +141,7 @@ const ManageRecipes = () => {
         }
       } else {
         // Thêm công thức mới
-        const response = await axios.post("http://localhost:5000/api/recipes", submitData, config);
+        const response = await axios.post(getApiUrl('/api/recipes'), submitData, config);
         if (response.data.success) {
           alert("Thêm công thức thành công!");
         } else {
@@ -186,7 +187,7 @@ const ManageRecipes = () => {
           }
         };
         
-        const response = await axios.delete(`http://localhost:5000/api/recipes/${recipeId}`, config);
+        const response = await axios.delete(getApiUrl('/api/recipes/${recipeId}'), config);
         if (response.data.success) {
           alert("Xóa công thức thành công!");
           fetchRecipes();

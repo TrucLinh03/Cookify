@@ -9,6 +9,7 @@ import EmailIcon from '../../assets/chat-circle-dots.svg';
 import EditIcon from '../../assets/pencil.svg';
 import EyeIcon from '../../assets/eye.svg';
 import ChefHatIcon from '../../assets/chef-hat.svg';
+import { getApiUrl } from '../../config/api.js';
 
 const EditProfile = () => {
   const [formData, setFormData] = useState({
@@ -39,7 +40,7 @@ const EditProfile = () => {
 
       try {
         // Lấy profile của user hiện tại
-        const apiUrl = 'http://localhost:5000/api/users/profile';
+        const apiUrl = getApiUrl('/api/users/profile');
           
         const response = await axios.get(apiUrl, {
           headers: {
@@ -190,7 +191,7 @@ const EditProfile = () => {
 
       // Call API to update profile
       const response = await axios.patch(
-        'http://localhost:5000/api/users/edit-profile',
+        getApiUrl('/api/users/edit-profile'),
         updateData,
         {
           headers: {

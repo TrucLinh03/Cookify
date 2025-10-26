@@ -8,6 +8,7 @@ import EyeIcon from '../../assets/eye.svg';
 import TrashIcon from '../../assets/trash.svg';
 import LightbulbIcon from '../../assets/lightbulb-filament.svg';
 import ChatDotsIcon from '../../assets/chat-circle-dots.svg';
+import { getApiUrl } from '../../config/api.js';
 
 const ManageBlogs = () => {
   const [blogs, setBlogs] = useState([]);
@@ -39,7 +40,7 @@ const ManageBlogs = () => {
       setLoading(true);
       const token = localStorage.getItem('token');
       
-      const response = await axios.get('http://localhost:5000/api/blog/admin/all', {
+      const response = await axios.get(getApiUrl('/api/blog/admin/all'), {
         headers: {
           'Authorization': `Bearer ${token}`
         },
@@ -72,7 +73,7 @@ const ManageBlogs = () => {
     try {
       const token = localStorage.getItem('token');
       
-      const response = await axios.patch(`http://localhost:5000/api/blog/admin/manage/${blogId}`, updates, {
+      const response = await axios.patch(getApiUrl('/api/blog/admin/manage/${blogId}'), updates, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -95,7 +96,7 @@ const ManageBlogs = () => {
     try {
       const token = localStorage.getItem('token');
       
-      const response = await axios.delete(`http://localhost:5000/api/blog/admin/manage/${blogId}`, {
+      const response = await axios.delete(getApiUrl('/api/blog/admin/manage/${blogId}'), {
         headers: {
           'Authorization': `Bearer ${token}`
         }

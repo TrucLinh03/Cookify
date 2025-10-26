@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AdminLayout from '../../components/layout/AdminLayout';
+import { getApiUrl } from '../../config/api.js';
 
 const ManageFeedbacks = () => {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -20,7 +21,7 @@ const ManageFeedbacks = () => {
       setLoading(true);
       const token = localStorage.getItem('token');
       
-      const response = await axios.get('http://localhost:5000/api/feedback/admin/all', {
+      const response = await axios.get(getApiUrl('/api/feedback/admin/all'), {
         headers: {
           'Authorization': `Bearer ${token}`
         },
@@ -51,7 +52,7 @@ const ManageFeedbacks = () => {
     try {
       const token = localStorage.getItem('token');
       
-      const response = await axios.patch(`http://localhost:5000/api/feedback/admin/manage/${feedbackId}`, {
+      const response = await axios.patch(getApiUrl('/api/feedback/admin/manage/${feedbackId}'), {
         status: newStatus
       }, {
         headers: {
@@ -76,7 +77,7 @@ const ManageFeedbacks = () => {
     try {
       const token = localStorage.getItem('token');
       
-      const response = await axios.delete(`http://localhost:5000/api/feedback/admin/manage/${feedbackId}`, {
+      const response = await axios.delete(getApiUrl('/api/feedback/admin/manage/${feedbackId}'), {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -115,7 +116,7 @@ const ManageFeedbacks = () => {
       setLoading(true);
       const token = localStorage.getItem('token');
       
-      const response = await axios.delete('http://localhost:5000/api/feedback/admin/delete-all', {
+      const response = await axios.delete(getApiUrl('/api/feedback/admin/delete-all'), {
         headers: {
           'Authorization': `Bearer ${token}`
         }

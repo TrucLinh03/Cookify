@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { IoSearchOutline } from "react-icons/io5";
 import Card from '../../components/Card';
+import { getApiUrl } from '../../config/api.js';
 
 const Recipe = () => {
     const [items, setItems] = useState([]);
@@ -15,7 +16,7 @@ const Recipe = () => {
         const fetchData = async () => {
           try {
             setLoading(true);
-            const response = await axios.get(`http://localhost:5000/api/recipes`);
+            const response = await axios.get(getApiUrl('/api/recipes'));
             
             if (response.data.success) {
               setItems(response.data.data);

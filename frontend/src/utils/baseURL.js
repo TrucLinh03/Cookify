@@ -1,4 +1,6 @@
+// Legacy support - use centralized config instead
+import { getBaseUrl as getBaseUrlFromConfig } from '../config/api.js';
+
 export const getBaseUrl = () => {
-    // Use environment variable or fallback to production URL
-    return import.meta.env.VITE_API_BASE_URL || 'https://cookify-auiz.onrender.com';
+    return getBaseUrlFromConfig();
 }

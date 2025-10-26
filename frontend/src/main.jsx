@@ -29,6 +29,7 @@ import Favourite from './pages/user/Favourite.jsx';
 import Blog from './pages/blog/Blog.jsx';
 import CreateBlog from './pages/blog/CreateBlog.jsx';
 import BlogDetail from './pages/blog/BlogDetail.jsx';
+import { getApiUrl } from './config/api.js';
 
 
 
@@ -55,7 +56,7 @@ const router = createBrowserRouter([
         element: <SingleProduct/>,
         loader: async ({ params }) => {
           try {
-            const res = await fetch(`http://localhost:5000/api/items/${params.id}`);
+            const res = await fetch(getApiUrl(`/api/items/${params.id}`));
             if (!res.ok) {
               throw new Response("Not Found", { status: res.status });
             }
@@ -104,7 +105,7 @@ const router = createBrowserRouter([
         path: "/recipes/:id",
         element: <SingleProduct/>,
         loader: async ({ params }) => {
-          const response = await fetch(`http://localhost:5000/api/recipes/${params.id}`);
+          const response = await fetch(getApiUrl(`/api/recipes/${params.id}`));
           if (!response.ok) {
             throw new Error('Không tải được công thức');
           }

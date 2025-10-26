@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useFavoritesContext } from '../../contexts/FavoritesContext';
+import { getApiUrl } from '../../config/api.js';
 
 const Favourite = () => {
   const [favouriteRecipes, setFavouriteRecipes] = useState([]);
@@ -23,7 +24,7 @@ const Favourite = () => {
 
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:5000/api/users/favourites', {
+        const response = await axios.get(getApiUrl('/api/users/favourites'), {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         
@@ -56,7 +57,7 @@ const Favourite = () => {
     }
 
     try {
-      const response = await axios.delete(`http://localhost:5000/api/users/favourites/${recipeId}`, {
+      const response = await axios.delete(getApiUrl('/api/users/favourites/${recipeId}'), {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Card from './Card';
 import { IoSearchOutline, IoImageOutline, IoClose } from "react-icons/io5";
+import { getApiUrl } from '../config/api.js';
 
 const SearchPage = () => {
   const navigate = useNavigate();
@@ -121,7 +122,7 @@ const SearchPage = () => {
       // Parse ingredients from query
       const ingredients = parseSearchQuery(searchQuery);
       
-      const response = await axios.get('http://localhost:5000/api/recipes', {
+      const response = await axios.get(getApiUrl('/api/recipes'), {
         params: { 
           q: searchQuery.trim(),
           ingredients: ingredients.length > 1 ? ingredients.join(',') : undefined
@@ -171,7 +172,7 @@ const SearchPage = () => {
     try {
       // For now, we'll simulate image search by returning all recipes
       // In a real implementation, you would send the image to an AI service
-      const response = await axios.get('http://localhost:5000/api/recipes');
+      const response = await axios.get(getApiUrl('/api/recipes'));
       
       if (response.data.success) {
         // Simulate image recognition results by showing a subset
