@@ -61,8 +61,9 @@ const fallbackResponses = {
 // Check if RAG API is available
 const checkRagApiHealth = async () => {
   try {
-    const response = await ragApi.get('/health', { timeout: 3000 });
-    return response.status === 200;
+    // Temporarily skip health check to avoid 404 errors
+    console.log('⚠️ Health check temporarily disabled');
+    return false; // Always return false to use fallback
   } catch (error) {
     console.warn('RAG API health check failed:', error.message);
     return false;
@@ -141,6 +142,22 @@ const generateFallbackResponse = (userMessage) => {
       source: 'fallback_recipe'
     };
   }
+
+  if (lowerMessage.includes('canh') || lowerMessage.includes('soup')) {
+    return {
+      text: '🍲 **Canh Chua Cá:**\n\n**Nguyên liệu:**\n- Cá basa: 500g\n- Cà chua: 2 quả\n- Dứa: 100g\n- Đậu bắp, giá đỗ\n- Me, tôm khô\n\n**Cách làm:**\n1. Phi thơm tôm khô\n2. Cho nước, me vào nấu\n3. Thêm cà chua, dứa\n4. Cho cá vào nấu chín\n5. Nêm nếm vừa ăn\n\nCanh chua thanh mát! 🌿',
+      suggestions: ['Canh chua tôm', 'Canh khổ qua', 'Canh rau muống'],
+      source: 'fallback_recipe'
+    };
+  }
+
+  if (lowerMessage.includes('chả cá') || lowerMessage.includes('cha ca')) {
+    return {
+      text: '🐟 **Chả Cá Lã Vọng:**\n\n**Nguyên liệu:**\n- Cá lăng: 1kg\n- Nghệ tươi: 50g\n- Thì là, hành lá\n- Bún tươi, bánh tráng\n- Mắm tôm, tương\n\n**Cách làm:**\n1. Ướp cá với nghệ\n2. Nướng cá vàng đều\n3. Xào với thì là, hành\n4. Ăn kèm bún, bánh tráng\n5. Chấm mắm tôm pha\n\nĐặc sản Hà Nội! 🏮',
+      suggestions: ['Chả cá nướng', 'Bún chả cá', 'Mắm tôm pha'],
+      source: 'fallback_recipe'
+    };
+  }
   
   return {
     text: getRandomResponse(fallbackResponses.default),
@@ -156,7 +173,8 @@ export const getRagChatBotResponse = async (userMessage, conversationId = null) 
     
     // Temporarily use fallback while fixing CORS issues
     if (FALLBACK_ENABLED) {
-      console.log('🔧 Using fallback responses while fixing CORS issues');
+      console.log('🤖 Chatbot đang hoạt động với responses có sẵn');
+      console.log('💡 Hỏi về: phở, cơm chiên, bánh mì, bún bò huế, gỏi cuốn, canh chua, chả cá...');
       return generateFallbackResponse(userMessage);
     }
     
