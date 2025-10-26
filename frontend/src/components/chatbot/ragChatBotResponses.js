@@ -61,11 +61,11 @@ const fallbackResponses = {
 // Check if RAG API is available
 const checkRagApiHealth = async () => {
   try {
-    // Temporarily skip health check to avoid 404 errors
-    console.log('⚠️ Health check temporarily disabled');
-    return false; // Always return false to use fallback
+    const response = await ragApi.get('/health', { timeout: 5000 });
+    console.log('✅ Chatbot API health check passed');
+    return response.status === 200;
   } catch (error) {
-    console.warn('RAG API health check failed:', error.message);
+    console.warn('❌ RAG API health check failed:', error.message);
     return false;
   }
 };
@@ -169,24 +169,18 @@ const generateFallbackResponse = (userMessage) => {
 // Main function to get RAG-powered chat response
 export const getRagChatBotResponse = async (userMessage, conversationId = null) => {
   try {
-    console.log('Processing RAG query:', userMessage);
+    console.log('🤖 Processing RAG query:', userMessage);
     
-    // Temporarily use fallback while fixing CORS issues
-    if (FALLBACK_ENABLED) {
-      console.log('🤖 Chatbot đang hoạt động với responses có sẵn');
-      console.log('💡 Hỏi về: phở, cơm chiên, bánh mì, bún bò huế, gỏi cuốn, canh chua, chả cá...');
-      return generateFallbackResponse(userMessage);
-    }
-    
-    // Check if RAG API is available
+    // Check if RAG API is available first
     const isRagAvailable = await checkRagApiHealth();
     
-    if (!isRagAvailable && FALLBACK_ENABLED) {
-      console.warn('RAG API unavailable, using fallback responses');
+    if (isRagAvailable) {
+      console.log('🚀 Using AI chatbot service');
+    } else if (FALLBACK_ENABLED) {
+      console.log('⚠️ AI service unavailable, using fallback responses');
+      console.log('💡 Hỏi về: phở, cơm chiên, bánh mì, bún bò huế, gỏi cuốn, canh chua, chả cá...');
       return generateFallbackResponse(userMessage);
-    }
-    
-    if (!isRagAvailable) {
+    } else {
       throw new Error('RAG API is not available and fallback is disabled');
     }
     
