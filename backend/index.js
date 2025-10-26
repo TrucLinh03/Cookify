@@ -27,19 +27,31 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '10mb' })); // Increase JSON payload limit for base64 images
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// CORS configuration - Allow all origins for development
+// CORS configuration - Smart CORS for Development & Production
 const allowedOrigins = [
   process.env.CORS_ORIGIN || "https://cookifychef.netlify.app"
 ];
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Cho phép các request từ Netlify hoặc localhost trong dev
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('CORS blocked: This origin is not allowed'));
+    // Allow requests with no origin (mobile apps, Postman, etc.)
+    if (!origin) {
+      return callback(null, true);
     }
+    
+    // Allow production origins
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    
+    // Allow all localhost origins for development
+    if (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:')) {
+      return callback(null, true);
+    }
+    
+    // Block other origins
+    console.warn(`❌ CORS blocked request from origin: ${origin}`);
+    callback(new Error('CORS blocked: This origin is not allowed'));
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],

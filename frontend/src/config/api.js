@@ -1,17 +1,39 @@
 /**
- * Centralized API Configuration for Production/Development
+ * Smart API Configuration - Auto-detect Development/Production
  */
 
-// Get base URLs from environment variables
+// Environment detection
+const isDevelopment = import.meta.env.DEV || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const isProduction = !isDevelopment;
+
+// Development URLs (local)
+const DEV_CONFIG = {
+  BASE_URL: 'http://localhost:5000',
+  CHATBOT_URL: 'http://localhost:8000',
+  RAG_URL: 'http://localhost:8000'
+};
+
+// Production URLs (deployed)
+const PROD_CONFIG = {
+  BASE_URL: 'https://cookify-auiz.onrender.com',
+  CHATBOT_URL: 'https://cookify-1.onrender.com',
+  RAG_URL: 'https://cookify-1.onrender.com'
+};
+
+// Smart configuration with fallbacks
 export const API_CONFIG = {
-  // Main backend API (port 5000)
-  BASE_URL: import.meta.env.VITE_API_BASE_URL || 'https://cookify-auiz.onrender.com',
+  // Main backend API
+  BASE_URL: import.meta.env.VITE_API_BASE_URL || (isDevelopment ? DEV_CONFIG.BASE_URL : PROD_CONFIG.BASE_URL),
   
-  // Chatbot API (port 8000) 
-  CHATBOT_URL: import.meta.env.VITE_CHATBOT_API_BASE_URL || 'https://cookify-auiz.onrender.com',
+  // Chatbot API
+  CHATBOT_URL: import.meta.env.VITE_CHATBOT_API_BASE_URL || (isDevelopment ? DEV_CONFIG.CHATBOT_URL : PROD_CONFIG.CHATBOT_URL),
   
   // RAG API (same as chatbot)
-  RAG_URL: import.meta.env.VITE_RAG_API_BASE_URL || 'https://cookify-auiz.onrender.com'
+  RAG_URL: import.meta.env.VITE_RAG_API_BASE_URL || (isDevelopment ? DEV_CONFIG.RAG_URL : PROD_CONFIG.RAG_URL),
+  
+  // Environment info
+  IS_DEVELOPMENT: isDevelopment,
+  IS_PRODUCTION: isProduction
 };
 
 // Helper functions
@@ -29,5 +51,14 @@ export const getRagUrl = (endpoint = '') => {
 
 // Legacy support
 export const getBaseUrl = () => API_CONFIG.BASE_URL;
+
+// Debug logging
+console.log('🔧 API Configuration:', {
+  environment: isDevelopment ? 'DEVELOPMENT' : 'PRODUCTION',
+  hostname: window.location.hostname,
+  baseUrl: API_CONFIG.BASE_URL,
+  chatbotUrl: API_CONFIG.CHATBOT_URL,
+  ragUrl: API_CONFIG.RAG_URL
+});
 
 export default API_CONFIG;
