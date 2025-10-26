@@ -154,24 +154,17 @@ export const getRagChatBotResponse = async (userMessage, conversationId = null) 
   try {
     console.log('Processing RAG query:', userMessage);
     
-    // Temporarily skip health check and use fallback directly
-    // This prevents the 500/404 errors while chatbot service is not deployed
-    if (FALLBACK_ENABLED) {
-      console.log('Using fallback responses (chatbot service not deployed)');
+    // Check if RAG API is available
+    const isRagAvailable = await checkRagApiHealth();
+    
+    if (!isRagAvailable && FALLBACK_ENABLED) {
+      console.warn('RAG API unavailable, using fallback responses');
       return generateFallbackResponse(userMessage);
     }
     
-    // Check if RAG API is available (commented out for now)
-    // const isRagAvailable = await checkRagApiHealth();
-    // 
-    // if (!isRagAvailable && FALLBACK_ENABLED) {
-    //   console.warn('RAG API unavailable, using fallback responses');
-    //   return generateFallbackResponse(userMessage);
-    // }
-    // 
-    // if (!isRagAvailable) {
-    //   throw new Error('RAG API is not available and fallback is disabled');
-    // }
+    if (!isRagAvailable) {
+      throw new Error('RAG API is not available and fallback is disabled');
+    }
     
     // Call Node.js Chatbot API (new format)
     const requestData = {
