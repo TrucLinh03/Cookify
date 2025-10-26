@@ -1,2 +1,0 @@
-Requirement already satisfied: pymongo in c:\users\dell\appdata\local\programs\python\python313\lib\site-packages (4.15.2)
-Requirement already satisfied: dnspython<3.0.0,>=1.16.0 in c:\users\dell\appdata\local\programs\python\python313\lib\site-packages (from pymongo) (2.8.0)
