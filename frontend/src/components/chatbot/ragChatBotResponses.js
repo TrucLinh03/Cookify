@@ -109,29 +109,36 @@ export const getRagChatBotResponse = async (userMessage, conversationId = null) 
       throw new Error('RAG API is not available and fallback is disabled');
     }
     
-    // Call RAG API
+    // Call Node.js Chatbot API (new format)
     const requestData = {
-      question: userMessage.trim()
+      message: userMessage.trim(),
+      user_id: null, // Can be set from user context if available
+      conversation_id: conversationId
     };
     
-    console.log('Calling RAG API with:', requestData);
+    console.log('Calling Node.js Chatbot API with:', requestData);
     
     const response = await ragApi.post('/ask', requestData);
     const ragResponse = response.data;
     
-    console.log('RAG API response:', {
-      source: ragResponse.source,
-      score: ragResponse.score,
-      suggestionsCount: ragResponse.suggestions?.length || 0
+    console.log('Node.js Chatbot API response:', {
+      confidence: ragResponse.confidence,
+      sourcesCount: ragResponse.sources?.length || 0,
+      processingTime: ragResponse.processing_time_ms
     });
+    
+    // Extract suggestions from sources (recipe names, blog titles, etc.)
+    const suggestions = ragResponse.sources?.slice(0, 4).map(s => s.name) || [];
     
     // Format response for frontend
     return {
-      text: ragResponse.llm_answers,
-      suggestions: ragResponse.suggestions || [],
-      source: ragResponse.source,
-      score: ragResponse.score,
-      retrievedDocs: ragResponse.similar_questions || [],
+      text: ragResponse.response,
+      suggestions: suggestions,
+      source: 'node_chatbot',
+      score: ragResponse.confidence?.score || 0,
+      confidence: ragResponse.confidence,
+      retrievedDocs: ragResponse.sources || [],
+      conversationId: ragResponse.conversation_id,
       ragResponse: true
     };
     
@@ -194,11 +201,11 @@ export const getRagApiStatus = async () => {
     const healthResponse = await ragApi.get('/health');
     
     return {
-      healthy: healthResponse.status === 200,
+      healthy: healthResponse.status === 200 && healthResponse.data.status === 'healthy',
       health: healthResponse.data,
-      model_loaded: healthResponse.data.model_loaded,
-      data_loaded: healthResponse.data.data_loaded,
-      total_questions: healthResponse.data.total_questions
+      mongodb_connected: healthResponse.data.mongodb?.connected,
+      database: healthResponse.data.mongodb?.database,
+      models: healthResponse.data.models
     };
   } catch (error) {
     return {
