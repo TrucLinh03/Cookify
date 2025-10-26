@@ -16,8 +16,8 @@ const DEV_CONFIG = {
 // Production URLs (deployed)
 const PROD_CONFIG = {
   BASE_URL: 'https://cookify-auiz.onrender.com',
-  CHATBOT_URL: 'https://cookify-1.onrender.com',
-  RAG_URL: 'https://cookify-1.onrender.com'
+  CHATBOT_URL: 'https://cookify-1-8c21.onrender.com',
+  RAG_URL: 'https://cookify-1-8c21.onrender.com'
 };
 
 // Smart configuration with fallbacks
