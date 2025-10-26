@@ -1,0 +1,2280 @@
+[
+  {
+    "name": "Phở Bò",
+    "description": "Món phở truyền thống Việt Nam với nước dùng trong, đậm đà từ xương bò.",
+    "ingredients": ["500g bánh phở", "300g thịt bò", "Xương bò", "Hành tây", "Gừng", "Gia vị phở"],
+    "instructions": "1. Ninh xương bò lấy nước dùng\n2. Trụng bánh phở\n3. Thái thịt bò\n4. Chan nước dùng và thêm gia vị",
+    "imageUrl": "https://i.pinimg.com/1200x/8c/e5/f8/8ce5f8f6be5bef52542fd1aa5a12aca3.jpg",
+    "category": "monchinh",
+    "difficulty": "hard",
+    "cookingTime": "120 phút"
+  },
+  {
+    "name": "Bún Bò Huế",
+    "description": "Món bún cay nồng đặc trưng xứ Huế với thịt bò và chả cua.",
+    "ingredients": ["500g bún tươi", "500g thịt bò", "Chả cua", "Sả", "Ớt", "Mắm ruốc"],
+    "instructions": "1. Hầm xương lấy nước dùng\n2. Nêm mắm ruốc và sả\n3. Cho thịt bò, chả cua vào\n4. Chan nước lèo và thêm rau sống",
+    "imageUrl": "https://i.pinimg.com/736x/04/b6/f9/04b6f958f5f053fbaefccddd1007aa48.jpg",
+    "category": "monchinh",
+    "difficulty": "hard",
+    "cookingTime": "150 phút"
+  },
+  {
+    "name": "Cơm Tấm Sườn Bì Chả",
+    "description": "Món cơm Sài Gòn nổi tiếng với sườn nướng, bì và chả trứng.",
+    "ingredients": ["500g gạo tấm", "Sườn non", "Trứng gà", "Thịt heo xay", "Bì heo", "Nước mắm pha"],
+    "instructions": "1. Nấu cơm tấm\n2. Nướng sườn ướp sẵn\n3. Làm chả trứng hấp\n4. Ăn kèm bì và nước mắm",
+    "imageUrl": "https://i.pinimg.com/736x/d3/8d/0a/d38d0aba94e161ac1b338140848558d4.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "90 phút"
+  },
+  {
+    "name": "Bánh Xèo",
+    "description": "Món bánh vàng giòn với nhân tôm, thịt và giá đỗ.",
+    "ingredients": ["200g bột gạo", "Tôm", "Thịt ba chỉ", "Giá đỗ", "Hành lá", "Nước mắm chua ngọt"],
+    "instructions": "1. Pha bột gạo với nước\n2. Xào nhân tôm thịt\n3. Tráng bánh giòn\n4. Ăn kèm rau sống và nước mắm",
+    "imageUrl": "https://i.pinimg.com/1200x/33/6b/65/336b656f607efabfafc9cf8b0276cd53.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "60 phút"
+  },
+  {
+    "name": "Gà Nướng Mật Ong",
+    "description": "Món gà nướng thơm ngon với mật ong và gia vị.",
+    "ingredients": ["1 con gà ta", "Mật ong", "Nước mắm", "Tỏi", "Tiêu"],
+    "instructions": "1. Sơ chế gà\n2. Ướp gà với mật ong và gia vị\n3. Nướng đến khi vàng đều\n4. Chặt miếng vừa ăn",
+    "imageUrl": "https://i.pinimg.com/736x/40/e1/a4/40e1a4be26f1d292232f2efcd644c3ac.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "70 phút"
+  },
+  {
+    "name": "Canh Chua Cá Lóc",
+    "description": "Canh chua đặc trưng miền Nam với cá lóc tươi ngon.",
+    "ingredients": ["500g cá lóc", "Cà chua", "Dứa", "Đậu bắp", "Me", "Tỏi", "Ớt", "Ngò gai"],
+    "instructions": "1. Sơ chế cá lóc\n2. Nấu nước dùng chua\n3. Cho cá và rau vào nấu\n4. Nêm nếm vừa ăn",
+    "imageUrl": "https://i.pinimg.com/1200x/d7/fd/a2/d7fda2ec14e1d667aa29c87c471d57b9.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "45 phút"
+  },
+  {
+    "name": "Thịt Kho Tàu",
+    "description": "Thịt kho trứng vịt béo ngậy với nước dừa, món ăn quen thuộc ngày Tết.",
+    "ingredients": ["500g thịt ba chỉ", "4 quả trứng vịt", "Nước dừa", "Nước mắm", "Đường"],
+    "instructions": "1. Luộc trứng, bóc vỏ\n2. Ướp thịt với gia vị\n3. Kho thịt với nước dừa\n4. Nêm lại cho vừa miệng",
+    "imageUrl": "https://i.pinimg.com/1200x/a2/1f/24/a21f24b57a26b5d98a05eac0e4e705fd.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "90 phút"
+  },
+  {
+    "name": "Cá Kho Tộ",
+    "description": "Cá kho tộ truyền thống với tiêu, nước màu và nước mắm.",
+    "ingredients": ["500g cá basa", "Nước mắm", "Đường", "Tiêu", "Hành tím"],
+    "instructions": "1. Ướp cá với nước mắm và đường\n2. Kho cá trên lửa nhỏ\n3. Thêm tiêu và hành tím\n4. Kho đến khi nước sánh lại",
+    "imageUrl": "https://i.pinimg.com/736x/33/86/84/3386848f6ac5c3715138769209986e9b.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "60 phút"
+  },
+  {
+    "name": "Bò Lúc Lắc",
+    "description": "Món bò xào hành tây, ớt chuông hấp dẫn, thường ăn kèm khoai tây chiên.",
+    "ingredients": ["300g thịt bò thăn", "Ớt chuông", "Hành tây", "Nước tương", "Tiêu"],
+    "instructions": "1. Cắt thịt bò thành khối\n2. Xào bò nhanh lửa lớn\n3. Cho rau củ vào\n4. Nêm gia vị vừa ăn",
+    "imageUrl": "https://i.pinimg.com/1200x/14/91/de/1491de203b854f8aefc7790eeff5c215.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "30 phút"
+  },
+  {
+    "name": "Lẩu Thái Hải Sản",
+    "description": "Món lẩu chua cay với tôm, mực, cá và rau ăn kèm.",
+    "ingredients": ["Tôm", "Mực", "Cá", "Nấm", "Rau muống", "Gia vị lẩu Thái"],
+    "instructions": "1. Nấu nước lẩu Thái\n2. Thêm hải sản\n3. Chuẩn bị rau và bún\n4. Ăn kèm nước chấm",
+    "imageUrl": "https://i.pinimg.com/736x/9e/29/96/9e29969cca69a4721abab05b4b0c5d98.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "70 phút"
+  },
+  {
+    "name": "Miến Xào Cua",
+    "description": "Món miến xào dai ngon với thịt cua tươi và rau củ.",
+    "ingredients": ["200g miến dong", "200g thịt cua", "Cà rốt", "Hành tây", "Nấm hương", "Nước mắm"],
+    "instructions": "1. Ngâm miến mềm\n2. Xào cua với rau củ\n3. Cho miến vào xào cùng\n4. Nêm gia vị vừa ăn",
+    "imageUrl": "https://i.pinimg.com/1200x/7e/17/f6/7e17f6a11df9dba7a8af92917cb0a1b6.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "40 phút"
+  },
+  {
+    "name": "Cơm Chiên Dương Châu",
+    "description": "Cơm chiên kiểu Trung Hoa với tôm, trứng và lạp xưởng.",
+    "ingredients": ["400g cơm nguội", "2 quả trứng gà", "Tôm", "Lạp xưởng", "Cà rốt", "Đậu Hà Lan"],
+    "instructions": "1. Đánh trứng, chiên sơ\n2. Xào tôm, lạp xưởng\n3. Cho cơm và rau củ vào xào\n4. Nêm gia vị vừa ăn",
+    "imageUrl": "https://i.pinimg.com/736x/2e/ec/18/2eec18a49f9f2f71876eecbdae3b559d.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "30 phút"
+  },
+  {
+    "name": "Lẩu Gà Lá É",
+    "description": "Đặc sản Phú Yên với gà thả vườn và lá é tạo vị thơm cay.",
+    "ingredients": ["1 con gà ta", "Lá é", "Ớt xanh", "Sả", "Nấm", "Mì tươi"],
+    "instructions": "1. Hầm gà lấy nước ngọt\n2. Thêm sả, ớt\n3. Cho lá é vào khi ăn\n4. Dùng kèm mì hoặc bún",
+    "imageUrl": "https://i.pinimg.com/1200x/e8/41/56/e84156f90cf30312806f389ba02bb2ca.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "75 phút"
+  },
+  {
+    "name": "Nem Nướng Nha Trang",
+    "description": "Món nem nướng thơm ngon ăn kèm rau sống và bánh tráng.",
+    "ingredients": ["500g thịt heo xay", "Mỡ heo", "Tỏi", "Hành tím", "Bánh tráng", "Rau sống"],
+    "instructions": "1. Trộn thịt với gia vị\n2. Viên nem và nướng\n3. Cuốn nem với bánh tráng, rau\n4. Chấm nước mắm chua ngọt",
+    "imageUrl": "https://i.pinimg.com/1200x/33/d3/d8/33d3d880131a8562b20cf39c3f1eae0c.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "60 phút"
+  },
+  {
+    "name": "Bún Chả Hà Nội",
+    "description": "Món bún chả nổi tiếng Hà Nội với thịt nướng và nước chấm đặc trưng.",
+    "ingredients": ["500g thịt ba chỉ", "500g bún tươi", "Nước mắm", "Đu đủ xanh", "Cà rốt", "Rau sống"],
+    "instructions": "1. Ướp thịt và nướng chả\n2. Pha nước chấm chua ngọt\n3. Chuẩn bị bún, rau\n4. Ăn kèm chả nướng và nước chấm",
+    "imageUrl": "https://i.pinimg.com/736x/8f/95/c2/8f95c217ba2d2346b499f9772ec15d3a.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "70 phút"
+  },
+  {
+    "name": "Gỏi Cuốn",
+    "description": "Món ăn nhẹ nhàng với tôm, thịt, bún và rau cuốn trong bánh tráng.",
+    "ingredients": ["Bánh tráng", "Tôm", "Thịt ba chỉ", "Bún tươi", "Rau thơm", "Nước chấm"],
+    "instructions": "1. Luộc tôm, thịt\n2. Chuẩn bị rau và bún\n3. Cuốn tất cả vào bánh tráng\n4. Ăn kèm nước chấm",
+    "imageUrl": "https://i.pinimg.com/736x/4e/83/fd/4e83fdb6d8baaedc20d2e8f65fbf8073.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "30 phút"
+  },
+  {
+    "name": "Hủ Tiếu Nam Vang",
+    "description": "Món hủ tiếu nước ngọt thanh từ xương, ăn kèm tôm, thịt bằm và trứng cút.",
+    "ingredients": ["500g hủ tiếu", "Xương heo", "Tôm", "Thịt bằm", "Trứng cút", "Hẹ"],
+    "instructions": "1. Ninh xương heo lấy nước ngọt\n2. Trụng hủ tiếu\n3. Thêm tôm, thịt bằm, trứng cút\n4. Chan nước lèo",
+    "imageUrl": "https://i.pinimg.com/736x/d7/8f/61/d78f619fbe39f158c603913851de47d6.jpg",
+    "category": "monchinh",
+    "difficulty": "hard",
+    "cookingTime": "100 phút"
+  },
+  {
+    "name": "Cơm Gà Hội An",
+    "description": "Món cơm gà nổi tiếng phố Hội với thịt gà xé và rau thơm.",
+    "ingredients": ["500g gạo", "1 con gà ta", "Hành tây", "Rau răm", "Nước mắm"],
+    "instructions": "1. Luộc gà, lấy nước nấu cơm\n2. Xé thịt gà\n3. Làm nước chấm gừng\n4. Ăn kèm rau răm và hành tây",
+    "imageUrl": "https://i.pinimg.com/1200x/1e/f6/72/1ef67232207f6510e92dabeae434285a.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "70 phút"
+  },
+  {
+    "name": "Cháo Lươn Nghệ An",
+    "description": "Món cháo lươn đặc sản Nghệ An cay nồng với hành tăm.",
+    "ingredients": ["300g lươn đồng", "200g gạo tẻ", "Hành tăm", "Ớt", "Nghệ tươi", "Rau răm"],
+    "instructions": "1. Làm sạch lươn, lọc thịt\n2. Xào lươn với nghệ\n3. Nấu cháo gạo\n4. Cho lươn vào và nêm nếm",
+    "imageUrl": "https://i.pinimg.com/736x/fe/da/20/feda20a088b4bb12de3acbd1258c9db4.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "80 phút"
+  },
+  {
+    "name": "Lẩu Cá Kèo",
+    "description": "Món lẩu miền Tây với cá kèo, rau đắng và nước dùng chua nhẹ.",
+    "ingredients": ["500g cá kèo", "Rau đắng", "Me chua", "Ớt", "Nấm", "Bún tươi"],
+    "instructions": "1. Nấu nước dùng với me\n2. Cho cá kèo vào\n3. Chuẩn bị rau và nấm\n4. Ăn kèm bún",
+    "imageUrl": "https://i.pinimg.com/736x/e3/d1/c5/e3d1c53021f9775234824cfae8c1efa7.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "60 phút"
+  },
+  {
+    "name": "Bò Kho",
+    "description": "Món bò kho thơm lừng với hương vị đậm đà, ăn kèm bánh mì hoặc hủ tiếu.",
+    "ingredients": ["500g thịt bò gân", "Cà rốt", "Sả", "Quế", "Ngò gai", "Nước mắm"],
+    "instructions": "1. Ướp bò với gia vị\n2. Xào sơ cho săn\n3. Hầm với sả và cà rốt\n4. Thêm rau thơm khi ăn",
+    "imageUrl": "https://i.pinimg.com/1200x/ef/e2/25/efe225d8273ef8d329083032f2eb42ac.jpg",
+    "category": "monchinh",
+    "difficulty": "hard",
+    "cookingTime": "120 phút"
+  },
+  {
+    "name": "Vịt Nấu Chao",
+    "description": "Món vịt hầm chao béo ngậy, đậm đà hương vị miền Tây.",
+    "ingredients": ["1 con vịt", "Chao trắng", "Khoai môn", "Sả", "Ớt", "Rau muống"],
+    "instructions": "1. Sơ chế vịt, chặt miếng\n2. Ướp với chao và gia vị\n3. Hầm cùng khoai môn\n4. Ăn kèm bún và rau",
+    "imageUrl": "https://i.pinimg.com/736x/1a/44/ff/1a44ff704083742864d994823e48a87b.jpg",
+    "category": "monchinh",
+    "difficulty": "hard",
+    "cookingTime": "100 phút"
+  },
+  {
+    "name": "Cá Hấp Hành Gừng",
+    "description": "Món cá hấp thanh đạm với hương vị hành gừng.",
+    "ingredients": ["1 con cá chép", "Hành lá", "Gừng tươi", "Nước mắm", "Tiêu"],
+    "instructions": "1. Làm sạch cá\n2. Nhồi gừng và hành vào bụng cá\n3. Hấp chín\n4. Chan nước mắm gừng",
+    "imageUrl": "https://i.pinimg.com/1200x/79/c8/87/79c887f41928cebbe6701203067ba543.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "40 phút"
+  },
+  {
+    "name": "Mực Xào Sa Tế",
+    "description": "Món mực cay nồng, đậm đà hương vị sa tế.",
+    "ingredients": ["300g mực tươi", "Sa tế", "Hành tây", "Ớt chuông", "Tỏi"],
+    "instructions": "1. Làm sạch mực, cắt khoanh\n2. Phi tỏi với sa tế\n3. Xào mực nhanh lửa\n4. Thêm rau củ và nêm gia vị",
+    "imageUrl": "https://i.pinimg.com/736x/1c/9a/ac/1c9aac86537f34c0e4d6584722b28603.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "30 phút"
+  },
+  {
+    "name": "Ếch Xào Sả Ớt",
+    "description": "Món ếch xào cay thơm với sả và ớt, ăn cùng cơm trắng rất ngon.",
+    "ingredients": ["500g thịt ếch", "Sả", "Ớt", "Hành tím", "Nước mắm"],
+    "instructions": "1. Làm sạch thịt ếch\n2. Ướp với sả, ớt, gia vị\n3. Xào nhanh trên lửa lớn\n4. Nêm vừa ăn",
+    "imageUrl": "https://i.pinimg.com/736x/a6/34/e3/a634e3ecb281249fb3deb85f4f3e4513.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "35 phút"
+  },
+  {
+    "name": "Sườn Non Rim Mặn",
+    "description": "Món sườn non rim đậm đà, đưa cơm cho cả gia đình.",
+    "ingredients": ["500g sườn non", "Nước mắm", "Đường", "Tỏi", "Hành tím"],
+    "instructions": "1. Chần sườn cho sạch\n2. Ướp sườn với gia vị\n3. Rim lửa nhỏ đến khi thấm\n4. Thêm hành, tiêu",
+    "imageUrl": "https://i.pinimg.com/1200x/d2/2b/98/d22b98a975a424e113bf641278bfd516.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "45 phút"
+  },
+  {
+    "name": "Gà Rang Gừng",
+    "description": "Món gà rang thơm nức với gừng tươi, thích hợp ngày se lạnh.",
+    "ingredients": ["500g thịt gà", "Gừng tươi", "Hành tím", "Nước mắm", "Tiêu"],
+    "instructions": "1. Sơ chế gà\n2. Xào gà với gừng\n3. Rim nhỏ lửa đến khi thấm\n4. Thêm tiêu cho dậy mùi",
+    "imageUrl": "https://i.pinimg.com/736x/c4/ec/53/c4ec53d9e8d4135458d4d30cab6c6588.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "40 phút"
+  },
+  {
+    "name": "Tôm Rang Me",
+    "description": "Món tôm rang chua ngọt hấp dẫn với nước sốt me.",
+    "ingredients": ["300g tôm sú", "Me chua", "Đường", "Tỏi", "Ớt"],
+    "instructions": "1. Làm sạch tôm\n2. Rang tôm với tỏi\n3. Pha nước sốt me chua ngọt\n4. Trộn đều với tôm",
+    "imageUrl": "https://i.pinimg.com/1200x/4a/ce/c8/4acec869ecb13752319c08303deb3a80.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "30 phút"
+  },
+  {
+    "name": "Lẩu Mắm Miền Tây",
+    "description": "Món lẩu mắm đặc sản miền Tây với hương vị đậm đà, nhiều loại rau.",
+    "ingredients": ["Mắm cá linh", "Cá basa", "Tôm", "Thịt ba chỉ", "Rau đắng", "Cà tím"],
+    "instructions": "1. Nấu nước dùng với mắm cá\n2. Lọc bỏ xương\n3. Cho cá, tôm, thịt vào\n4. Ăn kèm rau và bún",
+    "imageUrl": "https://i.pinimg.com/736x/07/55/8f/07558fd5697051784b6592e1d459fac5.jpg",
+    "category": "monchinh",
+    "difficulty": "hard",
+    "cookingTime": "90 phút"
+  },
+  {
+    "name": "Thịt Nướng Lá Lốt",
+    "description": "Món thịt nướng thơm lừng cuốn lá lốt đặc trưng Việt Nam.",
+    "ingredients": ["500g thịt heo băm", "Lá lốt", "Hành tím", "Tỏi", "Nước mắm"],
+    "instructions": "1. Trộn thịt với gia vị\n2. Gói trong lá lốt\n3. Nướng than hoa hoặc chảo\n4. Ăn kèm bún và rau",
+    "imageUrl": "https://i.pinimg.com/736x/00/f3/e1/00f3e12ed20067c2a630b4d037e32972.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "50 phút"
+  },
+  {
+    "name": "Chả Cá Lã Vọng",
+    "description": "Đặc sản Hà Nội, cá ướp nghệ nướng rồi xào với thì là và hành lá.",
+    "ingredients": [
+      "500g cá lăng (hoặc cá quả phi lê)",
+      "1 thìa nghệ tươi giã nhuyễn",
+      "2 thìa mẻ chua",
+      "2 thìa mắm tôm",
+      "2 thìa dầu ăn",
+      "Hành lá, thì là",
+      "Lạc rang, bún tươi, rau thơm ăn kèm"
+    ],
+    "instructions": "1. Cắt cá thành miếng vuông 3x3cm. \n2. Ướp cá với nghệ, mẻ, mắm tôm, dầu ăn trong 1-2 giờ. \n3. Nướng cá sơ cho vàng mặt. \n4. Bắc chảo, cho dầu ăn, phi thơm hành, cho cá vào đảo cùng thì là và hành lá. \n5. Ăn kèm bún, rau thơm, lạc rang và chấm mắm tôm.",
+    "imageUrl": "https://i.pinimg.com/1200x/ef/f0/ca/eff0ca7069998c50be1ce425c2a0b425.jpg",
+    "category": "monchinh",
+    "difficulty": "hard",
+    "cookingTime": "90 phút"
+  },
+  {
+    "name": "Gà Hấp Muối",
+    "description": "Món gà hấp đơn giản giữ nguyên vị ngọt tự nhiên, không cần nước.",
+    "ingredients": [
+      "1 con gà ta 1.2kg",
+      "500g muối hột",
+      "Sả cây",
+      "Gừng tươi",
+      "Lá chanh",
+      "Ớt, tiêu, muối chấm"
+    ],
+    "instructions": "1. Rửa sạch gà, để ráo. \n2. Trải một lớp muối hột dày dưới đáy nồi. \n3. Đặt sả, gừng, lá chanh lót trên muối. \n4. Đặt gà lên trên, phủ kín nắp. \n5. Hấp khoảng 45 phút - 1 giờ cho gà chín. \n6. Chặt miếng và ăn kèm muối tiêu chanh.",
+    "imageUrl": "https://i.pinimg.com/1200x/1e/7f/85/1e7f85665e33f5a9b1e05981e122586f.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "70 phút"
+  },
+  {
+    "name": "Bún Riêu Cua",
+    "description": "Món bún dân dã với riêu cua, đậu hũ, cà chua và mắm tôm.",
+    "ingredients": [
+      "500g cua đồng",
+      "500g bún tươi",
+      "3 quả cà chua",
+      "2 bìa đậu hũ",
+      "Mắm tôm",
+      "Rau sống: xà lách, tía tô, kinh giới"
+    ],
+    "instructions": "1. Giã cua, lọc lấy nước. Đun sôi cho riêu nổi lên, vớt để riêng. \n2. Phi thơm hành, xào cà chua. \n3. Thêm nước cua, nêm mắm tôm, muối, đường. \n4. Cho đậu hũ chiên và riêu cua vào nồi. \n5. Trụng bún, chan nước lèo, thêm rau sống khi ăn.",
+    "imageUrl": "https://i.pinimg.com/736x/9e/fb/32/9efb32ec8404cc61324786d6a5981d2e.jpg",
+    "category": "monchinh",
+    "difficulty": "hard",
+    "cookingTime": "90 phút"
+  },
+  {
+    "name": "Sườn Xào Chua Ngọt",
+    "description": "Món ăn đưa cơm với vị chua ngọt hài hòa.",
+    "ingredients": [
+      "500g sườn non",
+      "3 thìa nước mắm",
+      "2 thìa đường",
+      "2 thìa giấm",
+      "1 thìa tương cà",
+      "Hành, tỏi, ớt"
+    ],
+    "instructions": "1. Chặt sườn thành miếng vừa ăn, chần qua nước sôi. \n2. Chiên sườn vàng. \n3. Làm sốt chua ngọt: pha nước mắm, đường, giấm, tương cà. \n4. Xào sườn với sốt đến khi sánh. \n5. Rắc hành, tiêu, ớt rồi tắt bếp.",
+    "imageUrl": "https://i.pinimg.com/1200x/34/e1/e7/34e1e7b1e8db1fa45dd8e2fb6c46d9f7.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "45 phút"
+  },
+  {
+    "name": "Bánh Canh Cua",
+    "description": "Nước dùng sánh ngọt từ cua, tôm và chả cá.",
+    "ingredients": [
+      "300g cua thịt",
+      "200g tôm sú",
+      "200g chả cá",
+      "500g bánh canh",
+      "Hành lá, ngò rí",
+      "Gia vị: nước mắm, đường, muối"
+    ],
+    "instructions": "1. Nấu nước cua, lọc lấy phần tinh. \n2. Thêm tôm và chả cá vào nồi. \n3. Luộc bánh canh riêng, vớt ra. \n4. Chan nước dùng vào bánh canh, thêm hành, ngò. \n5. Ăn nóng kèm nước mắm ớt.",
+    "imageUrl": "https://i.pinimg.com/1200x/10/82/4e/10824e306084fa8f96ceab4b89e94971.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "60 phút"
+  },
+  {
+    "name": "Gà Chiên Nước Mắm",
+    "description": "Gà chiên giòn rụm phủ sốt nước mắm mặn ngọt.",
+    "ingredients": [
+      "500g cánh gà",
+      "3 thìa nước mắm",
+      "2 thìa đường",
+      "1 thìa tỏi băm",
+      "Dầu ăn"
+    ],
+    "instructions": "1. Rửa sạch gà, ướp muối. \n2. Chiên gà vàng giòn. \n3. Làm sốt: nước mắm, đường, tỏi phi. \n4. Cho gà vào sốt, đảo đều đến khi thấm. \n5. Ăn nóng với cơm.",
+    "imageUrl": "https://i.pinimg.com/1200x/06/06/7d/06067d5aee74c61f98f0b8038c391433.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "40 phút"
+  },
+  {
+    "name": "Lẩu Bò Nhúng Dấm",
+    "description": "Thịt bò nhúng nước dùng chua nhẹ từ giấm, ăn kèm bánh tráng.",
+    "ingredients": [
+      "300g thịt bò thăn",
+      "500ml nước dừa",
+      "100ml giấm gạo",
+      "Sả, tỏi, ớt",
+      "Bánh tráng, bún, rau sống"
+    ],
+    "instructions": "1. Đun nước dừa với giấm, sả, tỏi, ớt. \n2. Thái thịt bò mỏng. \n3. Chuẩn bị rau sống, bún, bánh tráng. \n4. Khi ăn, nhúng bò vào nồi lẩu. \n5. Cuốn bánh tráng với bò, rau và chấm mắm nêm.",
+    "imageUrl": "https://i.pinimg.com/1200x/84/2f/c8/842fc899420614cf55de8b8e7481d8d2.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "60 phút"
+  },
+  {
+    "name": "Bò Né",
+    "description": "Món bò áp chảo nóng hổi thường ăn kèm trứng ốp la và pate.",
+    "ingredients": [
+      "200g thịt bò phi lê",
+      "2 quả trứng gà",
+      "50g pate",
+      "Bánh mì",
+      "Bơ, hành tây"
+    ],
+    "instructions": "1. Phi lê bò thái mỏng, ướp tiêu, nước tương. \n2. Đun chảo gang, cho bơ, hành tây, thịt bò vào áp chảo. \n3. Đập trứng ốp la ngay trong chảo. \n4. Cho pate vào cùng. \n5. Dùng nóng với bánh mì.",
+    "imageUrl": "https://i.pinimg.com/1200x/5a/da/81/5ada81a9fb7e434403a575eb6e8696ed.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "30 phút"
+  },
+  {
+    "name": "Canh Khoai Mỡ Nấu Tôm",
+    "description": "Món canh tím đặc trưng, ngọt từ khoai mỡ và tôm khô.",
+    "ingredients": [
+      "200g khoai mỡ",
+      "100g tôm khô",
+      "Hành tím",
+      "Hành lá",
+      "Gia vị: muối, tiêu, nước mắm"
+    ],
+    "instructions": "1. Gọt khoai mỡ, bào nhuyễn. \n2. Phi hành, cho tôm khô vào xào. \n3. Đổ nước, nấu sôi. \n4. Thêm khoai mỡ vào khuấy đều đến khi tím sánh. \n5. Nêm nếm vừa ăn, rắc hành lá.",
+    "imageUrl": "https://i.pinimg.com/736x/c8/3a/c4/c83ac40970845a45a415915399cb1990.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "40 phút"
+  },
+  {
+    "name": "Chả Tôm Thanh Hóa",
+    "description": "Đặc sản Thanh Hóa với bánh phở cuốn tôm rồi nướng than.",
+    "ingredients": [
+      "300g tôm tươi",
+      "Bánh phở bản to",
+      "Thịt ba chỉ",
+      "Hành khô, tỏi",
+      "Gia vị: nước mắm, tiêu"
+    ],
+    "instructions": "1. Băm tôm, trộn với thịt ba chỉ, gia vị. \n2. Trải bánh phở, cuốn nhân tôm vào. \n3. Xiên que, nướng trên than hoa đến vàng giòn. \n4. Ăn kèm rau sống và nước chấm chua ngọt.",
+    "imageUrl": "https://i.pinimg.com/736x/2d/6d/8b/2d6d8b2a80b48d902e57baf66930810f.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "60 phút"
+  },
+   {
+    "name": "Bún Thịt Nướng",
+    "description": "Món bún khô ăn kèm thịt nướng, nem, rau sống và nước mắm chua ngọt.",
+    "ingredients": [
+      "500g thịt ba chỉ hoặc nạc vai",
+      "200g bún tươi",
+      "1 củ sả, tỏi, hành tím",
+      "Gia vị: nước mắm, đường, tiêu, dầu hào",
+      "Rau sống: xà lách, dưa leo, giá",
+      "Đậu phộng rang, hành phi"
+    ],
+    "instructions": "1. Thịt heo cắt miếng mỏng, ướp với sả, tỏi, dầu hào, nước mắm, đường ít nhất 1 giờ. \n2. Nướng thịt trên than hoa hoặc lò nướng đến khi vàng thơm. \n3. Pha nước mắm chua ngọt: nước mắm, đường, tỏi, ớt, nước lọc, chanh. \n4. Cho bún ra tô, thêm rau sống, thịt nướng, chan nước mắm và rắc đậu phộng, hành phi.",
+    "imageUrl": "https://i.pinimg.com/1200x/30/7a/e1/307ae1a4dcfeb80dd401a33b544014d4.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "60 phút"
+  },
+  {
+    "name": "Mi Quảng",
+    "description": "Đặc sản Quảng Nam với sợi mì vàng, ăn cùng tôm, thịt, trứng cút và rau sống.",
+    "ingredients": [
+      "300g mì Quảng",
+      "200g tôm",
+      "200g thịt heo ba chỉ",
+      "4 quả trứng cút",
+      "Đậu phộng rang, hành phi",
+      "Rau sống: xà lách, húng quế, bắp chuối",
+      "Nước dùng: xương heo, nghệ tươi"
+    ],
+    "instructions": "1. Ninh xương heo với nghệ để lấy nước dùng vàng nhẹ. \n2. Xào tôm, thịt heo cho săn, thêm vào nước dùng. \n3. Luộc trứng cút, bóc vỏ. \n4. Trụng mì Quảng, cho vào tô. \n5. Xếp tôm, thịt, trứng cút lên, chan ít nước dùng, rắc đậu phộng, hành phi và rau sống.",
+    "imageUrl": "https://i.pinimg.com/736x/fa/21/54/fa2154fc7678e0cd086958c2a2012f01.jpg",
+    "category": "monchinh",
+    "difficulty": "hard",
+    "cookingTime": "80 phút"
+  },
+  {
+    "name": "Lẩu Ếch Măng Chua",
+    "description": "Món lẩu với thịt ếch và măng chua, nước dùng đậm đà.",
+    "ingredients": [
+      "500g thịt ếch",
+      "200g măng chua",
+      "500g bún tươi",
+      "Sả, ớt, tỏi",
+      "Gia vị: muối, tiêu, nước mắm"
+    ],
+    "instructions": "1. Làm sạch ếch, chặt miếng vừa ăn. \n2. Xào ếch với sả, ớt, tỏi. \n3. Cho măng chua vào nồi nước dùng, nêm gia vị. \n4. Cho thịt ếch đã xào vào, nấu chín. \n5. Dọn ra ăn kèm bún tươi và rau sống.",
+    "imageUrl": "https://i.pinimg.com/736x/16/01/d5/1601d560bf64f3ab4a99350a2a047043.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "70 phút"
+  },
+  {
+    "name": "Cá Nướng Muối Ớt",
+    "description": "Món cá nướng thơm lừng, cay nồng, thích hợp cho tiệc ngoài trời.",
+    "ingredients": [
+      "1 con cá rô phi hoặc cá chép ~1kg",
+      "2 thìa muối hột",
+      "2 thìa ớt băm",
+      "1 thìa dầu ăn",
+      "Rau sống, bánh tráng ăn kèm"
+    ],
+    "instructions": "1. Làm sạch cá, khứa vài đường trên thân. \n2. Trộn muối, ớt băm, dầu ăn thành hỗn hợp, ướp cá 30 phút. \n3. Nướng cá trên than hoa hoặc lò nướng đến khi chín vàng. \n4. Ăn kèm rau sống, bánh tráng và nước chấm chua ngọt.",
+    "imageUrl": "https://i.pinimg.com/736x/b3/b2/a4/b3b2a47ece27097c0bfa9f24c3b567cf.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "60 phút"
+  },
+  {
+    "name": "Cơm Hến",
+    "description": "Đặc sản Huế với cơm nguội, hến xào, rau sống và tóp mỡ.",
+    "ingredients": [
+      "300g hến đã luộc sẵn",
+      "2 bát cơm nguội",
+      "Rau sống: rau thơm, bắp chuối bào",
+      "Đậu phộng rang, tóp mỡ",
+      "Mắm ruốc Huế pha loãng"
+    ],
+    "instructions": "1. Xào hến với tỏi phi, nêm mắm ruốc. \n2. Chuẩn bị cơm nguội, rau sống. \n3. Cho hến xào lên cơm, thêm rau sống, đậu phộng, tóp mỡ. \n4. Trộn đều và ăn ngay.",
+    "imageUrl": "https://i.pinimg.com/736x/7f/49/c0/7f49c023ea483a417a87b881dfde60a6.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "40 phút"
+  },
+  {
+    "name": "Lẩu Tôm Càng Xanh",
+    "description": "Món lẩu hải sản sang trọng với tôm càng xanh ngọt thịt.",
+    "ingredients": [
+      "500g tôm càng xanh",
+      "Nấm rơm, nấm kim châm",
+      "Rau muống, cải thảo",
+      "500g bún tươi",
+      "Gia vị lẩu Thái: sả, ớt, chanh"
+    ],
+    "instructions": "1. Nấu nước dùng với sả, ớt, chanh. \n2. Cho tôm càng vào nồi khi sôi. \n3. Chuẩn bị rau, nấm và bún. \n4. Ăn nóng kèm nước chấm hải sản.",
+    "imageUrl": "https://i.pinimg.com/736x/8c/1e/f2/8c1ef2285915b6e6396ac9dd7df11212.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "60 phút"
+  },
+  {
+    "name": "Thịt Bò Xào Rau Muống",
+    "description": "Món bò xào đơn giản, thơm ngon, giàu dinh dưỡng.",
+    "ingredients": [
+      "300g thịt bò thăn",
+      "300g rau muống",
+      "2 tép tỏi",
+      "Gia vị: dầu hào, nước mắm, tiêu"
+    ],
+    "instructions": "1. Thái bò mỏng, ướp với dầu hào, tiêu. \n2. Chần rau muống sơ rồi để ráo. \n3. Phi tỏi, cho bò vào xào nhanh. \n4. Thêm rau muống, đảo đều, nêm nếm vừa ăn.",
+    "imageUrl": "https://i.pinimg.com/736x/14/03/4c/14034c742e21b38460ca9faeb5069591.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "25 phút"
+  },
+  {
+    "name": "Cá Chiên Sốt Cà",
+    "description": "Món cá chiên giòn rưới sốt cà chua đậm đà.",
+    "ingredients": [
+      "1 con cá thu hoặc cá rô phi",
+      "3 quả cà chua",
+      "Hành tím, tỏi",
+      "Gia vị: muối, đường, nước mắm"
+    ],
+    "instructions": "1. Làm sạch cá, chiên vàng giòn hai mặt. \n2. Xào cà chua với hành tỏi, thêm gia vị, nấu thành sốt. \n3. Rưới sốt cà lên cá chiên. \n4. Ăn nóng với cơm.",
+    "imageUrl": "https://i.pinimg.com/1200x/50/07/f6/5007f686c0a7367ff8d3f79311418a87.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "35 phút"
+  },
+  {
+    "name": "Gỏi Gà Bắp Cải",
+    "description": "Món gỏi thanh mát từ gà luộc và bắp cải, ăn kèm phồng tôm.",
+    "ingredients": [
+      "300g ức gà luộc",
+      "1/2 bắp cải nhỏ",
+      "Cà rốt bào",
+      "Rau răm",
+      "Đậu phộng rang, phồng tôm",
+      "Nước mắm chua ngọt"
+    ],
+    "instructions": "1. Luộc gà, xé sợi. \n2. Bào bắp cải, cà rốt mỏng. \n3. Trộn gà, rau củ với nước mắm chua ngọt. \n4. Rắc đậu phộng, rau răm. \n5. Ăn kèm phồng tôm chiên.",
+    "imageUrl": "https://i.pinimg.com/736x/a8/95/8a/a8958adc9b53925e913e95422c99a069.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "40 phút"
+  },
+  {
+    "name": "Canh Khổ Qua Nhồi Thịt",
+    "description": "Món canh mát lành, hơi đắng nhẹ với khổ qua nhồi thịt bằm.",
+    "ingredients": [
+      "4 trái khổ qua",
+      "200g thịt heo bằm",
+      "Mộc nhĩ, miến",
+      "Hành tím, tiêu",
+      "Gia vị: muối, nước mắm"
+    ],
+    "instructions": "1. Cắt đôi khổ qua, bỏ ruột. \n2. Trộn thịt bằm với mộc nhĩ, miến, hành, gia vị. \n3. Nhồi nhân vào khổ qua. \n4. Nấu nước sôi, thả khổ qua vào nấu chín. \n5. Nêm nếm và rắc tiêu.",
+    "imageUrl": "https://i.pinimg.com/1200x/d0/66/92/d066922444b07403bccf250ae6ac133a.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "60 phút"
+  },
+  {
+    "name": "Canh Rau Đay Nấu Cua",
+    "description": "Món canh dân dã, ngọt thanh từ cua đồng, rau đay và mồng tơi.",
+    "ingredients": [
+      "300g cua đồng",
+      "100g rau đay",
+      "100g mồng tơi",
+      "100g mướp",
+      "Muối, bột ngọt"
+    ],
+    "instructions": "1. Giã cua, lọc lấy nước. \n2. Đun sôi, vớt riêu cua để riêng. \n3. Cho rau đay, mồng tơi, mướp vào nấu. \n4. Thả riêu cua lên mặt. \n5. Nêm muối, bột ngọt vừa ăn.",
+    "imageUrl": "https://i.pinimg.com/736x/5b/e9/b1/5be9b1047edb84e7d1ab3fb0a189e0ac.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "40 phút"
+  },
+  {
+    "name": "Cơm Chiên Hải Sản",
+    "description": "Cơm chiên với tôm, mực, trứng và rau củ.",
+    "ingredients": [
+      "2 bát cơm nguội",
+      "100g tôm",
+      "100g mực",
+      "2 quả trứng gà",
+      "Cà rốt, đậu Hà Lan"
+    ],
+    "instructions": "1. Đánh trứng, chiên sơ. \n2. Xào tôm, mực cho săn. \n3. Cho cơm vào đảo cùng rau củ. \n4. Nêm nước mắm, tiêu, hành lá. \n5. Ăn nóng.",
+    "imageUrl": "https://i.pinimg.com/736x/39/81/9a/39819ae49cceca83c27becda11c1b678.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "30 phút"
+  },
+  {
+    "name": "Thịt Vịt Quay Bắc Kinh",
+    "description": "Món vịt quay da giòn vàng, ăn kèm bánh tráng mỏng và sốt hoisin.",
+    "ingredients": [
+      "1 con vịt 2kg",
+      "Mật ong",
+      "Xì dầu",
+      "Ngũ vị hương",
+      "Gừng, tỏi, hành"
+    ],
+    "instructions": "1. Làm sạch vịt, ướp với gừng, tỏi, xì dầu, ngũ vị. \n2. Treo vịt hong gió 3-4 giờ. \n3. Quét mật ong lên da. \n4. Quay lò 200°C khoảng 60-80 phút đến khi da vàng giòn. \n5. Chặt miếng, ăn kèm bánh tráng, sốt hoisin.",
+    "imageUrl": "https://i.pinimg.com/736x/a3/ff/b3/a3ffb38496192981dcfdecac07a1086f.jpg",
+    "category": "monchinh",
+    "difficulty": "hard",
+    "cookingTime": "150 phút"
+  },
+  {
+    "name": "Mì Xào Bò",
+    "description": "Món mì trứng xào bò nhanh gọn, đậm đà.",
+    "ingredients": [
+      "200g mì trứng",
+      "200g thịt bò thăn",
+      "1 củ hành tây",
+      "Ớt chuông",
+      "Nước tương, dầu hào"
+    ],
+    "instructions": "1. Luộc mì trứng, để ráo. \n2. Thái thịt bò mỏng, ướp với dầu hào, tiêu. \n3. Xào bò với hành, ớt chuông. \n4. Cho mì vào đảo cùng, nêm nước tương. \n5. Ăn nóng.",
+    "imageUrl": "https://i.pinimg.com/1200x/b1/f7/10/b1f710f2d242a85c9d2f2ca93b106a3f.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "30 phút"
+  },
+  {
+    "name": "Cá Thu Kho Cà",
+    "description": "Món cá thu kho cà chua mặn mà, đưa cơm.",
+    "ingredients": [
+      "2 lát cá thu",
+      "3 quả cà chua",
+      "Hành tím, tỏi",
+      "Nước mắm, đường"
+    ],
+    "instructions": "1. Rửa cá, chiên vàng sơ. \n2. Xào cà chua, thêm nước mắm, đường. \n3. Cho cá vào kho nhỏ lửa 20 phút. \n4. Nêm nếm lại, thêm tiêu. \n5. Ăn với cơm nóng.",
+    "imageUrl": "https://i.pinimg.com/736x/33/86/84/3386848f6ac5c3715138769209986e9b.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "50 phút"
+  },
+  {
+    "name": "Súp Cua",
+    "description": "Món súp khai vị với cua, nấm và trứng gà.",
+    "ingredients": [
+      "200g thịt cua",
+      "100g nấm đông cô",
+      "1 quả trứng gà",
+      "100g bột năng",
+      "Ngò rí, tiêu"
+    ],
+    "instructions": "1. Đun nước dùng gà, cho nấm vào nấu. \n2. Thêm cua, nêm muối, tiêu. \n3. Hòa bột năng, cho từ từ để súp sánh. \n4. Đánh tan trứng, đổ thành sợi vào nồi. \n5. Múc ra chén, rắc ngò.",
+    "imageUrl": "https://i.pinimg.com/736x/62/16/f6/6216f6773b60a863e0b9121591fd49d0.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "40 phút"
+  },
+  {
+    "name": "Gà Nấu Cari",
+    "description": "Gà hầm với bột cà ri, nước cốt dừa và khoai tây.",
+    "ingredients": [
+      "500g thịt gà",
+      "2 thìa bột cà ri",
+      "200ml nước cốt dừa",
+      "2 củ khoai tây",
+      "1 củ cà rốt"
+    ],
+    "instructions": "1. Gà cắt miếng, ướp với bột cà ri, muối. \n2. Chiên sơ khoai, cà rốt. \n3. Xào gà, cho nước cốt dừa và nước vào hầm. \n4. Thêm khoai, cà rốt, nấu mềm. \n5. Ăn nóng với bánh mì hoặc cơm.",
+    "imageUrl": "https://i.pinimg.com/1200x/e2/9f/1f/e29f1f776c2421b71403cbebe2427c07.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "70 phút"
+  },
+  {
+    "name": "Thịt Kho Tiêu",
+    "description": "Thịt heo kho tiêu cay nhẹ, thấm vị.",
+    "ingredients": [
+      "400g thịt ba rọi",
+      "2 thìa nước mắm",
+      "1 thìa đường",
+      "1 thìa tiêu xay",
+      "Hành tím, tỏi"
+    ],
+    "instructions": "1. Cắt thịt miếng vừa ăn, ướp với nước mắm, đường, tiêu. \n2. Phi tỏi, cho thịt vào đảo đều. \n3. Thêm nước, kho lửa nhỏ đến khi cạn sệt. \n4. Nêm lại vừa ăn, rắc tiêu.",
+    "imageUrl": "https://i.pinimg.com/736x/e2/d3/c9/e2d3c9363648b7d004d676823c24b5d7.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "50 phút"
+  },
+  {
+    "name": "Mì Quảng Gà",
+    "description": "Biến thể mì Quảng với thịt gà, nước dùng đậm vị nghệ.",
+    "ingredients": [
+      "300g mì Quảng",
+      "300g thịt gà ta",
+      "2 củ nghệ tươi",
+      "4 quả trứng cút",
+      "Đậu phộng rang, rau sống"
+    ],
+    "instructions": "1. Hầm gà với nghệ tươi cho nước vàng. \n2. Luộc trứng cút, bóc vỏ. \n3. Trụng mì Quảng, xếp vào tô. \n4. Cho thịt gà, trứng, chan nước ít. \n5. Thêm rau sống, rắc đậu phộng.",
+    "imageUrl": "https://i.pinimg.com/1200x/c5/a1/63/c5a163f7f497d50b7d445d7c6fa16314.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "70 phút"
+  },
+  {
+    "name": "Cháo Gà",
+    "description": "Cháo gà đơn giản, bổ dưỡng, dễ ăn.",
+    "ingredients": [
+      "1 con gà ta nhỏ",
+      "200g gạo tẻ",
+      "1 củ gừng",
+      "Hành lá, rau mùi",
+      "Gia vị: muối, nước mắm, tiêu"
+    ],
+    "instructions": "1. Luộc gà, vớt ra xé thịt, để riêng. \n2. Dùng nước luộc gà nấu cháo với gạo. \n3. Khi cháo nhừ, nêm muối, nước mắm. \n4. Cho thịt gà xé vào nồi, đảo nhẹ. \n5. Múc ra bát, thêm hành, tiêu.",
+    "imageUrl": "https://i.pinimg.com/1200x/a2/92/d7/a292d709c29972b0ab77464efe16a8dd.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "70 phút"
+  },
+  {
+    "name": "Bánh Đa Cua Hải Phòng",
+    "description": "Đặc sản Hải Phòng với nước dùng cua, bánh đa đỏ, chả lá lốt và rau muống.",
+    "ingredients": [
+      "200g bánh đa đỏ",
+      "200g cua đồng",
+      "100g chả lá lốt",
+      "100g rau muống chẻ",
+      "Cà chua, hành tím, mỡ nước"
+    ],
+    "instructions": "1. Giã cua, lọc lấy nước, đun sôi cho riêu nổi. \n2. Xào cà chua với mỡ nước, đổ vào nồi nước cua. \n3. Luộc bánh đa đỏ, trụng rau muống. \n4. Chan nước cua, cho riêu, chả lá lốt, rau muống lên trên.",
+    "imageUrl": "https://i.pinimg.com/736x/8c/a1/62/8ca162a1bd190a47756a90ba527ce62f.jpg",
+    "category": "monchinh",
+    "difficulty": "hard",
+    "cookingTime": "90 phút"
+  },
+  {
+    "name": "Thịt Bò Kho Tiêu Xanh",
+    "description": "Món bò kho mềm thơm, vị cay nồng từ tiêu xanh.",
+    "ingredients": [
+      "500g thịt bò gân",
+      "2 nhánh tiêu xanh",
+      "1 củ cà rốt",
+      "1 củ khoai tây",
+      "Gia vị: nước mắm, ngũ vị hương, dầu điều"
+    ],
+    "instructions": "1. Thịt bò cắt khối, ướp với dầu điều, mắm, ngũ vị. \n2. Xào thịt bò cho săn. \n3. Thêm nước, cho cà rốt, khoai tây vào hầm. \n4. Khi gần chín, cho tiêu xanh. \n5. Ăn kèm cơm hoặc bánh mì.",
+    "imageUrl": "https://i.pinimg.com/736x/cd/45/f5/cd45f548ef8e6d2a7bbbbdb484d0ecfe.jpg",
+    "category": "monchinh",
+    "difficulty": "hard",
+    "cookingTime": "120 phút"
+  },
+  {
+    "name": "Mì Quảng Ếch",
+    "description": "Phiên bản mì Quảng độc đáo với thịt ếch xào sả ớt.",
+    "ingredients": [
+      "300g mì Quảng",
+      "400g thịt ếch",
+      "Sả, nghệ tươi, ớt",
+      "Đậu phộng rang, rau sống",
+      "Bánh tráng nướng"
+    ],
+    "instructions": "1. Làm sạch ếch, chặt miếng, ướp với sả, nghệ, ớt. \n2. Xào ếch với dầu ăn cho thơm. \n3. Nấu ít nước dùng gà để chan mì. \n4. Trụng mì Quảng, cho ếch xào lên. \n5. Ăn kèm đậu phộng, rau sống, bánh tráng.",
+    "imageUrl": "https://cdn.tgdd.vn/Files/2020/06/01/1259863/cach-lam-mi-quang-ech-ech-dai-khong-bi-bo-thom-ngon-ngay-tai-nha-202006010644328363.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "75 phút"
+  },
+  {
+    "name": "Cơm Rang Dưa Bò",
+    "description": "Cơm rang với dưa chua và thịt bò, hạt cơm săn giòn.",
+    "ingredients": [
+      "2 bát cơm nguội",
+      "200g thịt bò",
+      "100g dưa cải chua",
+      "2 quả trứng gà",
+      "Hành tím, hành lá"
+    ],
+    "instructions": "1. Thịt bò thái mỏng, ướp với tỏi, nước tương. \n2. Xào dưa chua cho ráo nước. \n3. Cho cơm nguội vào rang với trứng. \n4. Thêm dưa, bò xào vào đảo đều. \n5. Nêm nếm lại, rắc hành lá.",
+    "imageUrl": "https://i.pinimg.com/736x/30/cf/cc/30cfcc16e1e840e229bfd5590d05e7a1.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "40 phút"
+  },
+  {
+    "name": "Bún Mắm Miền Tây",
+    "description": "Đặc sản miền Tây với nước lèo nấu từ mắm cá, ăn kèm hải sản và rau sống.",
+    "ingredients": [
+      "200g bún tươi",
+      "200g mắm cá linh hoặc cá sặc",
+      "200g tôm, mực, cá basa",
+      "Cà tím, rau đắng, rau thơm"
+    ],
+    "instructions": "1. Nấu mắm cá trong nước, lọc bỏ xương. \n2. Cho hải sản vào nồi nước lèo. \n3. Chuẩn bị rau, cà tím cắt khúc. \n4. Cho bún vào tô, chan nước lèo, thêm hải sản và rau.",
+    "imageUrl": "https://i.pinimg.com/1200x/9a/ea/3d/9aea3d07cf113b3fb2c203640b0a638b.jpg",
+    "category": "monchinh",
+    "difficulty": "hard",
+    "cookingTime": "100 phút"
+  },
+  {
+    "name": "Thịt Kho Quẹt",
+    "description": "Món ăn dân dã với thịt ba chỉ kho mặn, ăn kèm rau luộc.",
+    "ingredients": [
+      "200g thịt ba chỉ",
+      "3 thìa nước mắm",
+      "2 thìa đường",
+      "Ớt, tiêu, hành tím",
+      "Rau luộc các loại"
+    ],
+    "instructions": "1. Thái nhỏ thịt ba chỉ, thắng mỡ. \n2. Cho nước mắm, đường, tiêu, ớt vào đảo. \n3. Kho lửa nhỏ đến khi sệt lại. \n4. Ăn kèm cơm nóng và rau luộc.",
+    "imageUrl": "https://i.pinimg.com/1200x/55/72/0f/55720f9f9869402167d791731463bf2b.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "35 phút"
+  },
+  {
+    "name": "Lẩu Cua Đồng",
+    "description": "Nồi lẩu thanh ngọt từ cua đồng, ăn kèm rau và bún.",
+    "ingredients": [
+      "500g cua đồng",
+      "200g tôm",
+      "200g thịt bò",
+      "Rau muống, rau nhút, bông súng",
+      "500g bún tươi"
+    ],
+    "instructions": "1. Giã cua, lọc lấy nước, nấu cho riêu nổi. \n2. Vớt riêu để riêng, nêm nước dùng chua cay. \n3. Thêm tôm, bò khi ăn. \n4. Dọn kèm rau và bún.",
+    "imageUrl": "https://i.pinimg.com/736x/05/0a/3c/050a3ce4d3d8042184780d93886f0f7a.jpg",
+    "category": "monchinh",
+    "difficulty": "hard",
+    "cookingTime": "90 phút"
+  },
+  {
+    "name": "Bò Hầm Rượu Vang",
+    "description": "Món bò hầm kiểu Pháp, mềm thơm, sốt đậm đà.",
+    "ingredients": [
+      "500g thịt bò gân",
+      "200ml rượu vang đỏ",
+      "1 củ cà rốt",
+      "1 củ khoai tây",
+      "Hành tây, cần tây, lá nguyệt quế"
+    ],
+    "instructions": "1. Thịt bò cắt khối, ướp với rượu vang, gia vị 1 giờ. \n2. Xào thịt bò với hành, cần tây. \n3. Cho cà rốt, khoai, nước dùng vào hầm 2 giờ. \n4. Ăn nóng với bánh mì.",
+    "imageUrl": "https://i.pinimg.com/1200x/f0/e0/c5/f0e0c5000bb14a5c2db356b15fe034be.jpg",
+    "category": "monchinh",
+    "difficulty": "hard",
+    "cookingTime": "150 phút"
+  },
+  {
+    "name": "Mực Nhồi Thịt Hấp",
+    "description": "Món mực hấp nhồi thịt heo băm, giữ vị ngọt tự nhiên.",
+    "ingredients": [
+      "300g mực ống",
+      "200g thịt heo băm",
+      "Mộc nhĩ, miến",
+      "Hành tím, tiêu, nước mắm"
+    ],
+    "instructions": "1. Làm sạch mực, bỏ túi mực. \n2. Trộn thịt heo với mộc nhĩ, miến, gia vị. \n3. Nhồi vào bụng mực, dùng tăm ghim lại. \n4. Hấp 20 phút, chấm nước mắm gừng.",
+    "imageUrl": "https://i.pinimg.com/736x/b8/11/50/b8115013f9f3f1d5c9d926f0d8032a7e.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "50 phút"
+  },
+  {
+    "name": "Canh Cá Diêu Hồng Nấu Ngót",
+    "description": "Canh cá thanh mát, nấu với cà chua và rau ngổ.",
+    "ingredients": [
+      "1 con cá diêu hồng",
+      "3 quả cà chua",
+      "1 bó rau ngổ",
+      "Hành tím, thì là",
+      "Gia vị: muối, nước mắm"
+    ],
+    "instructions": "1. Cá làm sạch, cắt khúc. \n2. Phi hành, xào cà chua cho mềm. \n3. Đổ nước, cho cá vào nấu chín. \n4. Thêm rau ngổ, thì là, nêm nếm. \n5. Ăn nóng với cơm.",
+    "imageUrl": "https://i.pinimg.com/736x/e7/fa/a5/e7faa5188302099eb332603122e5fb3f.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "45 phút"
+  },
+  {
+    "name": "Bò Xào Lúc Lắc Kiểu Pháp",
+    "description": "Món bò cắt khối vuông, xào nhanh với bơ, hành tây và ớt chuông, thường ăn kèm khoai tây chiên.",
+    "ingredients": [
+      "400g thịt bò thăn",
+      "1 củ hành tây",
+      "1 quả ớt chuông đỏ",
+      "1 thìa bơ lạt",
+      "Nước tương, dầu hào, tiêu"
+    ],
+    "instructions": "1. Thịt bò cắt khối vuông, ướp với nước tương, dầu hào, tiêu trong 20 phút. \n2. Bắc chảo nóng, cho bơ, phi thơm hành tây. \n3. Cho bò vào xào nhanh lửa lớn. \n4. Thêm ớt chuông, đảo nhanh rồi tắt bếp. \n5. Ăn kèm cơm trắng hoặc khoai tây chiên.",
+    "imageUrl": "https://i.pinimg.com/736x/e9/63/03/e96303650a4ef60e5b4ba4619a1c8fef.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "30 phút"
+  },
+  {
+    "name": "Cơm Gà Hải Nam",
+    "description": "Cơm gà kiểu Singapore, cơm nấu bằng nước luộc gà, ăn kèm sốt gừng và nước tương.",
+    "ingredients": [
+      "1 con gà ta 1.2kg",
+      "500g gạo thơm",
+      "Gừng tươi, hành lá",
+      "Nước mắm, nước tương",
+      "Dưa leo, rau thơm ăn kèm"
+    ],
+    "instructions": "1. Luộc gà cùng gừng, hành cho chín, vớt ra để nguội. \n2. Lấy nước luộc gà nấu cơm. \n3. Làm sốt gừng: gừng băm, dầu nóng, thêm muối. \n4. Xé hoặc chặt gà, dọn ra đĩa. \n5. Ăn kèm cơm, sốt gừng và dưa leo.",
+    "imageUrl": "https://i.pinimg.com/1200x/5c/cb/9c/5ccb9cc310e0ac5be1d2609a5c28353f.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "90 phút"
+  },
+  {
+    "name": "Bánh Bao Nhân Thịt",
+    "description": "Món bánh bao mềm xốp với nhân thịt heo, mộc nhĩ và trứng cút.",
+    "ingredients": [
+      "400g bột mì",
+      "200g thịt heo băm",
+      "Mộc nhĩ, miến",
+      "Trứng cút",
+      "Men nở, đường, sữa tươi"
+    ],
+    "instructions": "1. Nhồi bột với men, đường, sữa, để ủ 1-2 giờ. \n2. Trộn thịt băm với mộc nhĩ, miến, gia vị. \n3. Chia bột, cho nhân và trứng cút vào, vo tròn. \n4. Hấp 20 phút đến khi bánh nở. \n5. Ăn nóng.",
+    "imageUrl": "https://i.pinimg.com/736x/b1/f2/74/b1f274b9151867f1f459ca0d264344ba.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "120 phút"
+  },
+  {
+    "name": "Chả Cá Thát Lát",
+    "description": "Món chả cá dai ngon, có thể chiên hoặc hấp.",
+    "ingredients": [
+      "400g cá thát lát",
+      "Thì là, hành lá",
+      "Tiêu, muối, nước mắm",
+      "Dầu ăn"
+    ],
+    "instructions": "1. Quết cá thát lát thật dẻo với thì là, tiêu, muối. \n2. Vo viên hoặc dàn mỏng. \n3. Chiên vàng hoặc hấp chín. \n4. Ăn với cơm nóng hoặc canh chua.",
+    "imageUrl": "https://i.pinimg.com/736x/28/c4/52/28c452778874a09d03959dec6d6add04.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "50 phút"
+  },
+  {
+    "name": "Bún Cá Nha Trang",
+    "description": "Món bún thanh mát với cá luộc, chả cá và rau sống.",
+    "ingredients": [
+      "500g bún tươi",
+      "300g cá thu",
+      "200g chả cá Nha Trang",
+      "Cà chua, hành tím",
+      "Rau sống: xà lách, húng quế"
+    ],
+    "instructions": "1. Luộc cá thu, gỡ lấy thịt, giữ nước luộc làm nước lèo. \n2. Thêm cà chua xào vào nước dùng. \n3. Luộc chả cá, cắt lát. \n4. Cho bún vào tô, xếp cá, chả cá, chan nước dùng, thêm rau sống.",
+    "imageUrl": "https://cdn.tgdd.vn/2021/09/CookRecipe/Avatar/bun-cha-ca-nha-trang-thumbnail.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "70 phút"
+  },
+  {
+    "name": "Thịt Nướng Xiên",
+    "description": "Món thịt nướng xiên que thơm ngon, dễ làm tại nhà.",
+    "ingredients": [
+      "500g thịt ba chỉ",
+      "1 thìa mật ong",
+      "1 thìa dầu hào",
+      "Tỏi, sả băm",
+      "Xiên tre"
+    ],
+    "instructions": "1. Cắt thịt thành miếng vuông vừa ăn. \n2. Ướp với mật ong, dầu hào, sả, tỏi ít nhất 1 giờ. \n3. Xiên vào que tre. \n4. Nướng than hoa hoặc lò đến khi chín vàng. \n5. Ăn kèm rau sống và bánh mì.",
+    "imageUrl": "https://i.pinimg.com/1200x/20/15/a1/2015a161bb6f4d93d694348782cb3121.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "60 phút"
+  },
+  {
+    "name": "Canh Mướp Đắng Trứng",
+    "description": "Canh thanh mát, vị hơi đắng, giàu dinh dưỡng.",
+    "ingredients": [
+      "2 quả mướp đắng",
+      "2 quả trứng gà",
+      "Hành lá, tiêu",
+      "Nước mắm, muối"
+    ],
+    "instructions": "1. Bổ đôi mướp đắng, thái lát mỏng. \n2. Đập trứng, đánh tan. \n3. Đun nước sôi, cho mướp đắng vào nấu. \n4. Khi chín, đổ trứng vào khuấy đều. \n5. Nêm nước mắm, muối, rắc hành tiêu.",
+    "imageUrl": "https://i-giadinh.vnecdn.net/2022/09/10/-7548-1662797977.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "25 phút"
+  },
+  {
+    "name": "Vịt Nướng Riềng Mẻ",
+    "description": "Món vịt nướng đậm vị truyền thống với riềng, mẻ chua.",
+    "ingredients": [
+      "1 con vịt 1.5kg",
+      "2 thìa mẻ chua",
+      "1 củ riềng",
+      "Nước mắm, tiêu",
+      "Mật ong"
+    ],
+    "instructions": "1. Làm sạch vịt, chặt miếng. \n2. Ướp với riềng giã, mẻ chua, nước mắm, tiêu, mật ong 2 giờ. \n3. Nướng than hoa hoặc lò nướng 200°C đến khi vàng. \n4. Ăn kèm rau thơm, nước chấm gừng.",
+    "imageUrl": "https://cdn.eva.vn/upload/3-2024/images/hank/vit-nuong-rieng-me-thom-nuc-mui-cho-dip-nghi-le-_1_8_n-1725002846-685-width780height585.jpg",
+    "category": "monchinh",
+    "difficulty": "hard",
+    "cookingTime": "100 phút"
+  },
+  {
+    "name": "Cá Kho Riềng",
+    "description": "Cá kho với riềng thơm nồng, nước kho sánh đặc.",
+    "ingredients": [
+      "500g cá trắm",
+      "1 củ riềng",
+      "2 thìa nước mắm",
+      "1 thìa nước hàng",
+      "Ớt, tiêu"
+    ],
+    "instructions": "1. Cá làm sạch, cắt khúc. \n2. Ướp cá với riềng giã, mắm, nước hàng. \n3. Xếp cá vào nồi, đổ nước xăm xắp. \n4. Kho lửa nhỏ 1 giờ đến khi cạn sệt. \n5. Thêm tiêu, ớt cho thơm.",
+    "imageUrl": "https://i.pinimg.com/736x/5a/bb/d8/5abbd8e37a8caaae5406c9e8f371db31.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "80 phút"
+  },
+  {
+    "name": "Gà Rang Muối",
+    "description": "Gà chiên giòn, áo lớp muối rang thơm ngon.",
+    "ingredients": [
+      "500g gà ta chặt miếng",
+      "100g bột bắp",
+      "Muối hột rang, lá chanh",
+      "Tỏi, ớt"
+    ],
+    "instructions": "1. Ướp gà với muối, tiêu, tỏi 30 phút. \n2. Áo gà với bột bắp, chiên vàng giòn. \n3. Giã muối rang với lá chanh. \n4. Lăn gà đã chiên vào hỗn hợp muối. \n5. Dọn ra ăn nóng.",
+    "imageUrl": "https://i.pinimg.com/1200x/bd/af/a3/bdafa34bddd71eab30033ef7811a208f.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "50 phút"
+  },
+  {
+    "name": "Phở Xào Bò",
+    "description": "Món phở chiên mềm xào cùng thịt bò, rau cải, hành tây.",
+    "ingredients": [
+      "300g phở tươi",
+      "200g thịt bò thăn",
+      "1 củ hành tây",
+      "100g rau cải ngọt",
+      "Tỏi, dầu hào, nước tương"
+    ],
+    "instructions": "1. Thịt bò thái mỏng, ướp dầu hào, tiêu, tỏi. \n2. Xào bò lửa lớn, để riêng. \n3. Xào phở với hành tây, rau cải. \n4. Cho bò vào đảo nhanh, nêm nước tương. \n5. Ăn nóng.",
+    "imageUrl": "https://i.pinimg.com/736x/ef/1b/94/ef1b94a8f8d2e5475858aae9bf26501a.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "35 phút"
+  },
+  {
+    "name": "Lẩu Tomyum",
+    "description": "Lẩu chua cay kiểu Thái với tôm, mực, nghêu và rau.",
+    "ingredients": [
+      "200g tôm sú",
+      "200g mực",
+      "200g nghêu",
+      "200g nấm rơm",
+      "Gia vị: sả, lá chanh, ớt, sa tế"
+    ],
+    "instructions": "1. Nấu nước dùng với sả, lá chanh, ớt. \n2. Cho sa tế, gia vị chua cay vào. \n3. Chuẩn bị hải sản, rau, nấm. \n4. Nhúng hải sản và rau vào nồi khi ăn. \n5. Dùng kèm bún hoặc mì.",
+    "imageUrl": "https://i.pinimg.com/1200x/65/c7/b2/65c7b2f98000cc42d242ff0edb937deb.jpg",
+    "category": "monchinh",
+    "difficulty": "hard",
+    "cookingTime": "90 phút"
+  },
+  {
+    "name": "Bánh Canh Giò Heo",
+    "description": "Sợi bánh canh dai, nước dùng ngọt từ giò heo hầm.",
+    "ingredients": [
+      "500g giò heo",
+      "300g bánh canh bột gạo",
+      "1 củ hành tây",
+      "Hành lá, ngò rí",
+      "Nước mắm, muối"
+    ],
+    "instructions": "1. Hầm giò heo 1-2 giờ cho ngọt nước. \n2. Nêm nếm nước dùng với mắm, muối. \n3. Luộc bánh canh, vớt ra. \n4. Chan nước giò heo, thêm hành ngò. \n5. Ăn nóng.",
+    "imageUrl": "https://i.pinimg.com/1200x/f3/d3/e1/f3d3e13f12cb8755311395091c419b33.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "120 phút"
+  },
+  {
+    "name": "Cá Lóc Nướng Trui",
+    "description": "Đặc sản miền Tây với cá lóc nướng nguyên con trên than hồng.",
+    "ingredients": [
+      "1 con cá lóc 800g",
+      "Rau sống: xà lách, húng quế",
+      "Bún tươi",
+      "Nước mắm me"
+    ],
+    "instructions": "1. Làm sạch cá, để nguyên vảy. \n2. Xiên que qua miệng cá, nướng than hồng đến khi vàng. \n3. Bóc lớp vảy cháy, lấy thịt cá. \n4. Ăn kèm rau sống, bún, chấm mắm me.",
+    "imageUrl": "https://i.pinimg.com/736x/ad/f2/5a/adf25a4052e04c272b53ff00a5a739f0.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "60 phút"
+  },
+  {
+    "name": "Ốc nấu chuối đậu",
+    "description": "Ốc len béo ngậy, xào với nước cốt dừa đậm đà.",
+    "ingredients": [
+      "500g ốc len",
+      "200ml nước cốt dừa",
+      "Sả, ớt băm",
+      "Nước mắm, đường, muối"
+    ],
+    "instructions": "1. Rửa sạch ốc len, chặt đuôi. \n2. Phi sả ớt, cho ốc vào xào. \n3. Thêm nước cốt dừa, nấu sôi. \n4. Nêm đường, muối vừa ăn. \n5. Ăn nóng, hút ốc với nước dừa.",
+    "imageUrl": "https://i.pinimg.com/736x/f5/e0/54/f5e0541d4b38ce95a8356ce7df4ca6ce.jpg",
+    "category": "monchinh",
+    "difficulty": "easy",
+    "cookingTime": "40 phút"
+  },
+  {
+    "name": "Nem Nướng Nha Trang",
+    "description": "Món nem nướng nổi tiếng, ăn kèm bánh tráng, rau và nước chấm đặc trưng.",
+    "ingredients": [
+      "400g thịt heo xay",
+      "100g mỡ heo",
+      "Tỏi, hành tím",
+      "Bánh tráng, rau sống",
+      "Nước chấm nem nướng"
+    ],
+    "instructions": "1. Trộn thịt với mỡ, tỏi, hành, gia vị. \n2. Nặn nem vào que tre. \n3. Nướng than hoa cho vàng. \n4. Cuốn nem với bánh tráng, rau, chấm nước sốt đặc trưng.",
+    "imageUrl": "https://images.unsplash.com/photo-1625944578456-ffbd83d1a36f?auto=format&fit=crop&w=600&q=80",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "70 phút"
+  },
+  {
+    "name": "Bún Đậu Mắm Tôm",
+    "description": "Bún riêu đậm đà từ riêu cua, ăn kèm đậu hũ chiên và rau sống.",
+    "ingredients": [
+      "300g cua đồng",
+      "200g bún tươi",
+      "100g đậu hũ chiên",
+      "Cà chua, hành tím",
+      "Rau sống: xà lách, rau muống"
+    ],
+    "instructions": "1. Giã cua, lọc lấy nước, đun sôi cho riêu nổi. \n2. Xào cà chua, cho vào nồi cua. \n3. Thêm đậu hũ chiên. \n4. Chan nước cua vào bún, thêm rau sống.",
+    "imageUrl": "https://i.pinimg.com/736x/10/94/de/1094dec2764d8b7eb766a9a735db7255.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "80 phút"
+  },
+  {
+    "name": "Thịt Kho Đông Pha",
+    "description": "Món thịt ba chỉ kho mềm kiểu Trung Hoa, vị mặn ngọt hài hòa.",
+    "ingredients": [
+      "500g thịt ba chỉ",
+      "100ml xì dầu",
+      "50ml rượu Thiệu Hưng",
+      "Đường phèn, gừng",
+      "Hành lá"
+    ],
+    "instructions": "1. Cắt thịt thành khối vuông. \n2. Chần qua nước sôi, vớt ra. \n3. Kho thịt với xì dầu, rượu, gừng, đường phèn. \n4. Hầm lửa nhỏ 2 giờ cho mềm. \n5. Rắc hành lá trước khi ăn.",
+    "imageUrl": "https://i.pinimg.com/1200x/2e/4f/39/2e4f391b1c48f91dd374f326ff366487.jpg",
+    "category": "monchinh",
+    "difficulty": "hard",
+    "cookingTime": "150 phút"
+  },
+  {
+    "name": "Gà Tiềm Thuốc Bắc",
+    "description": "Món gà hầm bổ dưỡng với các vị thuốc bắc.",
+    "ingredients": [
+      "1 con gà ác",
+      "1 gói thuốc bắc (táo tàu, kỷ tử, nhân sâm)",
+      "Nước mắm, muối",
+      "Gừng"
+    ],
+    "instructions": "1. Gà làm sạch, chặt miếng. \n2. Cho gà, thuốc bắc, gừng vào nồi. \n3. Đổ nước, hầm lửa nhỏ 2-3 giờ. \n4. Nêm muối, ăn nóng.",
+    "imageUrl": "https://i.pinimg.com/736x/57/70/8d/57708dc1119e22817711461bcb9e0eb4.jpg",
+    "category": "monchinh",
+    "difficulty": "hard",
+    "cookingTime": "180 phút"
+  },
+  {
+    "name": "Sườn Non Nướng BBQ",
+    "description": "Sườn non nướng sốt BBQ đậm vị, mềm ngọt.",
+    "ingredients": [
+      "1kg sườn non",
+      "200g sốt BBQ",
+      "Mật ong",
+      "Muối, tiêu"
+    ],
+    "instructions": "1. Rửa sạch sườn, chần qua nước sôi. \n2. Ướp với sốt BBQ, mật ong ít nhất 2 giờ. \n3. Nướng lò 200°C trong 45 phút. \n4. Quét thêm sốt khi nướng để sườn bóng đẹp. \n5. Ăn kèm khoai tây chiên hoặc salad.",
+    "imageUrl": "https://i.pinimg.com/736x/a9/39/ec/a939ec0c60b3098ad1c7eed9cb604c86.jpg",
+    "category": "monchinh",
+    "difficulty": "medium",
+    "cookingTime": "90 phút"
+  },
+  {
+    "name": "Rau Muống Xào Tỏi",
+    "description": "Món rau muống xào tỏi dân dã, thơm ngon, giòn xanh.",
+    "ingredients": [
+      "300g rau muống",
+      "5 tép tỏi",
+      "2 thìa dầu ăn",
+      "Muối, hạt nêm"
+    ],
+    "instructions": "1. Nhặt rau muống, rửa sạch, để ráo. \n2. Đập dập tỏi, phi thơm với dầu. \n3. Cho rau vào xào nhanh lửa lớn. \n4. Nêm muối, hạt nêm vừa ăn, ăn nóng.",
+    "imageUrl": "https://i.pinimg.com/736x/0c/29/9b/0c299b8cd97a48085f574b5a79577dd1.jpg",
+    "category": "monphu",
+    "difficulty": "easy",
+    "cookingTime": "15 phút"
+  },
+  {
+    "name": "Đậu Hũ Chiên Sả",
+    "description": "Đậu hũ chiên vàng, áo lớp sả ớt băm thơm lừng.",
+    "ingredients": [
+      "4 miếng đậu hũ",
+      "2 cây sả",
+      "2 quả ớt",
+      "Dầu ăn, muối"
+    ],
+    "instructions": "1. Đậu hũ cắt miếng vừa ăn, chiên vàng. \n2. Băm sả ớt, phi thơm. \n3. Cho đậu hũ vào đảo đều. \n4. Ăn nóng với cơm.",
+    "imageUrl": "https://i.pinimg.com/736x/92/8f/d6/928fd6af6deb0e081f8e3ef987ecc995.jpg",
+    "category": "monphu",
+    "difficulty": "easy",
+    "cookingTime": "20 phút"
+  },
+  {
+    "name": "Khoai Tây Chiên Bơ Tỏi",
+    "description": "Khoai tây chiên vàng giòn, phủ bơ tỏi thơm béo.",
+    "ingredients": [
+      "300g khoai tây",
+      "2 thìa bơ lạt",
+      "3 tép tỏi",
+      "Muối"
+    ],
+    "instructions": "1. Khoai tây gọt vỏ, cắt que, ngâm nước muối. \n2. Chiên vàng giòn. \n3. Phi bơ tỏi, cho khoai vào đảo. \n4. Ăn nóng.",
+    "imageUrl": "https://i.pinimg.com/1200x/a0/fa/65/a0fa653c9b0b63c1e26182cbdc6837c5.jpg",
+    "category": "monphu",
+    "difficulty": "easy",
+    "cookingTime": "25 phút"
+  },
+  {
+    "name": "Nấm Xào Bơ",
+    "description": "Nấm tươi xào bơ, giữ vị ngọt tự nhiên.",
+    "ingredients": [
+      "200g nấm mỡ",
+      "2 thìa bơ lạt",
+      "1 tép tỏi",
+      "Muối, tiêu"
+    ],
+    "instructions": "1. Nấm rửa sạch, để ráo. \n2. Phi tỏi với bơ, cho nấm vào xào. \n3. Nêm muối, tiêu. \n4. Ăn nóng.",
+    "imageUrl": "https://i.pinimg.com/736x/d1/cf/1b/d1cf1bd35a2f0f2fcee7190e190ad716.jpg",
+    "category": "monphu",
+    "difficulty": "easy",
+    "cookingTime": "15 phút"
+  },
+  {
+    "name": "Cải Thìa Xào Dầu Hào",
+    "description": "Rau cải thìa xào dầu hào đậm vị, thanh mát.",
+    "ingredients": [
+      "300g cải thìa",
+      "2 thìa dầu hào",
+      "1 tép tỏi",
+      "Muối, dầu ăn"
+    ],
+    "instructions": "1. Cải thìa rửa sạch, cắt khúc. \n2. Phi tỏi, cho cải vào xào. \n3. Thêm dầu hào, nêm muối. \n4. Xào chín tới, ăn nóng.",
+    "imageUrl": "https://i.pinimg.com/1200x/1d/4e/56/1d4e56fa477ae6a5b56bd638d68b3823.jpg",
+    "category": "monphu",
+    "difficulty": "easy",
+    "cookingTime": "15 phút"
+  },
+  {
+    "name": "Ngô Chiên Bơ",
+    "description": "Hạt ngô vàng giòn, quyện bơ béo ngậy.",
+    "ingredients": [
+      "200g hạt ngô ngọt",
+      "2 thìa bơ",
+      "1 thìa đường",
+      "Muối"
+    ],
+    "instructions": "1. Ngô luộc chín, để ráo. \n2. Đun chảy bơ, cho ngô vào đảo. \n3. Thêm đường, muối, đảo đều. \n4. Ăn khi còn nóng.",
+    "imageUrl": "https://i.pinimg.com/736x/2c/db/9a/2cdb9ace57c7d5e04bbc521e4a63364e.jpg",
+    "category": "monphu",
+    "difficulty": "easy",
+    "cookingTime": "20 phút"
+  },
+  {
+    "name": "Đậu Bắp Luộc Chấm Mắm",
+    "description": "Đậu bắp luộc đơn giản, chấm mắm mặn ngọt.",
+    "ingredients": [
+      "200g đậu bắp",
+      "Nước mắm, đường, ớt",
+      "Muối"
+    ],
+    "instructions": "1. Rửa sạch đậu bắp, luộc chín tới. \n2. Pha nước mắm với đường, ớt. \n3. Ăn kèm nóng.",
+    "imageUrl": "https://i.pinimg.com/1200x/4c/33/4e/4c334ecd4043b8bb5554ab56c987d260.jpg",
+    "category": "monphu",
+    "difficulty": "easy",
+    "cookingTime": "10 phút"
+  },
+  {
+    "name": "Khoai Lang Nướng",
+    "description": "Khoai lang nướng than hồng, thơm ngọt tự nhiên.",
+    "ingredients": [
+      "500g khoai lang"
+    ],
+    "instructions": "1. Rửa sạch khoai, để cả vỏ. \n2. Nướng than hoặc lò đến khi chín mềm. \n3. Bóc vỏ, ăn nóng.",
+    "imageUrl": "https://i.pinimg.com/736x/26/06/1b/26061bbbdd5ab4c0550958d127246fc3.jpg",
+    "category": "monphu",
+    "difficulty": "easy",
+    "cookingTime": "40 phút"
+  },
+  {
+    "name": "Trứng Hấp Nước Tương",
+    "description": "Món trứng hấp mềm mịn kiểu Nhật (Chawanmushi).",
+    "ingredients": [
+      "2 quả trứng gà",
+      "200ml nước dùng",
+      "1 thìa nước tương",
+      "Hành lá"
+    ],
+    "instructions": "1. Đánh trứng, trộn với nước dùng, nước tương. \n2. Lọc hỗn hợp qua rây. \n3. Hấp nhỏ lửa 15 phút. \n4. Rắc hành lá.",
+    "imageUrl": "https://i.pinimg.com/1200x/a4/c3/21/a4c321c3dcca62f6874294b09b6090c7.jpg",
+    "category": "monphu",
+    "difficulty": "medium",
+    "cookingTime": "20 phút"
+  },
+  {
+    "name": "Củ Quả Ngâm Chua Ngọt",
+    "description": "Món dưa góp từ cà rốt, củ cải, dưa leo ngâm giấm đường.",
+    "ingredients": [
+      "200g cà rốt",
+      "200g củ cải trắng",
+      "1 quả dưa leo",
+      "100ml giấm",
+      "50g đường"
+    ],
+    "instructions": "1. Cắt củ quả sợi dài. \n2. Pha giấm với đường, muối. \n3. Cho củ quả vào ngâm ít nhất 1 giờ. \n4. Ăn kèm các món mặn.",
+    "imageUrl": "https://i.pinimg.com/736x/31/73/09/317309df5e453d774b1484d6799aa943.jpg",
+    "category": "monphu",
+    "difficulty": "easy",
+    "cookingTime": "60 phút"
+  },
+  {
+    "name": "Cà Tím Nướng Mỡ Hành",
+    "description": "Cà tím nướng mềm, chan mỡ hành béo thơm.",
+    "ingredients": [
+      "3 quả cà tím",
+      "2 thìa mỡ heo hoặc dầu ăn",
+      "2 nhánh hành lá",
+      "Nước mắm, đường, ớt"
+    ],
+    "instructions": "1. Rửa sạch cà tím, nướng than hoặc lò đến khi chín mềm. \n2. Dằm cà tím ra đĩa. \n3. Phi mỡ hành, chan lên trên. \n4. Ăn kèm nước mắm chua ngọt.",
+    "imageUrl": "https://i.pinimg.com/1200x/ae/dc/61/aedc6185df29f47ac6db8b611a806cf4.jpg",
+    "category": "monphu",
+    "difficulty": "easy",
+    "cookingTime": "25 phút"
+  },
+  {
+    "name": "Trứng Cút Rim Nước Mắm",
+    "description": "Trứng cút rim đậm đà, ăn kèm cơm nóng.",
+    "ingredients": [
+      "15 quả trứng cút",
+      "3 thìa nước mắm",
+      "1 thìa đường",
+      "1 tép tỏi băm",
+      "Dầu ăn"
+    ],
+    "instructions": "1. Luộc trứng cút, bóc vỏ. \n2. Phi tỏi với dầu, cho nước mắm, đường vào. \n3. Cho trứng cút vào rim nhỏ lửa cho thấm. \n4. Ăn kèm cơm trắng.",
+    "imageUrl": "https://i.pinimg.com/736x/1e/8a/bb/1e8abb6127a3e7b90f1a633012b84bcf.jpg",
+    "category": "monphu",
+    "difficulty": "easy",
+    "cookingTime": "30 phút"
+  },
+  {
+    "name": "Su Su Xào Trứng",
+    "description": "Món su su xào mềm, kết hợp trứng vàng óng.",
+    "ingredients": [
+      "2 quả su su",
+      "2 quả trứng gà",
+      "1 tép tỏi",
+      "Muối, dầu ăn"
+    ],
+    "instructions": "1. Gọt vỏ su su, cắt sợi. \n2. Phi tỏi, cho su su vào xào chín. \n3. Đập trứng vào đảo đều. \n4. Nêm muối vừa ăn.",
+    "imageUrl": "https://i.pinimg.com/1200x/32/83/2b/32832b34ff48799f7b7893f04684bc51.jpg",
+    "category": "monphu",
+    "difficulty": "easy",
+    "cookingTime": "20 phút"
+  },
+  {
+    "name": "Đậu Hũ Non Sốt Nấm",
+    "description": "Đậu hũ non mềm mịn, sốt nấm thơm ngon.",
+    "ingredients": [
+      "3 miếng đậu hũ non",
+      "100g nấm đông cô",
+      "1 thìa dầu hào",
+      "1 tép tỏi",
+      "Hành lá"
+    ],
+    "instructions": "1. Cắt đậu hũ non thành khúc, hấp chín. \n2. Phi tỏi, xào nấm với dầu hào. \n3. Chan sốt nấm lên đậu hũ. \n4. Rắc hành lá trước khi ăn.",
+    "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQc6ikFngHeqaFQD-hGZPVRIRsR6ZpYEi8SGGC9O_Qj3ZRu4Eye2kHBEb2Q_uGxKasRuBE&usqp=CAU",
+    "category": "monphu",
+    "difficulty": "medium",
+    "cookingTime": "35 phút"
+  },
+  {
+    "name": "Dưa Giá Trộn",
+    "description": "Món dưa giá giòn chua ngọt, ăn kèm món mặn.",
+    "ingredients": [
+      "200g giá đỗ",
+      "50g cà rốt",
+      "2 cây hành lá",
+      "100ml giấm",
+      "50g đường"
+    ],
+    "instructions": "1. Giá đỗ, cà rốt rửa sạch, cắt sợi. \n2. Pha giấm đường, thêm muối. \n3. Trộn tất cả nguyên liệu, để ngấm 20 phút. \n4. Ăn kèm cơm hoặc bánh tét.",
+    "imageUrl": "https://i.pinimg.com/736x/c4/c0/84/c4c0841c9fde609cc1da17a6de4c1420.jpg",
+    "category": "monphu",
+    "difficulty": "easy",
+    "cookingTime": "20 phút"
+  },
+  {
+    "name": "Rau Câu Mặn",
+    "description": "Rau câu giòn dai, kết hợp thịt cua, thịt gà và rau củ.",
+    "ingredients": [
+      "10g bột rau câu",
+      "100g thịt gà xé",
+      "100g thịt cua",
+      "100g cà rốt, đậu que",
+      "Nước mắm, muối"
+    ],
+    "instructions": "1. Hòa bột rau câu với nước, đun sôi. \n2. Cho thịt gà, cua, rau củ vào. \n3. Đổ vào khuôn, để nguội đông lại. \n4. Cắt miếng ăn kèm cơm.",
+    "imageUrl": "https://i.pinimg.com/736x/9e/c9/82/9ec982a26483d0bbe7bb35e28cee50b5.jpg",
+    "category": "monphu",
+    "difficulty": "medium",
+    "cookingTime": "60 phút"
+  },
+  {
+    "name": "Củ Sen Xào Tỏi",
+    "description": "Món củ sen xào tỏi giòn ngọt, thanh mát.",
+    "ingredients": [
+      "200g củ sen",
+      "2 tép tỏi",
+      "1 thìa dầu ăn",
+      "Muối, tiêu"
+    ],
+    "instructions": "1. Củ sen gọt vỏ, thái lát, ngâm nước muối. \n2. Phi tỏi với dầu, cho củ sen vào xào. \n3. Nêm muối, tiêu. \n4. Ăn nóng.",
+    "imageUrl": "https://i.pinimg.com/736x/cd/d5/08/cdd50892ae9b6f361fa0c41788d7cda3.jpg",
+    "category": "monphu",
+    "difficulty": "easy",
+    "cookingTime": "20 phút"
+  },
+  {
+    "name": "Đậu Que Xào Tôm Khô",
+    "description": "Đậu que giòn ngọt, xào với tôm khô đậm đà.",
+    "ingredients": [
+      "200g đậu que",
+      "50g tôm khô",
+      "1 tép tỏi",
+      "Dầu ăn, muối"
+    ],
+    "instructions": "1. Ngâm tôm khô, rửa sạch. \n2. Phi tỏi, xào tôm khô. \n3. Thêm đậu que, đảo đều. \n4. Nêm muối, ăn nóng.",
+    "imageUrl": "https://i.pinimg.com/736x/20/b3/f9/20b3f95f9d0a17e07d90bf39caacd3db.jpg",
+    "category": "monphu",
+    "difficulty": "easy",
+    "cookingTime": "25 phút"
+  },
+  {
+    "name": "Măng Luộc Chấm Tương",
+    "description": "Món măng luộc đơn giản, chấm tương bần đậm vị.",
+    "ingredients": [
+      "300g măng tươi",
+      "Tương bần",
+      "Muối"
+    ],
+    "instructions": "1. Gọt vỏ măng, cắt khúc. \n2. Luộc măng với chút muối cho chín. \n3. Ăn kèm tương bần.",
+    "imageUrl": "https://i.pinimg.com/1200x/2b/05/99/2b0599f5ca574bd623f3756cc103692f.jpg",
+    "category": "monphu",
+    "difficulty": "easy",
+    "cookingTime": "20 phút"
+  },
+  {
+    "name": "Khoai Tây Nghiền 120",
+    "description": "Món khoai tây nghiền béo ngậy, thường ăn kèm thịt nướng.",
+    "ingredients": [
+      "400g khoai tây",
+      "50ml sữa tươi",
+      "20g bơ lạt",
+      "Muối"
+    ],
+    "instructions": "1. Gọt vỏ khoai tây, luộc chín. \n2. Nghiền khoai, thêm sữa và bơ. \n3. Nêm muối, trộn đều. \n4. Ăn kèm steak hoặc gà nướng.",
+    "imageUrl": "https://i.pinimg.com/736x/83/c4/16/83c41627a048ae0748cb4e84aa356cb9.jpg",
+    "category": "monphu",
+    "difficulty": "easy",
+    "cookingTime": "35 phút"
+  },
+  {
+    "name": "Chè Ba Màu",
+    "description": "Món chè mát lạnh với đậu đỏ, đậu xanh, thạch và nước cốt dừa.",
+    "ingredients": ["100g đậu đỏ", "100g đậu xanh", "Thạch rau câu", "Nước cốt dừa", "Đá bào", "Đường"],
+    "instructions": "1. Nấu chín đậu đỏ và đậu xanh, thêm đường.\n2. Làm thạch rau câu, cắt hạt lựu.\n3. Cho các nguyên liệu vào ly, thêm nước cốt dừa và đá bào.\n4. Thưởng thức mát lạnh.",
+    "imageUrl": "https://i.pinimg.com/1200x/37/13/87/371387cd4dc78745187c97847cb453fd.jpg",
+    "category": "trangmieng",
+    "difficulty": "medium",
+    "cookingTime": "60 phút"
+  },
+  {
+    "name": "Bánh Flan",
+    "description": "Bánh flan béo ngậy, mềm mịn với caramel ngọt ngào.",
+    "ingredients": ["5 quả trứng gà", "500ml sữa tươi", "100g đường", "1 thìa vani"],
+    "instructions": "1. Nấu caramel từ đường và ít nước, đổ vào khuôn.\n2. Đánh trứng, trộn với sữa ấm và vani.\n3. Đổ vào khuôn, hấp cách thủy 30 phút.\n4. Làm lạnh, ăn cùng cà phê hoặc sữa đặc.",
+    "imageUrl": "https://i.pinimg.com/736x/1a/ef/77/1aef771b0fd4ddffce50e4afba048cac.jpg",
+    "category": "trangmieng",
+    "difficulty": "medium",
+    "cookingTime": "45 phút"
+  },
+  {
+    "name": "Bánh Bông Lan Cuộn",
+    "description": "Bánh bông lan mềm mịn, cuộn kem tươi béo ngậy.",
+    "ingredients": ["4 quả trứng", "80g bột mì", "60g đường", "200ml kem tươi", "Vani"],
+    "instructions": "1. Đánh trứng với đường đến bông.\n2. Rây bột vào, trộn đều.\n3. Nướng ở 180°C trong 20 phút.\n4. Phết kem, cuộn lại, để lạnh trước khi cắt.",
+    "imageUrl": "https://i.pinimg.com/736x/4f/8a/17/4f8a1750ffd228d6428d3aa3840970f8.jpg",
+    "category": "trangmieng",
+    "difficulty": "hard",
+    "cookingTime": "90 phút"
+  },
+  {
+    "name": "Chè Khúc Bạch",
+    "description": "Chè khúc bạch mát lạnh với hạnh nhân lát và trái vải ngọt.",
+    "ingredients": ["200ml sữa tươi", "100ml kem tươi", "10g gelatin", "Đường", "Vải hộp", "Hạnh nhân lát"],
+    "instructions": "1. Ngâm gelatin, trộn với sữa và kem, đun nóng.\n2. Đổ vào khuôn, để tủ lạnh 3 giờ.\n3. Cắt khối, ăn cùng nước đường và vải, rắc hạnh nhân.",
+    "imageUrl": "https://i.pinimg.com/1200x/5b/38/93/5b3893baa1892d8e9afb63d0a4cefe4a.jpg",
+    "category": "trangmieng",
+    "difficulty": "medium",
+    "cookingTime": "180 phút"
+  },
+  {
+    "name": "Kem Dừa Non",
+    "description": "Kem mát lạnh trong trái dừa non, thơm ngọt tự nhiên.",
+    "ingredients": ["2 trái dừa non", "200ml sữa dừa", "200ml kem tươi", "50g đường"],
+    "instructions": "1. Trộn kem tươi, sữa dừa và đường.\n2. Đổ vào trái dừa non.\n3. Để đông 6 giờ.\n4. Trang trí với dừa nạo, ăn lạnh.",
+    "imageUrl": "https://i.pinimg.com/1200x/92/0e/67/920e67e56ca96df881680ae8d03f92c4.jpg",
+    "category": "trangmieng",
+    "difficulty": "medium",
+    "cookingTime": "6 giờ"
+  },
+  {
+    "name": "Chè Đậu Đen",
+    "description": "Món chè ngọt mát với đậu đen mềm nhừ và nước cốt dừa.",
+    "ingredients": ["200g đậu đen", "100g đường", "1/2 thìa muối", "Nước cốt dừa"],
+    "instructions": "1. Ngâm đậu đen 2 giờ, nấu mềm.\n2. Thêm đường, muối, khuấy đều.\n3. Múc ra chén, thêm nước cốt dừa.\n4. Ăn nóng hoặc lạnh.",
+    "imageUrl": "https://i.pinimg.com/736x/8b/16/c7/8b16c71be78eac9858e24eba26ce8986.jpg",
+    "category": "trangmieng",
+    "difficulty": "easy",
+    "cookingTime": "90 phút"
+  },
+  {
+    "name": "Bánh Crepe Sầu Riêng",
+    "description": "Crepe mềm mịn, nhân kem tươi và sầu riêng ngọt béo.",
+    "ingredients": ["100g bột mì", "200ml sữa tươi", "2 quả trứng", "200ml kem tươi", "Thịt sầu riêng"],
+    "instructions": "1. Trộn bột mì, sữa và trứng thành hỗn hợp.\n2. Rán mỏng từng lớp bánh.\n3. Đánh bông kem, trộn sầu riêng.\n4. Cuộn nhân vào crepe, để lạnh trước khi ăn.",
+    "imageUrl": "https://i.pinimg.com/1200x/e3/d5/61/e3d561aa3093ab196b1d6f571823bd5a.jpg",
+    "category": "trangmieng",
+    "difficulty": "medium",
+    "cookingTime": "60 phút"
+  },
+  {
+    "name": "Chè Thái",
+    "description": "Chè trái cây kiểu Thái với nước cốt dừa béo ngậy.",
+    "ingredients": ["Sầu riêng", "Mít", "Thốt nốt", "Thạch rau câu", "Nước cốt dừa", "Đá bào"],
+    "instructions": "1. Thái nhỏ trái cây và thạch.\n2. Cho vào ly, thêm nước cốt dừa.\n3. Thêm đá bào.\n4. Ăn mát lạnh.",
+    "imageUrl": "https://i.pinimg.com/1200x/ca/3f/06/ca3f066dee1bb5329befad5e4ae45ae1.jpg",
+    "category": "trangmieng",
+    "difficulty": "easy",
+    "cookingTime": "20 phút"
+  },
+  {
+    "name": "Pudding Xoài",
+    "description": "Món pudding mịn màng, thơm hương xoài chín.",
+    "ingredients": ["2 quả xoài chín", "200ml sữa tươi", "100ml kem tươi", "10g gelatin", "Đường"],
+    "instructions": "1. Xay nhuyễn xoài.\n2. Hòa gelatin vào sữa, trộn với xoài và kem.\n3. Đổ vào khuôn, làm lạnh 3 giờ.\n4. Ăn mát.",
+    "imageUrl": "https://quangon.vn/resources/2021/03/18/cach-lam-pudding-xoai-1.jpeg",
+    "category": "trangmieng",
+    "difficulty": "medium",
+    "cookingTime": "180 phút"
+  },
+  {
+    "name": "Xôi Xoài",
+    "description": "Xôi dẻo ăn kèm xoài chín ngọt và nước cốt dừa.",
+    "ingredients": ["200g nếp", "2 quả xoài chín", "100ml nước cốt dừa", "50g đường", "1/2 thìa muối"],
+    "instructions": "1. Nấu xôi nếp chín dẻo.\n2. Thêm đường, muối vào nước cốt dừa.\n3. Dọn xôi, xoài, chan nước cốt dừa.\n4. Ăn khi còn ấm.",
+    "imageUrl": "https://i.pinimg.com/1200x/62/2d/f5/622df50331e3b2b9ef0cf193cd21565f.jpg",
+    "category": "trangmieng",
+    "difficulty": "medium",
+    "cookingTime": "60 phút"
+  },
+  {
+    "name": "Bánh Chuối Nướng",
+    "description": "Bánh chuối nướng thơm lừng, ngọt béo, mềm mịn.",
+    "ingredients": ["5 quả chuối chín", "200g bánh mì", "400ml sữa tươi", "50g đường", "1 thìa bơ"],
+    "instructions": "1. Chuối cắt lát, xếp vào khuôn.\n2. Bánh mì xé nhỏ, ngâm trong sữa, trộn thêm đường.\n3. Đổ hỗn hợp vào khuôn, thêm chuối, bơ.\n4. Nướng 180°C trong 45 phút.",
+    "imageUrl": "https://i.pinimg.com/1200x/43/63/81/436381e618cf67f68264d502deb6bf00.jpg",
+    "category": "trangmieng",
+    "difficulty": "medium",
+    "cookingTime": "60 phút"
+  },
+  {
+    "name": "Chè Bưởi",
+    "description": "Chè bưởi giòn dai, ngọt mát, thêm nước cốt dừa béo.",
+    "ingredients": ["200g cùi bưởi", "100g đậu xanh", "100g bột năng", "200g đường", "Nước cốt dừa"],
+    "instructions": "1. Ngâm cùi bưởi với muối, luộc sơ, trộn bột năng.\n2. Nấu chín đậu xanh.\n3. Cho cùi bưởi, đậu xanh, đường vào nấu chung.\n4. Ăn với nước cốt dừa.",
+    "imageUrl": "https://i.pinimg.com/736x/bd/80/56/bd8056de8cb38aff472dba93970bcba3.jpg",
+    "category": "trangmieng",
+    "difficulty": "hard",
+    "cookingTime": "90 phút"
+  },
+  {
+    "name": "Kem Trái Cây",
+    "description": "Kem trái cây mát lạnh, nhiều hương vị tự nhiên.",
+    "ingredients": ["200g dâu tây", "200g xoài", "200ml sữa chua", "100ml sữa đặc", "Đá bào"],
+    "instructions": "1. Xay nhuyễn từng loại trái cây với sữa chua, sữa đặc.\n2. Cho vào khuôn, để ngăn đá 4 giờ.\n3. Múc ra ly, trang trí với trái cây tươi.",
+    "imageUrl": "https://dayphache.edu.vn/wp-content/uploads/2019/05/kem-dao.jpg",
+    "category": "trangmieng",
+    "difficulty": "easy",
+    "cookingTime": "240 phút"
+  },
+  {
+    "name": "Bánh Mochi",
+    "description": "Mochi Nhật Bản dẻo mềm, nhân đậu đỏ ngọt.",
+    "ingredients": ["200g bột nếp", "100g đường", "150ml nước", "100g nhân đậu đỏ", "Bột áo"],
+    "instructions": "1. Trộn bột nếp với đường, nước, hấp chín.\n2. Nhồi bột dẻo, chia viên.\n3. Bọc nhân đậu đỏ bên trong.\n4. Lăn qua bột áo, ăn dẻo mịn.",
+    "imageUrl": "https://i.pinimg.com/1200x/a6/5e/77/a65e77e288fff8f7f8622850f2502596.jpg",
+    "category": "trangmieng",
+    "difficulty": "hard",
+    "cookingTime": "60 phút"
+  },
+  {
+    "name": "Bánh Tiramisu",
+    "description": "Tiramisu Ý mềm mịn, hương vị cà phê đậm đà.",
+    "ingredients": ["200g bánh ladyfinger", "250g mascarpone", "3 quả trứng", "50g đường", "200ml cà phê đen", "Bột cacao"],
+    "instructions": "1. Đánh lòng đỏ trứng với đường, trộn mascarpone.\n2. Nhúng bánh ladyfinger vào cà phê, xếp vào khuôn.\n3. Phết kem lên, làm nhiều lớp.\n4. Rắc cacao, để lạnh 4 giờ.",
+    "imageUrl": "https://i.pinimg.com/1200x/24/1f/40/241f40cdb81ee38b3d1e87a593c5ace7.jpg",
+    "category": "trangmieng",
+    "difficulty": "hard",
+    "cookingTime": "240 phút"
+  },
+  {
+    "name": "Bánh Pancake",
+    "description": "Pancake mềm xốp, ăn cùng mật ong và trái cây.",
+    "ingredients": ["200g bột mì", "1 quả trứng", "200ml sữa", "50g đường", "1 thìa bơ", "Mật ong"],
+    "instructions": "1. Trộn bột mì, trứng, sữa, đường thành hỗn hợp.\n2. Rán từng miếng pancake vàng đều.\n3. Ăn kèm mật ong và trái cây.",
+    "imageUrl": "https://i.pinimg.com/1200x/90/62/97/906297e97600fb50bcae7e1dc732820a.jpg",
+    "category": "trangmieng",
+    "difficulty": "easy",
+    "cookingTime": "20 phút"
+  },
+  {
+    "name": "Chè Hạt Sen Long Nhãn",
+    "description": "Chè thanh mát với hạt sen bùi, long nhãn ngọt.",
+    "ingredients": ["200g hạt sen", "200g long nhãn", "150g đường phèn"],
+    "instructions": "1. Hấp hạt sen chín mềm.\n2. Nhồi hạt sen vào long nhãn.\n3. Nấu nước đường phèn, thả vào.\n4. Ăn lạnh hoặc nóng.",
+    "imageUrl": "https://dayphache.edu.vn/wp-content/uploads/2016/05/che-hat-sen-nhan-nhuc.jpg",
+    "category": "trangmieng",
+    "difficulty": "medium",
+    "cookingTime": "60 phút"
+  },
+  {
+    "name": "Bánh Donut",
+    "description": "Donut chiên xốp, phủ đường hoặc socola.",
+    "ingredients": ["300g bột mì", "5g men nở", "50g đường", "1 quả trứng", "100ml sữa", "Dầu chiên"],
+    "instructions": "1. Nhào bột mì, men, sữa, đường thành khối.\n2. Ủ 1 giờ cho nở.\n3. Cắt hình donut, chiên vàng.\n4. Phủ socola hoặc đường bột.",
+    "imageUrl": "https://i.pinimg.com/736x/55/f1/c1/55f1c1db9a37a27e3e40eef9cd51cfa0.jpg",
+    "category": "trangmieng",
+    "difficulty": "hard",
+    "cookingTime": "120 phút"
+  },
+  {
+    "name": "Bánh Bao Ngọt Nhân Đậu Đỏ",
+    "description": "Bánh bao ngọt vỏ mềm, nhân đậu đỏ bùi ngọt.",
+    "ingredients": ["300g bột mì", "5g men nở", "100g nhân đậu đỏ", "50g đường", "150ml sữa"],
+    "instructions": "1. Trộn bột mì, men, sữa, đường, ủ nở.\n2. Chia bột, bọc nhân đậu đỏ.\n3. Hấp 15 phút.\n4. Ăn nóng.",
+    "imageUrl": "https://img-global.cpcdn.com/recipes/3f9b5d0e35eb87a8/680x781cq80/banh-bao-nhan-d%E1%BA%ADu-d%E1%BB%8F-recipe-main-photo.jpg",
+    "category": "trangmieng",
+    "difficulty": "medium",
+    "cookingTime": "90 phút"
+  },
+  {
+    "name": "Chè Đậu Xanh Hạt Sen",
+    "description": "Chè ngọt mát với đậu xanh và hạt sen mềm bùi.",
+    "ingredients": ["150g đậu xanh", "150g hạt sen", "150g đường phèn"],
+    "instructions": "1. Ngâm đậu xanh, nấu chín.\n2. Hấp hạt sen mềm.\n3. Nấu cùng nước đường phèn.\n4. Ăn lạnh hoặc nóng.",
+    "imageUrl": "https://i.pinimg.com/736x/69/d1/8c/69d18c599ee761128ccd21ae4a7fb3b9.jpg",
+    "category": "trangmieng",
+    "difficulty": "easy",
+    "cookingTime": "60 phút"
+  },
+  {
+    "name": "Kem Matcha",
+    "description": "Kem vị matcha Nhật Bản thơm mát, ngọt nhẹ.",
+    "ingredients": ["200ml kem tươi", "200ml sữa tươi", "50g đường", "10g bột matcha"],
+    "instructions": "1. Trộn matcha với sữa, đường, kem tươi.\n2. Đánh bông nhẹ, để tủ đông 4 giờ.\n3. Ăn lạnh.",
+    "imageUrl": "https://i.pinimg.com/1200x/11/64/56/116456a1e915e99857113a49710a49d8.jpg",
+    "category": "trangmieng",
+    "difficulty": "medium",
+    "cookingTime": "240 phút"
+  },
+  {
+    "name": "Chè Khoai Dẻo",
+    "description": "Chè ngọt ngào với viên khoai dẻo đủ màu.",
+    "ingredients": ["200g khoai lang", "100g bột năng", "100g đường", "Nước cốt dừa"],
+    "instructions": "1. Luộc khoai, nghiền nhuyễn, trộn với bột năng.\n2. Nặn viên, luộc chín.\n3. Cho vào nước đường.\n4. Ăn cùng nước cốt dừa.",
+    "imageUrl": "https://i.pinimg.com/736x/a3/8d/a1/a38da1b0e3b46a2c08a5ae3eb8d66067.jpg",
+    "category": "trangmieng",
+    "difficulty": "medium",
+    "cookingTime": "60 phút"
+  },
+  {
+    "name": "Bánh Tráng Trộn",
+    "description": "Ăn vặt nổi tiếng Sài Gòn với bánh tráng, bò khô, trứng cút.",
+    "ingredients": ["100g bánh tráng cắt sợi", "50g bò khô", "5 quả trứng cút", "1 quả xoài xanh", "Rau răm", "Sa tế", "Muối tôm"],
+    "instructions": "1. Luộc trứng cút, bóc vỏ.\n2. Xoài thái sợi, rau răm rửa sạch.\n3. Trộn bánh tráng, bò khô, xoài, rau răm, trứng cút.\n4. Nêm sa tế và muối tôm vừa ăn.",
+    "imageUrl": "https://i.pinimg.com/1200x/b9/21/e9/b921e9d506ebe89347cc48e5cdcca402.jpg",
+    "category": "anvat",
+    "difficulty": "easy",
+    "cookingTime": "20 phút"
+  },
+  {
+    "name": "Nem Chua Rán",
+    "description": "Nem chua chiên vàng giòn, chấm tương ớt.",
+    "ingredients": ["200g nem chua", "Bột chiên xù", "1 quả trứng", "Dầu ăn"],
+    "instructions": "1. Nem chua lăn qua trứng rồi bột chiên xù.\n2. Đun dầu nóng, chiên vàng giòn.\n3. Ăn kèm tương ớt.",
+    "imageUrl": "https://cdn.tgdd.vn/Files/2020/03/23/1243844/lam-nem-chua-ran-chien-xu-chuan-vi-ha-noi-tai-nha-202003230644238881.jpg",
+    "category": "anvat",
+    "difficulty": "medium",
+    "cookingTime": "25 phút"
+  },
+  {
+    "name": "Khoai Tây Chiên",
+    "description": "Khoai tây chiên giòn rụm, ăn kèm tương cà.",
+    "ingredients": ["300g khoai tây", "50g bột chiên giòn", "Dầu ăn", "Tương cà"],
+    "instructions": "1. Gọt khoai tây, cắt que.\n2. Ngâm nước muối 15 phút, vớt ra.\n3. Lăn khoai qua bột, chiên vàng.\n4. Chấm tương cà hoặc tương ớt.",
+    "imageUrl": "https://i.pinimg.com/1200x/be/00/25/be0025ed7199482acbb27f9e7519ddcb.jpg",
+    "category": "anvat",
+    "difficulty": "easy",
+    "cookingTime": "30 phút"
+  },
+  {
+    "name": "Bắp Xào Bơ",
+    "description": "Món bắp xào thơm bơ, mỡ hành, ăn vặt quen thuộc.",
+    "ingredients": ["2 trái bắp ngọt", "30g bơ", "Hành lá", "Ruốc khô", "Muối"],
+    "instructions": "1. Tách hạt bắp.\n2. Phi hành với bơ, cho bắp vào đảo đều.\n3. Thêm ruốc, nêm muối.\n4. Ăn nóng.",
+    "imageUrl": "https://i.pinimg.com/736x/a3/8f/d6/a38fd6c1d9638801e7a810388bc20513.jpg",
+    "category": "anvat",
+    "difficulty": "easy",
+    "cookingTime": "20 phút"
+  },
+  {
+    "name": "Xoài Lắc Muối Ớt",
+    "description": "Xoài chua giòn trộn muối ớt cay mặn.",
+    "ingredients": ["2 quả xoài xanh", "2 thìa muối ớt", "1 thìa đường", "Ớt bột"],
+    "instructions": "1. Gọt xoài, cắt miếng vừa ăn.\n2. Cho vào hũ cùng muối, đường, ớt.\n3. Lắc đều, để 10 phút.\n4. Ăn giòn cay.",
+    "imageUrl": "https://i.pinimg.com/736x/34/b0/f4/34b0f422f83607ed7f03daf203b7a0cb.jpg",
+    "category": "anvat",
+    "difficulty": "easy",
+    "cookingTime": "15 phút"
+  },
+  {
+    "name": "Bánh Gạo Tokbokki",
+    "description": "Tokbokki Hàn Quốc cay cay ngọt ngọt.",
+    "ingredients": ["200g bánh gạo", "50g chả cá", "2 thìa tương ớt Hàn Quốc", "1 thìa đường", "Nước dùng"],
+    "instructions": "1. Luộc bánh gạo mềm.\n2. Nấu nước dùng với tương ớt, đường.\n3. Cho bánh gạo, chả cá vào nấu 10 phút.\n4. Ăn nóng.",
+    "imageUrl": "https://cdn.tgdd.vn/Files/2021/03/10/1334046/3-cach-lam-tokbokki-banh-gao-han-quoc-thom-ngon-chuan-vi-202201101556438336.jpg",
+    "category": "anvat",
+    "difficulty": "medium",
+    "cookingTime": "30 phút"
+  },
+  {
+    "name": "Bánh Bao Chiên",
+    "description": "Bánh bao nhỏ chiên giòn, ăn vặt buổi chiều.",
+    "ingredients": ["5 bánh bao mini", "Dầu ăn", "Sữa đặc"],
+    "instructions": "1. Bánh bao để ráo.\n2. Chiên trong dầu nóng đến khi vàng.\n3. Chấm với sữa đặc.",
+    "imageUrl": "https://cdn.tgdd.vn/2021/10/CookDishThumb/cach-lam-banh-bao-sua-chien-thom-ngon-don-gian-ai-cung-lam-thumb-620x620.jpg",
+    "category": "anvat",
+    "difficulty": "easy",
+    "cookingTime": "15 phút"
+  },
+  {
+    "name": "Bánh Hành",
+    "description": "Bánh hành chiên giòn, mặn mặn thơm hành lá.",
+    "ingredients": ["200g bột mì", "100ml nước", "Hành lá", "Muối", "Dầu ăn"],
+    "instructions": "1. Trộn bột mì với nước, muối.\n2. Thêm hành lá, trộn đều.\n3. Chiên từng miếng bánh mỏng.\n4. Ăn nóng.",
+    "imageUrl": "https://cdn.tgdd.vn/Files/2020/04/09/1247900/cach-lam-banh-hanh-chien-gion-han-quoc-thom-ngon-n.jpg",
+    "category": "anvat",
+    "difficulty": "medium",
+    "cookingTime": "20 phút"
+  },
+  {
+    "name": "Ốc Xào Bơ Tỏi",
+    "description": "Ốc móng tay xào bơ tỏi thơm ngậy.",
+    "ingredients": ["500g ốc móng tay", "30g bơ", "5 tép tỏi", "Muối, tiêu"],
+    "instructions": "1. Ngâm sạch ốc.\n2. Phi tỏi với bơ, cho ốc vào đảo nhanh.\n3. Nêm muối, tiêu.\n4. Ăn khi nóng.",
+    "imageUrl": "https://cdn.tgdd.vn/Files/2021/08/25/1377750/cach-lam-oc-huong-xao-bo-toi-thom-ngon-don-gian-tai-nha-202108251415105438.jpg",
+    "category": "anvat",
+    "difficulty": "medium",
+    "cookingTime": "25 phút"
+  },
+  {
+    "name": "Cút Lộn Xào Me",
+    "description": "Trứng cút lộn xào me chua ngọt.",
+    "ingredients": ["10 quả trứng cút lộn", "3 thìa nước me", "1 thìa đường", "1 thìa nước mắm"],
+    "instructions": "1. Luộc cút lộn, bóc vỏ.\n2. Nấu nước me với đường, mắm.\n3. Cho trứng vào đảo đều.\n4. Ăn nóng, rắc rau răm.",
+    "imageUrl": "https://cdn.tgdd.vn/Files/2020/07/24/1273398/cach-lam-trung-cut-lon-xao-me-don-gian-ma-thom-ngon-202201110950108775.jpeg",
+    "category": "anvat",
+    "difficulty": "medium",
+    "cookingTime": "30 phút"
+  },
+  {
+    "name": "Bánh Mì Nướng Muối Ớt",
+    "description": "Bánh mì nướng giòn, sốt bơ, tương ớt và chà bông.",
+    "ingredients": ["1 ổ bánh mì", "30g bơ", "1 thìa tương ớt", "Chà bông", "Hành phi"],
+    "instructions": "1. Bánh mì cán mỏng, phết bơ và tương ớt.\n2. Nướng trên than hoặc lò cho giòn.\n3. Thêm chà bông, hành phi.\n4. Ăn nóng.",
+    "imageUrl": "https://static.hawonkoo.vn/hwks1/images/2023/07/cach-lam-banh-mi-nuong-muoi-ot-bang-noi-chien-khong-dau-4.jpg",
+    "category": "anvat",
+    "difficulty": "easy",
+    "cookingTime": "20 phút"
+  },
+  {
+    "name": "Bánh Cam",
+    "description": "Bánh cam giòn ngoài, dẻo trong, nhân đậu xanh ngọt.",
+    "ingredients": ["200g bột nếp", "100g bột gạo", "100g nhân đậu xanh", "Mè trắng", "Dầu chiên"],
+    "instructions": "1. Trộn bột nếp, bột gạo, nhồi thành khối.\n2. Bọc nhân đậu xanh, lăn mè.\n3. Chiên vàng giòn.\n4. Ăn nóng.",
+    "imageUrl": "https://i.pinimg.com/1200x/da/a7/dc/daa7dc7a27d6a9e9c6be57234e15a2ed.jpg",
+    "category": "anvat",
+    "difficulty": "medium",
+    "cookingTime": "40 phút"
+  },
+  {
+    "name": "Chả Cá Viên Chiên",
+    "description": "Chả cá viên chiên vàng giòn, chấm tương ớt.",
+    "ingredients": ["300g chả cá xay", "50g bột chiên xù", "Dầu ăn"],
+    "instructions": "1. Nặn chả cá thành viên.\n2. Lăn qua bột chiên xù.\n3. Chiên vàng giòn.\n4. Chấm tương ớt.",
+    "imageUrl": "https://cdn.tgdd.vn/Files/2020/06/24/1265161/huong-dan-cach-lam-ca-vien-chien-gion-sach-ngon-tai-nha-202209091359141772.jpg",
+    "category": "anvat",
+    "difficulty": "easy",
+    "cookingTime": "25 phút"
+  },
+  {
+    "name": "Hột Vịt Lộn Xào Bơ",
+    "description": "Hột vịt lộn chiên xào bơ hành mỡ.",
+    "ingredients": ["5 quả trứng vịt lộn", "30g bơ", "Hành lá", "Muối, tiêu"],
+    "instructions": "1. Luộc trứng, bóc vỏ.\n2. Phi hành với bơ.\n3. Cho trứng vào đảo nhanh.\n4. Ăn nóng với muối tiêu chanh.",
+    "imageUrl": "https://www.cet.edu.vn/wp-content/uploads/2019/03/hot-vit-lon-xao-me-hap-dan.jpg",
+    "category": "anvat",
+    "difficulty": "medium",
+    "cookingTime": "30 phút"
+  },
+  {
+    "name": "Chuối Chiên",
+    "description": "Chuối chiên giòn rụm, ngọt mềm bên trong.",
+    "ingredients": ["3 quả chuối xiêm chín", "100g bột mì", "50g bột gạo", "Dầu chiên"],
+    "instructions": "1. Chuối lột vỏ, ép dẹp.\n2. Pha bột mì, bột gạo với nước.\n3. Nhúng chuối vào bột, chiên vàng.\n4. Ăn nóng.",
+    "imageUrl": "https://i.pinimg.com/1200x/82/82/a1/8282a1ea118e8a08ebdfc24d4652a2ac.jpg",
+    "category": "anvat",
+    "difficulty": "easy",
+    "cookingTime": "20 phút"
+  },
+  {
+    "name": "Khoai Lang Kén",
+    "description": "Khoai lang nghiền viên chiên giòn, béo ngọt.",
+    "ingredients": ["300g khoai lang", "50g bột năng", "50g mè", "Dầu chiên"],
+    "instructions": "1. Hấp khoai lang, nghiền nhuyễn.\n2. Trộn bột năng, nặn viên.\n3. Lăn mè, chiên giòn.\n4. Ăn nóng.",
+    "imageUrl": "https://i.pinimg.com/1200x/32/ab/ad/32abade19c6e6f1106999f16decd0b42.jpg",
+    "category": "anvat",
+    "difficulty": "easy",
+    "cookingTime": "30 phút"
+  },
+  {
+    "name": "Bánh Bao Xá Xíu Mini",
+    "description": "Bánh bao nhỏ nhân xá xíu đậm đà.",
+    "ingredients": ["200g bột mì", "5g men nở", "100g thịt xá xíu", "50ml sữa tươi"],
+    "instructions": "1. Trộn bột với men, sữa, ủ nở.\n2. Bọc nhân xá xíu, vo viên.\n3. Hấp 15 phút.\n4. Ăn nóng.",
+    "imageUrl": "https://i.pinimg.com/1200x/37/e9/ec/37e9ec5b7edf4429e8acd8cdce42de3d.jpg",
+    "category": "anvat",
+    "difficulty": "medium",
+    "cookingTime": "60 phút"
+  },
+  {
+    "name": "Cá Viên Lắc",
+    "description": "Cá viên chiên giòn, lắc với bột phô mai.",
+    "ingredients": ["200g cá viên", "Bột phô mai", "Dầu ăn"],
+    "instructions": "1. Chiên cá viên vàng giòn.\n2. Cho vào túi, thêm bột phô mai.\n3. Lắc đều.\n4. Ăn nóng.",
+    "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIPsDOns2BriZyrE0yloNFscceEttzQU_7JQ&s",
+    "category": "anvat",
+    "difficulty": "easy",
+    "cookingTime": "20 phút"
+  },
+  {
+    "name": "Bánh Đúc Nóng",
+    "description": "Bánh đúc nóng mềm, chan nước mắm mặn ngọt.",
+    "ingredients": ["200g bột gạo", "50g thịt băm", "50g nấm mèo", "Nước mắm pha", "Hành phi"],
+    "instructions": "1. Nấu bột gạo với nước thành bánh đúc.\n2. Xào thịt băm, nấm mèo.\n3. Chan lên bánh đúc, thêm nước mắm pha.\n4. Rắc hành phi.",
+    "imageUrl": "https://i.pinimg.com/736x/30/02/0b/30020bc9807cb5fbca041e24547414c2.jpg",
+    "category": "anvat",
+    "difficulty": "medium",
+    "cookingTime": "40 phút"
+  },
+  {
+    "name": "Bánh Rán Nhân Đường",
+    "description": "Bánh rán phồng, nhân đường chảy ngọt lịm.",
+    "ingredients": ["200g bột nếp", "50g bột gạo", "100g đường nâu", "Mè trắng", "Dầu chiên"],
+    "instructions": "1. Nhào bột nếp, gạo với nước.\n2. Bọc nhân đường.\n3. Lăn mè, chiên vàng.\n4. Ăn nóng.",
+    "imageUrl": "https://i.pinimg.com/736x/5b/51/f1/5b51f1f2489f0eb7ea972131242a396a.jpg",
+    "category": "anvat",
+    "difficulty": "medium",
+    "cookingTime": "35 phút"
+  },
+  {
+    "name": "Phá Lấu",
+    "description": "Món ăn vặt Sài Gòn với lòng bò hầm nước dừa thơm béo.",
+    "ingredients": ["500g lòng bò", "200ml nước cốt dừa", "2 thìa ngũ vị hương", "1 thìa đường", "1 thìa nước mắm"],
+    "instructions": "1. Sơ chế lòng bò sạch.\n2. Ướp gia vị và ngũ vị hương.\n3. Hầm với nước cốt dừa 1 giờ.\n4. Ăn nóng với bánh mì.",
+    "imageUrl": "https://i.ytimg.com/vi/N_uRJNrwU58/maxresdefault.jpg",
+    "category": "anvat",
+    "difficulty": "hard",
+    "cookingTime": "90 phút"
+  },
+  {
+    "name": "Bánh Trôi Nước",
+    "description": "Bánh nếp nhân đường, ăn với nước gừng ngọt ấm.",
+    "ingredients": ["200g bột nếp", "50g đường thốt nốt", "Gừng tươi", "Mè rang"],
+    "instructions": "1. Nhào bột nếp, nặn viên bọc nhân đường.\n2. Luộc đến khi nổi.\n3. Nấu nước gừng ngọt, thả bánh vào.\n4. Rắc mè rang.",
+    "imageUrl": "https://eggyolk.vn/wp-content/uploads/2024/11/Cac-buoc-cach-lam-banh-troi-nuoc-mien-bac-ngon.jpg",
+    "category": "anvat",
+    "difficulty": "medium",
+    "cookingTime": "40 phút"
+  },
+  {
+    "name": "Bò Bía Ngọt",
+    "description": "Bánh tráng cuốn nhân dừa, mạch nha và mè.",
+    "ingredients": ["5 cái bánh tráng", "100g dừa nạo", "50g mạch nha", "Mè rang"],
+    "instructions": "1. Trải bánh tráng.\n2. Cho dừa nạo, mạch nha, mè.\n3. Cuốn chặt tay.\n4. Ăn ngay.",
+    "imageUrl": "https://img.mservice.com.vn/common/u/2e02fb5fe4f64fb55bc713540643c6f8eae702d101cea8c59afc49cfc505fc37/fae1854c-ec58-40dc-bf50-726707a69bc1lqv2hwcv.jpeg",
+    "category": "anvat",
+    "difficulty": "easy",
+    "cookingTime": "15 phút"
+  },
+  {
+    "name": "Khô Gà Lá Chanh",
+    "description": "Khô gà xé sợi cay thơm, ăn chơi cực cuốn.",
+    "ingredients": ["500g ức gà", "5 lá chanh", "Ớt bột", "2 thìa đường", "1 thìa nước mắm"],
+    "instructions": "1. Luộc gà, xé sợi.\n2. Xào với ớt, đường, mắm đến khô.\n3. Thêm lá chanh thái chỉ.\n4. Bảo quản hộp kín.",
+    "imageUrl": "https://moderncook.com.vn/recipes/wp-content/uploads/2019/10/Kho%CC%82-ga%CC%80-la%CC%81-chanh-Large.jpeg",
+    "category": "anvat",
+    "difficulty": "medium",
+    "cookingTime": "60 phút"
+  },
+  {
+    "name": "Bánh Tráng Nướng",
+    "description": "Pizza Việt Nam giòn rụm với trứng, ruốc, hành.",
+    "ingredients": ["1 cái bánh tráng", "1 quả trứng gà", "Ruốc khô", "Hành lá", "Tương ớt"],
+    "instructions": "1. Trải bánh tráng trên bếp than.\n2. Quét trứng, thêm ruốc, hành.\n3. Nướng giòn.\n4. Ăn nóng với tương ớt.",
+    "imageUrl": "https://cdn.tgdd.vn/2022/01/CookRecipe/GalleryStep/thanh-pham-308.jpg",
+    "category": "anvat",
+    "difficulty": "easy",
+    "cookingTime": "20 phút"
+  },
+  {
+    "name": "Gỏi Cuốn",
+    "description": "Cuốn bánh tráng với tôm thịt, rau sống, bún tươi.",
+    "ingredients": ["5 bánh tráng", "100g tôm luộc", "100g thịt ba chỉ", "50g bún tươi", "Rau sống"],
+    "instructions": "1. Chuẩn bị tôm, thịt, rau.\n2. Nhúng bánh tráng qua nước.\n3. Cuốn các nguyên liệu.\n4. Chấm mắm nêm hoặc nước chấm chua ngọt.",
+    "imageUrl": "https://www.vimishop-vnfoods.com/cdn/shop/articles/240627_1200x1200.jpg?v=1720164521",
+    "category": "anvat",
+    "difficulty": "medium",
+    "cookingTime": "30 phút"
+  },
+  {
+    "name": "Bánh Flan",
+    "description": "Bánh flan béo ngậy, mềm mịn, sốt caramel.",
+    "ingredients": ["4 quả trứng gà", "300ml sữa tươi", "100g đường", "Vani"],
+    "instructions": "1. Nấu caramel từ đường.\n2. Đổ trứng sữa vào khuôn.\n3. Hấp cách thủy 30 phút.\n4. Làm lạnh, ăn mát.",
+    "imageUrl": "https://i.pinimg.com/736x/93/af/35/93af35792cb4c4892173d0786cf95743.jpg",
+    "category": "anvat",
+    "difficulty": "medium",
+    "cookingTime": "60 phút"
+  },
+  {
+    "name": "Bánh Bột Lọc",
+    "description": "Bánh bột lọc Huế dai dai, nhân tôm thịt.",
+    "ingredients": ["200g bột năng", "100g tôm", "50g thịt ba chỉ", "Hành phi"],
+    "instructions": "1. Trộn bột năng với nước nóng, nhào dẻo.\n2. Bọc nhân tôm thịt, gói lá chuối.\n3. Hấp 20 phút.\n4. Ăn kèm nước mắm chua ngọt.",
+    "imageUrl": "https://i.pinimg.com/736x/35/13/e5/3513e5a99f2108578b45ed31143368fc.jpg",
+    "category": "anvat",
+    "difficulty": "hard",
+    "cookingTime": "50 phút"
+  },
+  {
+    "name": "Súp Cua",
+    "description": "Súp cua nóng hổi, sệt sánh, topping trứng bắc thảo.",
+    "ingredients": ["200g thịt cua", "50g bắp", "1 quả trứng gà", "Tinh bột năng", "Gia vị"],
+    "instructions": "1. Nấu nước dùng với cua, bắp.\n2. Thêm bột năng khuấy sệt.\n3. Cho trứng vào khuấy đều.\n4. Ăn nóng, thêm bắc thảo.",
+    "imageUrl": "https://i.pinimg.com/736x/12/52/ba/1252ba7a66132a1da3cb72cc7bd9b266.jpg",
+    "category": "anvat",
+    "difficulty": "medium",
+    "cookingTime": "35 phút"
+  },
+  {
+    "name": "Bánh Da Lợn",
+    "description": "Bánh da lợn nhiều lớp màu xanh lá, tím than hấp dẫn.",
+    "ingredients": ["200g bột năng", "100g bột gạo", "200ml nước cốt dừa", "Lá dứa", "Đậu xanh hấp"],
+    "instructions": "1. Pha bột gạo, bột năng với nước cốt dừa.\n2. Chia bột, thêm màu lá dứa, đậu xanh.\n3. Hấp từng lớp 5 phút.\n4. Cắt miếng khi nguội.",
+    "imageUrl": "https://i.pinimg.com/736x/6f/8c/11/6f8c11c47c9cb6b3dee377a7e4e98863.jpg",
+    "category": "anvat",
+    "difficulty": "hard",
+    "cookingTime": "70 phút"
+  },
+  {
+    "name": "Trà Chanh Hà Nội",
+    "description": "Trà xanh pha chanh tươi, mát lạnh giải khát.",
+    "ingredients": ["200ml trà xanh", "1 quả chanh", "2 thìa đường", "Đá viên"],
+    "instructions": "1. Pha trà xanh, để nguội.\n2. Thêm đường, nước cốt chanh.\n3. Cho đá viên vào ly.\n4. Khuấy đều và thưởng thức.",
+    "imageUrl": "https://i.pinimg.com/736x/c6/4d/26/c64d26e91c7c1a09916bcc3223da561b.jpg",
+    "category": "douong",
+    "difficulty": "easy",
+    "cookingTime": "10 phút"
+  },
+  {
+    "name": "Sinh Tố Bơ",
+    "description": "Sinh tố bơ béo ngậy, mịn mát.",
+    "ingredients": ["1 quả bơ chín", "150ml sữa tươi", "2 thìa sữa đặc", "Đá viên"],
+    "instructions": "1. Bơ gọt vỏ, lấy thịt.\n2. Cho vào máy xay cùng sữa tươi, sữa đặc, đá.\n3. Xay nhuyễn mịn.\n4. Rót ra ly và thưởng thức.",
+    "imageUrl": "https://i.pinimg.com/736x/e7/90/2e/e7902ed3181d1c2f08f375b29139d95b.jpg",
+    "category": "douong",
+    "difficulty": "easy",
+    "cookingTime": "10 phút"
+  },
+  {
+    "name": "Nước Mía",
+    "description": "Nước mía ngọt mát, giải nhiệt mùa hè.",
+    "ingredients": ["1 cây mía tươi", "1 lát tắc (tùy chọn)", "Đá viên"],
+    "instructions": "1. Ép nước mía tươi.\n2. Cho ra ly cùng đá viên.\n3. Thêm lát tắc nếu thích.\n4. Uống ngay.",
+    "imageUrl": "https://senspanhatrang.com/wp-content/uploads/2025/06/nuoc-mia-2-729x800.jpg",
+    "category": "douong",
+    "difficulty": "easy",
+    "cookingTime": "5 phút"
+  },
+  {
+    "name": "Trà Sữa Trân Châu",
+    "description": "Trà sữa thơm béo, kèm trân châu dẻo dai.",
+    "ingredients": ["200ml trà đen", "100ml sữa tươi", "50g trân châu", "Đường", "Đá viên"],
+    "instructions": "1. Luộc trân châu 20 phút, để nguội.\n2. Pha trà đen với sữa, đường.\n3. Thêm trân châu và đá viên.\n4. Khuấy đều, uống lạnh.",
+    "imageUrl": "https://i.pinimg.com/1200x/15/ad/fa/15adfa53db67c28179923e639d9dd280.jpg",
+    "category": "douong",
+    "difficulty": "medium",
+    "cookingTime": "30 phút"
+  },
+  {
+    "name": "Cà Phê Sữa Đá",
+    "description": "Cà phê đen hòa cùng sữa đặc, uống đá mát lạnh.",
+    "ingredients": ["30g cà phê phin", "50ml sữa đặc", "Đá viên"],
+    "instructions": "1. Pha cà phê phin.\n2. Thêm sữa đặc, khuấy đều.\n3. Cho đá viên vào ly.\n4. Thưởng thức.",
+    "imageUrl": "https://i.pinimg.com/736x/e0/b4/d2/e0b4d2ecc8141e6b6de9dff2d4e0ba63.jpg",
+    "category": "douong",
+    "difficulty": "easy",
+    "cookingTime": "15 phút"
+  },
+  {
+    "name": "Nước Chanh Dây",
+    "description": "Nước chanh dây chua ngọt, giàu vitamin C.",
+    "ingredients": ["3 quả chanh dây", "2 thìa đường", "200ml nước lọc", "Đá viên"],
+    "instructions": "1. Lọc lấy nước chanh dây.\n2. Hòa với đường và nước lọc.\n3. Cho đá viên vào.\n4. Uống mát lạnh.",
+    "imageUrl": "https://i.pinimg.com/1200x/bf/d4/6d/bfd46dc4728b72d95bf67d34a7c779f5.jpg",
+    "category": "douong",
+    "difficulty": "easy",
+    "cookingTime": "10 phút"
+  },
+  {
+    "name": "Nước Dừa Tươi",
+    "description": "Nước dừa ngọt mát tự nhiên.",
+    "ingredients": ["1 quả dừa tươi"],
+    "instructions": "1. Bổ quả dừa.\n2. Uống trực tiếp hoặc cho đá viên.\n3. Có thể ăn kèm cùi dừa.",
+    "imageUrl": "https://i.pinimg.com/1200x/f7/46/76/f74676e64d0ccd46daf08d419c0fbe5d.jpg",
+    "category": "douong",
+    "difficulty": "easy",
+    "cookingTime": "5 phút"
+  },
+  {
+    "name": "Soda Chanh Muối",
+    "description": "Soda kết hợp chanh muối, giải khát tuyệt vời.",
+    "ingredients": ["1 quả chanh muối", "200ml soda", "Đá viên"],
+    "instructions": "1. Dằm chanh muối.\n2. Cho soda và đá viên vào.\n3. Khuấy đều.\n4. Uống ngay.",
+    "imageUrl": "https://cdn.tgdd.vn/2021/10/CookDishThumb/cach-pha-soda-chanh-muoi-giai-nhiet-mua-he-don-gian-tai-nha-thumb-620x620.jpg",
+    "category": "douong",
+    "difficulty": "easy",
+    "cookingTime": "10 phút"
+  },
+  {
+    "name": "Trà Đào Cam Sả",
+    "description": "Trà đào kết hợp cam tươi và sả thơm.",
+    "ingredients": ["200ml trà đen", "2 miếng đào hộp", "1 lát cam tươi", "1 cây sả đập dập", "Đá viên"],
+    "instructions": "1. Nấu trà đen với sả, để nguội.\n2. Thêm đào, cam vào ly.\n3. Cho đá viên và trà vào.\n4. Thưởng thức.",
+    "imageUrl": "https://beptruong.edu.vn/wp-content/uploads/2020/10/tra-dao-cam-sa.jpg",
+    "category": "douong",
+    "difficulty": "medium",
+    "cookingTime": "20 phút"
+  },
+  {
+    "name": "Sinh Tố Dâu",
+    "description": "Sinh tố dâu tươi chua ngọt, giàu vitamin.",
+    "ingredients": ["200g dâu tây", "150ml sữa tươi", "2 thìa sữa đặc", "Đá viên"],
+    "instructions": "1. Dâu rửa sạch, cắt đôi.\n2. Xay cùng sữa tươi, sữa đặc, đá.\n3. Rót ra ly.\n4. Uống lạnh.",
+    "imageUrl": "https://file.hstatic.net/200000700229/article/sinh-to-dau_70cdd83547ca4a4781c733651356841c.jpg",
+    "category": "douong",
+    "difficulty": "easy",
+    "cookingTime": "10 phút"
+  },
+  {
+    "name": "Nước Ép Cam",
+    "description": "Nước ép cam tươi mát, giàu vitamin C.",
+    "ingredients": ["2 quả cam tươi", "Đá viên", "Đường (tùy chọn)"],
+    "instructions": "1. Cam vắt lấy nước.\n2. Lọc bỏ hạt.\n3. Cho đá và đường tùy khẩu vị.\n4. Uống ngay khi còn mát.",
+    "imageUrl": "https://i.pinimg.com/1200x/ea/17/b2/ea17b2fcd335a222dbd43b321253e7ac.jpg",
+    "category": "douong",
+    "difficulty": "easy",
+    "cookingTime": "5 phút"
+  },
+  {
+    "name": "Sinh Tố Xoài",
+    "description": "Sinh tố xoài chua ngọt, mịn mát.",
+    "ingredients": ["1 quả xoài chín", "150ml sữa tươi", "2 thìa sữa đặc", "Đá viên"],
+    "instructions": "1. Xoài gọt vỏ, cắt miếng.\n2. Cho vào máy xay với sữa tươi, sữa đặc, đá.\n3. Xay nhuyễn.\n4. Rót ra ly và uống lạnh.",
+    "imageUrl": "https://i.pinimg.com/1200x/32/00/ba/3200ba66498a3ec62e23fa527eca92dd.jpg",
+    "category": "douong",
+    "difficulty": "easy",
+    "cookingTime": "10 phút"
+  },
+  {
+    "name": "Sữa Đậu Nành",
+    "description": "Sữa đậu nành thơm béo, tốt cho sức khỏe.",
+    "ingredients": ["200g đậu nành", "1,5 lít nước", "Đường"],
+    "instructions": "1. Ngâm đậu nành qua đêm.\n2. Xay cùng nước, lọc bã.\n3. Đun sôi 15 phút, thêm đường.\n4. Uống nóng hoặc lạnh.",
+    "imageUrl": "https://i.pinimg.com/736x/b4/60/4a/b4604a5787b26e070190d380e4f35e16.jpg",
+    "category": "douong",
+    "difficulty": "medium",
+    "cookingTime": "60 phút"
+  },
+  {
+    "name": "Matcha Latte",
+    "description": "Matcha latte béo ngậy, thơm mùi trà xanh.",
+    "ingredients": ["2 thìa bột matcha", "150ml sữa tươi", "1 thìa đường", "Đá viên"],
+    "instructions": "1. Hòa bột matcha với ít nước nóng.\n2. Đun nóng sữa, thêm đường.\n3. Rót matcha vào ly, thêm sữa.\n4. Uống nóng hoặc cho đá.",
+    "imageUrl": "https://i.pinimg.com/1200x/f3/35/3d/f3353da22218a4de90629ea801d6d0ff.jpg",
+    "category": "douong",
+    "difficulty": "medium",
+    "cookingTime": "15 phút"
+  },
+  {
+    "name": "Nước Ép Dưa Hấu",
+    "description": "Nước ép dưa hấu ngọt mát, giải nhiệt nhanh.",
+    "ingredients": ["300g dưa hấu", "1 thìa đường (tùy chọn)", "Đá viên"],
+    "instructions": "1. Dưa hấu bỏ hạt, cắt miếng.\n2. Xay nhuyễn và lọc qua rây.\n3. Thêm đường nếu cần.\n4. Uống lạnh với đá.",
+    "imageUrl": "https://i.pinimg.com/1200x/fd/4c/20/fd4c203bc9627fdb503e33c098d13b79.jpg",
+    "category": "douong",
+    "difficulty": "easy",
+    "cookingTime": "10 phút"
+  },
+  {
+    "name": "Trà Tắc",
+    "description": "Trà tắc chua ngọt, mát lạnh.",
+    "ingredients": ["200ml trà xanh", "2 quả tắc", "2 thìa đường", "Đá viên"],
+    "instructions": "1. Pha trà xanh, để nguội.\n2. Thêm đường và nước tắc.\n3. Cho đá viên.\n4. Khuấy đều và uống.",
+    "imageUrl": "https://i.pinimg.com/736x/83/dc/13/83dc13132b07cf8b36624f0f90924816.jpg",
+    "category": "douong",
+    "difficulty": "easy",
+    "cookingTime": "10 phút"
+  },
+  {
+    "name": "Sinh Tố Dứa",
+    "description": "Sinh tố dứa chua ngọt, giàu vitamin.",
+    "ingredients": ["200g dứa", "100ml sữa tươi", "2 thìa mật ong", "Đá viên"],
+    "instructions": "1. Dứa gọt vỏ, cắt miếng.\n2. Xay với sữa và mật ong.\n3. Thêm đá viên, xay nhuyễn.\n4. Rót ra ly.",
+    "imageUrl": "https://i.pinimg.com/1200x/d4/46/73/d446733e66b1451c58c5b929ab3a2263.jpg",
+    "category": "douong",
+    "difficulty": "easy",
+    "cookingTime": "10 phút"
+  },
+  {
+    "name": "Trà Gừng",
+    "description": "Trà gừng nóng, tốt cho sức khỏe và tiêu hóa.",
+    "ingredients": ["1 củ gừng nhỏ", "200ml nước sôi", "1 thìa mật ong"],
+    "instructions": "1. Thái gừng lát.\n2. Cho vào cốc, thêm nước sôi.\n3. Để 5 phút, thêm mật ong.\n4. Uống nóng.",
+    "imageUrl": "https://i.pinimg.com/1200x/e5/95/ed/e595ede427f6150ad29aa4cef4582666.jpg",
+    "category": "douong",
+    "difficulty": "easy",
+    "cookingTime": "15 phút"
+  },
+  {
+    "name": "Cacao Nóng",
+    "description": "Cacao nóng thơm béo, thích hợp ngày lạnh.",
+    "ingredients": ["2 thìa bột cacao", "200ml sữa tươi", "1 thìa đường"],
+    "instructions": "1. Hòa bột cacao với ít nước nóng.\n2. Đun sữa, thêm đường.\n3. Rót cacao vào sữa.\n4. Uống nóng.",
+    "imageUrl": "https://i.pinimg.com/736x/08/d5/b1/08d5b16099154dc114a4eebdc9d6c98d.jpg",
+    "category": "douong",
+    "difficulty": "easy",
+    "cookingTime": "15 phút"
+  },
+  {
+    "name": "Sinh Tố Chuối",
+    "description": "Sinh tố chuối ngọt béo, dễ uống.",
+    "ingredients": ["2 quả chuối chín", "150ml sữa tươi", "1 thìa mật ong", "Đá viên"],
+    "instructions": "1. Chuối bóc vỏ, cắt lát.\n2. Cho vào máy xay cùng sữa, mật ong, đá.\n3. Xay nhuyễn.\n4. Rót ra ly.",
+    "imageUrl": "https://i.pinimg.com/736x/cc/95/1e/cc951e596c4cae0c42c2d1d5443418d4.jpg",
+    "category": "douong",
+    "difficulty": "easy",
+    "cookingTime": "10 phút"
+  }
+]
