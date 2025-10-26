@@ -61,7 +61,7 @@ const fallbackResponses = {
 // Check if RAG API is available
 const checkRagApiHealth = async () => {
   try {
-    const response = await ragApi.get('/health', { timeout: 5000 });
+    const response = await ragApi.get('/health', { timeout: 3000 });
     return response.status === 200;
   } catch (error) {
     console.warn('RAG API health check failed:', error.message);
@@ -125,6 +125,22 @@ const generateFallbackResponse = (userMessage) => {
       source: 'fallback_recipe'
     };
   }
+
+  if (lowerMessage.includes('bún bò') || lowerMessage.includes('bún bò huế')) {
+    return {
+      text: '🍜 **Bún Bò Huế:**\n\n**Nguyên liệu:**\n- Bún bò: 500g\n- Xương heo: 500g\n- Thịt bò: 300g\n- Chả cua: 200g\n- Mắm ruốc, sa tế\n\n**Cách làm:**\n1. Ninh xương 2-3 tiếng\n2. Thêm mắm ruốc, sa tế\n3. Luộc bún qua nước sôi\n4. Thái thịt bò, chả cua\n5. Trình bày và thưởng thức\n\nMón đặc sản xứ Huế! 👑',
+      suggestions: ['Bún bò Huế cay', 'Cách làm sa tế', 'Mắm ruốc tôm'],
+      source: 'fallback_recipe'
+    };
+  }
+
+  if (lowerMessage.includes('gỏi cuốn') || lowerMessage.includes('nem cuốn')) {
+    return {
+      text: '🥬 **Gỏi Cuốn Tôm Thịt:**\n\n**Nguyên liệu:**\n- Bánh tráng: 20 tờ\n- Tôm luộc: 300g\n- Thịt ba chỉ: 200g\n- Rau sống, bún tươi\n- Nước chấm chua ngọt\n\n**Cách làm:**\n1. Luộc tôm, thịt chín\n2. Chuẩn bị rau sống\n3. Ướt bánh tráng\n4. Cuốn tôm, thịt, rau\n5. Chấm nước mắm chua ngọt\n\nMón ăn nhẹ, healthy! 🥗',
+      suggestions: ['Gỏi cuốn chay', 'Nước chấm gỏi cuốn', 'Bánh tráng cuốn'],
+      source: 'fallback_recipe'
+    };
+  }
   
   return {
     text: getRandomResponse(fallbackResponses.default),
@@ -138,17 +154,24 @@ export const getRagChatBotResponse = async (userMessage, conversationId = null) 
   try {
     console.log('Processing RAG query:', userMessage);
     
-    // Check if RAG API is available
-    const isRagAvailable = await checkRagApiHealth();
-    
-    if (!isRagAvailable && FALLBACK_ENABLED) {
-      console.warn('RAG API unavailable, using fallback responses');
+    // Temporarily skip health check and use fallback directly
+    // This prevents the 500/404 errors while chatbot service is not deployed
+    if (FALLBACK_ENABLED) {
+      console.log('Using fallback responses (chatbot service not deployed)');
       return generateFallbackResponse(userMessage);
     }
     
-    if (!isRagAvailable) {
-      throw new Error('RAG API is not available and fallback is disabled');
-    }
+    // Check if RAG API is available (commented out for now)
+    // const isRagAvailable = await checkRagApiHealth();
+    // 
+    // if (!isRagAvailable && FALLBACK_ENABLED) {
+    //   console.warn('RAG API unavailable, using fallback responses');
+    //   return generateFallbackResponse(userMessage);
+    // }
+    // 
+    // if (!isRagAvailable) {
+    //   throw new Error('RAG API is not available and fallback is disabled');
+    // }
     
     // Call Node.js Chatbot API (new format)
     const requestData = {
