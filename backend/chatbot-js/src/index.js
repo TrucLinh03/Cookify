@@ -14,10 +14,28 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 
 // Middleware
+// 🛡️ CORS configuration - Allow only Netlify frontend and localhost (for dev)
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || "https://cookifychef.netlify.app,http://localhost:5173").split(",");
+
 app.use(cors({
-  origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000', 'http://localhost:5173'],
-  credentials: true
+  origin: (origin, callback) => {
+    // Cho phép request từ Netlify hoặc localhost trong dev
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.warn(`❌ CORS blocked request from origin: ${origin}`);
+      callback(new Error('CORS blocked: Origin not allowed'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  optionsSuccessStatus: 200
 }));
+
+// Handle preflight requests
+app.options('*', cors());
+
 app.use(express.json());
 
 // Global state

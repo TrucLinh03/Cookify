@@ -2,7 +2,8 @@
 import axios from 'axios';
 
 // Configuration
-const RAG_API_BASE_URL = 'http://localhost:8000';
+// Configuration
+const RAG_API_BASE_URL = import.meta.env.VITE_CHATBOT_API_BASE_URL || 'https://cookify-auiz.onrender.com';
 const FALLBACK_ENABLED = true;
 
 // Create axios instance with default config
