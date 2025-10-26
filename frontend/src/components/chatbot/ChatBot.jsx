@@ -4,7 +4,7 @@ import chefHatIcon from '../../assets/chef-hat.svg';
 
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [position, setPosition] = useState({ edge: 'right', offset: 16 });
+  const [position, setPosition] = useState({ edge: 'bottom', offset: 16 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
@@ -135,10 +135,10 @@ const ChatBot = () => {
       <div 
         className={`fixed z-50 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
         style={{
-          ...(position.edge === 'left' && { left: '8px', top: `${position.offset}px` }),
-          ...(position.edge === 'right' && { right: '8px', top: `${position.offset}px` }),
-          ...(position.edge === 'top' && { top: '8px', left: `${position.offset}px` }),
-          ...(position.edge === 'bottom' && { bottom: '8px', left: `${position.offset}px` })
+          ...(position.edge === 'left' && { left: '16px', top: `${position.offset}px` }),
+          ...(position.edge === 'right' && { right: '16px', top: `${position.offset}px` }),
+          ...(position.edge === 'top' && { top: '16px', left: `${position.offset}px` }),
+          ...(position.edge === 'bottom' && { bottom: '16px', right: '16px' })
         }}
         onMouseDown={handleMouseDown}
       >

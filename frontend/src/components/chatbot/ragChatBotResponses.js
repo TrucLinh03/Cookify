@@ -9,11 +9,35 @@ const FALLBACK_ENABLED = true;
 // Create axios instance with default config
 const ragApi = axios.create({
   baseURL: RAG_API_BASE_URL,
-  timeout: 30000, // 30 seconds timeout
+  timeout: 10000, // Reduce timeout to 10 seconds for better UX
   headers: {
     'Content-Type': 'application/json',
   },
 });
+
+// Add request interceptor for debugging
+ragApi.interceptors.request.use(
+  (config) => {
+    console.log(`🤖 Chatbot API Request: ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`);
+    return config;
+  },
+  (error) => {
+    console.error('❌ Chatbot Request Error:', error);
+    return Promise.reject(error);
+  }
+);
+
+// Add response interceptor for better error handling
+ragApi.interceptors.response.use(
+  (response) => {
+    console.log(`✅ Chatbot API Response: ${response.status}`);
+    return response;
+  },
+  (error) => {
+    console.error('❌ Chatbot API Error:', error.response?.status, error.message);
+    return Promise.reject(error);
+  }
+);
 
 // Fallback responses for when RAG API is unavailable
 const fallbackResponses = {
@@ -72,7 +96,7 @@ const generateFallbackResponse = (userMessage) => {
   // Check for specific cooking terms
   if (lowerMessage.includes('phở') || lowerMessage.includes('pho')) {
     return {
-      text: 'Phở là món ăn truyền thống tuyệt vời! Tôi có thể hướng dẫn bạn nấu phở bò hoặc phở gà. Bạn muốn làm loại nào? 🍜',
+      text: 'Phở là món ăn truyền thống tuyệt vời! 🍜\n\n**Phở Bò cơ bản:**\n- Xương bò: 1kg\n- Thịt bò: 500g\n- Bánh phở: 400g\n- Hành tây, gừng, thảo quả\n\n**Cách làm:**\n1. Ninh xương 3-4 tiếng\n2. Nướng hành, gừng cho thơm\n3. Gia vị: muối, đường, nước mắm\n4. Trụng bánh phở, xếp thịt, chan nước dùng\n\nBạn cần hướng dẫn chi tiết hơn không? 😊',
       suggestions: ['Phở bò', 'Phở gà', 'Cách nấu nước dùng phở'],
       source: 'fallback_recipe'
     };
@@ -83,6 +107,22 @@ const generateFallbackResponse = (userMessage) => {
       text: 'Tôi gợi ý một số món nhanh: Mì xào giòn (20 phút), Cơm chiên dương châu (15 phút), hoặc Bún thịt nướng (25 phút). Bạn chọn món nào? ⚡',
       suggestions: ['Mì xào giòn', 'Cơm chiên dương châu', 'Bún thịt nướng'],
       source: 'fallback_quick'
+    };
+  }
+
+  if (lowerMessage.includes('cơm chiên')) {
+    return {
+      text: '🍚 **Cơm Chiên Dương Châu:**\n\n**Nguyên liệu:**\n- Cơm nguội: 2 bát\n- Trứng: 2 quả\n- Xúc xích: 100g\n- Tôm khô: 50g\n- Hành tây, tỏi\n\n**Cách làm:**\n1. Đánh trứng, chiên tơi\n2. Phi thơm hành tỏi\n3. Cho cơm vào xào\n4. Thêm xúc xích, tôm khô\n5. Nêm nếm vừa ăn\n\nMón này rất dễ làm và ngon! 😋',
+      suggestions: ['Cơm chiên hải sản', 'Cơm chiên thập cẩm', 'Mẹo chiên cơm ngon'],
+      source: 'fallback_recipe'
+    };
+  }
+
+  if (lowerMessage.includes('bánh mì')) {
+    return {
+      text: '🥖 **Bánh Mì Việt Nam:**\n\n**Nguyên liệu:**\n- Bánh mì: 2 ổ\n- Pate gan: 100g\n- Thịt nguội: 100g\n- Rau thơm, dưa chua\n- Tương ớt, mayonnaise\n\n**Cách làm:**\n1. Nướng bánh mì giòn\n2. Phết pate và mayonnaise\n3. Thêm thịt nguội\n4. Rau thơm, dưa chua\n5. Chấm tương ớt\n\nBánh mì Việt Nam nổi tiếng thế giới! 🌍',
+      suggestions: ['Bánh mì thịt nướng', 'Bánh mì chả cá', 'Cách làm dưa chua'],
+      source: 'fallback_recipe'
     };
   }
   
@@ -146,7 +186,13 @@ export const getRagChatBotResponse = async (userMessage, conversationId = null) 
   } catch (error) {
     console.error('RAG API error:', error);
     
-    // Handle specific error types
+    // Always use fallback when there's an error
+    if (FALLBACK_ENABLED) {
+      console.warn('API error occurred, using fallback response');
+      return generateFallbackResponse(userMessage);
+    }
+    
+    // Handle specific error types for better user experience
     if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND') {
       console.warn('Connection failed, using fallback');
       if (FALLBACK_ENABLED) {
