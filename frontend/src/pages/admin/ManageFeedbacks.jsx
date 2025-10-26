@@ -52,7 +52,7 @@ const ManageFeedbacks = () => {
     try {
       const token = localStorage.getItem('token');
       
-      const response = await axios.patch(getApiUrl('/api/feedback/admin/manage/${feedbackId}'), {
+      const response = await axios.patch(getApiUrl(`/api/feedback/admin/manage/${feedbackId}`), {
         status: newStatus
       }, {
         headers: {
@@ -77,7 +77,7 @@ const ManageFeedbacks = () => {
     try {
       const token = localStorage.getItem('token');
       
-      const response = await axios.delete(getApiUrl('/api/feedback/admin/manage/${feedbackId}'), {
+      const response = await axios.delete(getApiUrl(`/api/feedback/admin/manage/${feedbackId}`), {
         headers: {
           'Authorization': `Bearer ${token}`
         }

@@ -23,7 +23,7 @@ const Card = ({ item }) => {
         if (!token) return;
 
         try {
-          const response = await axios.get(getApiUrl('/api/favourites/check/${item._id}'), {
+          const response = await axios.get(getApiUrl(`/api/favourites/check/${item._id}`), {
             headers: { 'Authorization': `Bearer ${token}` }
           });
           
@@ -120,7 +120,7 @@ const Card = ({ item }) => {
     try {
       if (isFavorited) {
         // Remove from favorites
-        const response = await axios.delete(getApiUrl('/api/users/favourites/${item._id}'), {
+        const response = await axios.delete(getApiUrl(`/api/users/favourites/${item._id}`), {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         
@@ -140,7 +140,7 @@ const Card = ({ item }) => {
         }
       } else {
         // Add to favorites
-        const response = await axios.post(getApiUrl('/api/users/favourites/${item._id}'), {}, {
+        const response = await axios.post(getApiUrl(`/api/users/favourites/${item._id}`), {}, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         
@@ -215,12 +215,12 @@ const Card = ({ item }) => {
   };
 
   return (
-    <div className="w-full">
+    <div className="container flex justify-center md:justify-start">
       <div 
-        className="w-full cursor-pointer transition-transform hover:scale-[1.02] sm:hover:scale-105"
+        className="max-w-sm w-full cursor-pointer transition-transform hover:scale-105"
         onClick={handleCardClick}
       >
-        <div className="bg-white relative shadow-md hover:shadow-xl transition-all duration-300 rounded-lg h-full flex flex-col card-responsive">
+        <div className="bg-white relative shadow-lg hover:shadow-xl transition duration-300 rounded-lg h-full flex flex-col">
           {/* Difficulty Tag - Top Left */}
           <div 
             className="absolute top-3 left-3 z-10 py-1 px-2 font-medium rounded-md text-xs shadow-lg"

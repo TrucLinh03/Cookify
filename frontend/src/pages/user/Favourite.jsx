@@ -57,7 +57,7 @@ const Favourite = () => {
     }
 
     try {
-      const response = await axios.delete(getApiUrl('/api/users/favourites/${recipeId}'), {
+      const response = await axios.delete(getApiUrl(`/api/users/favourites/${recipeId}`), {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 

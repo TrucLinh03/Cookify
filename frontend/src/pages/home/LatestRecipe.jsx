@@ -28,7 +28,7 @@ const LatestRecipe = () => {
                     const recentRecipes = [];
                     for (const recipeId of recentlyViewed.slice(0, 4)) {
                         try {
-                            const response = await axios.get(getApiUrl('/api/recipes/${recipeId}'));
+                            const response = await axios.get(getApiUrl(`/api/recipes/${recipeId}`));
                             if (response.data.success) {
                                 recentRecipes.push(response.data.data);
                             }

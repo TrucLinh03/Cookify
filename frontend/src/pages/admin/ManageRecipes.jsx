@@ -133,7 +133,7 @@ const ManageRecipes = () => {
       
       if (editingRecipe) {
         // Cập nhật công thức
-        const response = await axios.put(getApiUrl('/api/recipes/${editingRecipe._id}'), submitData, config);
+        const response = await axios.put(getApiUrl(`/api/recipes/${editingRecipe._id}`), submitData, config);
         if (response.data.success) {
           alert("Cập nhật công thức thành công!");
         } else {
@@ -187,7 +187,7 @@ const ManageRecipes = () => {
           }
         };
         
-        const response = await axios.delete(getApiUrl('/api/recipes/${recipeId}'), config);
+        const response = await axios.delete(getApiUrl(`/api/recipes/${recipeId}`), config);
         if (response.data.success) {
           alert("Xóa công thức thành công!");
           fetchRecipes();

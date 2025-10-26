@@ -33,7 +33,7 @@ const ManageUsers = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        getApiUrl('/api/users/all?page=${page}&limit=10&search=${search}'),
+        getApiUrl(`/api/users/all?page=${page}&limit=10&search=${search}`),
         getAxiosConfig()
       );
 
@@ -60,7 +60,7 @@ const ManageUsers = () => {
   const updateUser = async (userId, updateData) => {
     try {
       const response = await axios.patch(
-        getApiUrl('/api/users/manage/${userId}'),
+        getApiUrl(`/api/users/manage/${userId}`),
         updateData,
         getAxiosConfig()
       );
@@ -84,7 +84,7 @@ const ManageUsers = () => {
 
     try {
       const response = await axios.delete(
-        getApiUrl('/api/users/manage/${userId}'),
+        getApiUrl(`/api/users/manage/${userId}`),
         getAxiosConfig()
       );
 

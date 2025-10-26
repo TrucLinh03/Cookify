@@ -155,7 +155,7 @@ const SingleProduct = () => {
                 if (!token) return;
 
                 try {
-                    const response = await axios.get(getApiUrl('/api/favourites/check/${item._id}'), {
+                    const response = await axios.get(getApiUrl(`/api/favourites/check/${item._id}`), {
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
                     
@@ -184,7 +184,7 @@ const SingleProduct = () => {
                 const favorites = {};
                 for (const recipe of relatedRecipes) {
                     try {
-                        const response = await axios.get(getApiUrl('/api/favourites/check/${recipe._id}'), {
+                        const response = await axios.get(getApiUrl(`/api/favourites/check/${recipe._id}`), {
                             headers: { 'Authorization': `Bearer ${token}` }
                         });
                         
@@ -227,7 +227,7 @@ const SingleProduct = () => {
         try {
             if (isFavorited) {
                 // Remove from favorites
-                const response = await axios.delete(getApiUrl('/api/users/favourites/${item._id}'), {
+                const response = await axios.delete(getApiUrl(`/api/users/favourites/${item._id}`), {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 
@@ -245,7 +245,7 @@ const SingleProduct = () => {
                 }
             } else {
                 // Add to favorites
-                const response = await axios.post(getApiUrl('/api/users/favourites/${item._id}'), {}, {
+                const response = await axios.post(getApiUrl(`/api/users/favourites/${item._id}`), {}, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 
@@ -336,7 +336,7 @@ const SingleProduct = () => {
             
             if (isFavorited) {
                 // Remove from favorites
-                const response = await axios.delete(getApiUrl('/api/users/favourites/${recipeId}'), {
+                const response = await axios.delete(getApiUrl(`/api/users/favourites/${recipeId}`), {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 
@@ -354,7 +354,7 @@ const SingleProduct = () => {
                 }
             } else {
                 // Add to favorites
-                const response = await axios.post(getApiUrl('/api/users/favourites/${recipeId}'), {}, {
+                const response = await axios.post(getApiUrl(`/api/users/favourites/${recipeId}`), {}, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 
@@ -427,7 +427,7 @@ const SingleProduct = () => {
         const fetchRecipe = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(getApiUrl('/api/recipes/${id}'));
+                const response = await axios.get(getApiUrl(`/api/recipes/${id}`));
                 
                 if (response.data.success) {
                     const recipeData = response.data.data;

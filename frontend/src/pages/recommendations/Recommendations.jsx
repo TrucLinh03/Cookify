@@ -58,7 +58,7 @@ const Recommendations = () => {
 
         // Make API call to specific recommendation endpoint
         const response = await axios.get(
-          getApiUrl('/api/recommendations${currentTab.endpoint}'),
+          getApiUrl(`/api/recommendations${currentTab.endpoint}`),
           config
         );
         

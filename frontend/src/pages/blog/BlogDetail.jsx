@@ -44,7 +44,7 @@ const BlogDetail = () => {
   const fetchBlogDetail = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(getApiUrl('/api/blog/${id}'));
+      const response = await axios.get(getApiUrl(`/api/blog/${id}`));
       
       if (response.data.success) {
         const blogData = response.data.data;
@@ -86,7 +86,7 @@ const BlogDetail = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        getApiUrl('/api/blog/${id}/like'),
+        getApiUrl(`/api/blog/${id}/like`),
         {},
         {
           headers: {
@@ -122,7 +122,7 @@ const BlogDetail = () => {
       setSubmittingComment(true);
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        getApiUrl('/api/blog/${id}/comment'),
+        getApiUrl(`/api/blog/${id}/comment`),
         { content: commentContent.trim() },
         {
           headers: {

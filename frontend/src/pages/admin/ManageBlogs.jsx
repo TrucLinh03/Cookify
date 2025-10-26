@@ -73,7 +73,7 @@ const ManageBlogs = () => {
     try {
       const token = localStorage.getItem('token');
       
-      const response = await axios.patch(getApiUrl('/api/blog/admin/manage/${blogId}'), updates, {
+      const response = await axios.patch(getApiUrl(`/api/blog/admin/manage/${blogId}`), updates, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -96,7 +96,7 @@ const ManageBlogs = () => {
     try {
       const token = localStorage.getItem('token');
       
-      const response = await axios.delete(getApiUrl('/api/blog/admin/manage/${blogId}'), {
+      const response = await axios.delete(getApiUrl(`/api/blog/admin/manage/${blogId}`), {
         headers: {
           'Authorization': `Bearer ${token}`
         }

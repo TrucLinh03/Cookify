@@ -105,7 +105,7 @@ const Profile = () => {
             
             // 3) Blogs: user's published blogs
             const blogRes = await axios.get(
-              getApiUrl('/api/blog/user/${userId}?page=1&limit=1')
+              getApiUrl(`/api/blog/user/${userId}?page=1&limit=1`)
             );
             const blogsCount = blogRes?.data?.data?.pagination?.totalItems ?? (blogRes?.data?.data?.blogs?.length ?? 0);
             

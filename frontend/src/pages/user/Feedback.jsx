@@ -25,7 +25,7 @@ const Feedback = ({ recipeId, onFeedbackSubmitted }) => {
   const fetchFeedbacks = async (page = 1) => {
     try {
       setLoading(true);
-      const response = await axios.get(getApiUrl('/api/feedback/recipe/${recipeId}'), {
+      const response = await axios.get(getApiUrl(`/api/feedback/recipe/${recipeId}`), {
         params: { page, limit: 5 }
       });
 
@@ -48,7 +48,7 @@ const Feedback = ({ recipeId, onFeedbackSubmitted }) => {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      const response = await axios.get(getApiUrl('/api/feedback/check/${recipeId}'), {
+      const response = await axios.get(getApiUrl(`/api/feedback/check/${recipeId}`), {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -119,7 +119,7 @@ const Feedback = ({ recipeId, onFeedbackSubmitted }) => {
         return;
       }
 
-      const response = await axios.delete(getApiUrl('/api/feedback/${feedbackId}'), {
+      const response = await axios.delete(getApiUrl(`/api/feedback/${feedbackId}`), {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -169,7 +169,7 @@ const Feedback = ({ recipeId, onFeedbackSubmitted }) => {
         comment: editForm.comment.trim()
       };
 
-      const response = await axios.put(getApiUrl('/api/feedback/${editingFeedback}'), payload, {
+      const response = await axios.put(getApiUrl(`/api/feedback/${editingFeedback}`), payload, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
