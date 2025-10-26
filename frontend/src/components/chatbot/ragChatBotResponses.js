@@ -154,6 +154,12 @@ export const getRagChatBotResponse = async (userMessage, conversationId = null) 
   try {
     console.log('Processing RAG query:', userMessage);
     
+    // Temporarily use fallback while fixing cookify-1 service
+    if (FALLBACK_ENABLED) {
+      console.log('Using fallback responses while cookify-1 service is being fixed');
+      return generateFallbackResponse(userMessage);
+    }
+    
     // Check if RAG API is available
     const isRagAvailable = await checkRagApiHealth();
     
