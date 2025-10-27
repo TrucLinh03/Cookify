@@ -15,37 +15,50 @@ const PORT = process.env.PORT || 8000;
 
 // Middleware
 // 🛡️ CORS configuration - Smart CORS for Development & Production
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || "https://cookifychef.netlify.app,https://cookify2025.netlify.app,https://cookify-auiz.onrender.com,https://cookify-1-8c21.onrender.com").split(",");
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || "https://cookifychef.netlify.app,https://cookify2025.netlify.app,https://cookify-auiz.onrender.com,https://cookify-1-8c21.onrender.com")
+  .split(",")
+  .map(origin => origin.trim())
+  .filter(origin => origin.length > 0);
 
-app.use(cors({
+console.log('🔐 Allowed CORS Origins:', allowedOrigins);
+
+const corsOptions = {
   origin: (origin, callback) => {
-    // Allow requests with no origin (mobile apps, Postman, etc.)
+    // Allow requests with no origin (mobile apps, Postman, curl, etc.)
     if (!origin) {
       return callback(null, true);
     }
     
     // Allow production origins
     if (allowedOrigins.includes(origin)) {
+      console.log(`✅ CORS allowed for: ${origin}`);
       return callback(null, true);
     }
     
     // Allow all localhost origins for development
     if (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:')) {
+      console.log(`✅ CORS allowed for localhost: ${origin}`);
       return callback(null, true);
     }
     
     // Block other origins
     console.warn(`❌ CORS blocked request from origin: ${origin}`);
-    callback(new Error('CORS blocked: Origin not allowed'));
+    console.warn(`   Allowed origins: ${allowedOrigins.join(', ')}`);
+    // Don't throw error, just return false to avoid crashing
+    callback(null, false);
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-  optionsSuccessStatus: 200
-}));
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  exposedHeaders: ['Content-Length', 'X-Request-Id'],
+  optionsSuccessStatus: 200,
+  maxAge: 86400 // 24 hours
+};
 
-// Handle preflight requests
-app.options('*', cors());
+app.use(cors(corsOptions));
+
+// Handle preflight requests explicitly
+app.options('*', cors(corsOptions));
 
 app.use(express.json());
 
@@ -85,31 +98,54 @@ async function initializeMongoDB() {
  */
 async function initialize() {
   try {
-    console.log('Initializing Cookify Chatbot Service...');
+    console.log('🚀 Initializing Cookify Chatbot Service...');
+    console.log('Environment:', process.env.NODE_ENV || 'development');
+    console.log('Port:', PORT);
+    
+    // Validate required environment variables
+    if (!process.env.GOOGLE_API_KEY) {
+      throw new Error('GOOGLE_API_KEY is not set in environment variables');
+    }
+    if (!process.env.MONGODB_URI) {
+      throw new Error('MONGODB_URI is not set in environment variables');
+    }
     
     // Initialize Gemini API
+    console.log('📡 Initializing Gemini API...');
     initializeGemini(
       process.env.GOOGLE_API_KEY,
-      process.env.MODEL_EMBEDDING,
-      process.env.MODEL_GENERATION
+      process.env.MODEL_EMBEDDING || 'text-embedding-004',
+      process.env.MODEL_GENERATION || 'gemini-1.5-flash'
     );
+    console.log('✅ Gemini API initialized');
     
     // Initialize MongoDB
+    console.log('🗄️  Connecting to MongoDB...');
     const mongoConnected = await initializeMongoDB();
     if (!mongoConnected) {
       throw new Error('Failed to connect to MongoDB');
     }
+    console.log('✅ MongoDB connected');
     
     // Load FAQ data (optional - fallback if file exists)
     const faqPath = process.env.FAQ_DATA_PATH || './faq_dataset.json';
-    loadFAQData(faqPath);
+    try {
+      loadFAQData(faqPath);
+      console.log('✅ FAQ data loaded');
+    } catch (faqError) {
+      console.warn('⚠️  FAQ data not loaded (optional):', faqError.message);
+    }
     
     isReady = true;
-    console.log('Chatbot service initialized successfully!');
+    console.log('✅ Chatbot service initialized successfully!');
     
   } catch (error) {
-    console.error('Initialization failed:', error.message);
-    process.exit(1);
+    console.error('❌ Initialization failed:', error.message);
+    console.error('Stack trace:', error.stack);
+    // Don't exit in production, allow health checks to report status
+    if (process.env.NODE_ENV !== 'production') {
+      process.exit(1);
+    }
   }
 }
 
@@ -236,8 +272,16 @@ async function saveChatHistory(userId, conversationId, message, response, source
  */
 app.post('/ask', async (req, res) => {
   try {
+    console.log(`📨 Received /ask request from origin: ${req.headers.origin || 'no-origin'}`);
+    
     if (!isReady) {
-      return res.status(503).json({ error: 'Service not ready' });
+      console.error('❌ Service not ready');
+      return res.status(503).json({ error: 'Service not ready', message: 'Chatbot is still initializing' });
+    }
+    
+    if (!db) {
+      console.error('❌ Database not connected');
+      return res.status(503).json({ error: 'Database not connected' });
     }
     
     const { message, user_id, conversation_id, include_popular = true } = req.body;
@@ -317,10 +361,12 @@ app.post('/ask', async (req, res) => {
     console.log(`Response sent (${processingTime}ms, confidence: ${Math.round(avgScore * 100)}%)`);
     
   } catch (error) {
-    console.error('Error in /ask:', error);
+    console.error('❌ Error in /ask:', error);
+    console.error('Stack trace:', error.stack);
     res.status(500).json({ 
       error: 'Internal server error', 
-      message: error.message 
+      message: error.message,
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
 });
@@ -603,11 +649,15 @@ process.on('SIGINT', async () => {
 });
 
 // Start server
-initialize().then(() => {
-  app.listen(PORT, () => {
-    console.log(`\nCookify Chatbot Service running on http://localhost:${PORT}`);
-    console.log(`   API docs: http://localhost:${PORT}/`);
-    console.log(`   Health check: http://localhost:${PORT}/health`);
-    console.log(`   Stats: http://localhost:${PORT}/stats\n`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`\n🚀 Cookify Chatbot Service running on port ${PORT}`);
+  console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`   API docs: http://localhost:${PORT}/`);
+  console.log(`   Health check: http://localhost:${PORT}/health`);
+  console.log(`   Stats: http://localhost:${PORT}/stats\n`);
+  
+  // Initialize after server starts
+  initialize().catch(err => {
+    console.error('❌ Failed to initialize:', err);
   });
 });
