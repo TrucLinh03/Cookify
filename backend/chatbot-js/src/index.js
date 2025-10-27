@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 8000;
 
 // Middleware
 // 🛡️ CORS configuration - Smart CORS for Development & Production
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || "https://cookifychef.netlify.app,https://cookify-auiz.onrender.com,https://cookify-1-8c21.onrender.com").split(",");
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || "https://cookifychef.netlify.app,https://cookify2025.netlify.app,https://cookify-auiz.onrender.com,https://cookify-1-8c21.onrender.com").split(",");
 
 app.use(cors({
   origin: (origin, callback) => {
