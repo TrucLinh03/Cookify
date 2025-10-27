@@ -29,7 +29,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // CORS configuration - Smart CORS for Development & Production
 const allowedOrigins = [
-  process.env.CORS_ORIGIN || "https://cookifychef.netlify.app", "https://cookify2025.netlify.app/"
+  process.env.CORS_ORIGIN || "https://cookifychef.netlify.app", "https://cookify2025.netlify.app"
 ];
 
 app.use(cors({
