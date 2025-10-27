@@ -40,7 +40,7 @@ const Login = () => {
         // Tài khoản bị cấm
         setMessage(err?.data?.message || 'Tài khoản của bạn đã bị cấm.');
       } else if (err?.data?.message) {
-        setMessage(err.data.message);
+        setMessage(err?.data?.message);
       } else {
         setMessage('Login failed. Please try again.');
       }

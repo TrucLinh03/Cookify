@@ -5,7 +5,10 @@ import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { useFavoritesContext } from '../../contexts/FavoritesContext'
 import Feedback from '../user/Feedback'
-import { getApiUrl } from '../../config/api.js';
+import { getApiUrl } from '../../config/api.js'
+import chefHatIcon from '../../assets/chef-hat.svg'
+import clockIcon from '../../assets/clock.svg'
+import usersIcon from '../../assets/users-three.svg'
 
 const SingleProduct = () => {
     const { id } = useParams();
@@ -491,106 +494,110 @@ const SingleProduct = () => {
     }
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section nhỏ gọn */}
-      <div className="relative h-80 bg-white shadow-sm">
-        <div className="absolute inset-0 flex items-center">
-          <div className="max-w-6xl mx-auto px-6 w-full">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-              {/* Ảnh món ăn */}
-              <div className="order-2 md:order-1 relative">
-                <img
-                  src={item.imageUrl}
-                  alt={item.name}
-                  className="w-full h-64 object-cover rounded-xl shadow-md"
-                />
-                {/* Nút yêu thích */}
-                <button
-                  onClick={handleFavoriteClick}
-                  disabled={isLoadingFavorite}
-                  className={`absolute top-3 right-3 z-10 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-110 hover:shadow-xl ${
-                    isLoadingFavorite ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
-                  title={isLoadingFavorite ? "Đang xử lý..." : (isFavorited ? "Bỏ yêu thích" : "Thêm vào yêu thích")}
-                >
-                  {isLoadingFavorite ? (
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-600"></div>
-                  ) : (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill={isFavorited ? "red" : "none"}
-                      stroke="red"
-                      strokeWidth="2"
-                      className="w-7 h-7 transition-all duration-300 ease-in-out"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M12 21s-6.5-4.33-10-9.5C-0.42 8.55 1.55 3.5 6 3.5c2.28 0 4.5 1.5 6 3.5 1.5-2 3.72-3.5 6-3.5 4.45 0 6.42 5.05 4 8.0C18.5 16.67 12 21 12 21z"
-                      />
-                    </svg>
-                  )}
-                </button>
-              </div>
-              
-              {/* Thông tin món ăn */}
-              <div className="order-1 md:order-2">
-                <div className="mb-3">
-                  <span className="inline-block bg-peachLight text-tomato px-3 py-1 rounded-full text-sm font-medium">
-                    {item.category === 'monchinh' ? 'Món Chính' :
-                     item.category === 'monphu' ? 'Món Phụ' :
-                     item.category === 'trangmieng' ? 'Tráng Miệng' :
-                     item.category === 'anvat' ? 'Ăn Vặt' :
-                     'Đồ Uống'}
-                  </span>
-                </div>
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
-                  {item.name}
-                </h1>
-                {item.description && (
-                  <p className="text-gray-600 text-lg leading-relaxed mb-4">
-                    {item.description}
-                  </p>
-                )}
-                <button
-                  onClick={() => window.history.back()}
-                  className="inline-flex items-center px-4 py-2 bg-transparent text-secondary font-medium rounded-lg border-2 border-tomato hover:bg-tomato hover:text-white transition ease-in duration-300 hover:shadow-lg transform hover:-translate-y-1"
+      {/* Hero Section - Responsive */}
+      <div className="relative bg-white shadow-sm">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 items-center">
+            {/* Ảnh món ăn */}
+            <div className="order-2 md:order-1 relative">
+              <img
+                src={item.imageUrl}
+                alt={item.name}
+                className="w-full h-48 sm:h-56 md:h-64 object-cover rounded-xl shadow-md"
+              />
+              {/* Nút yêu thích */}
+              <button
+                onClick={handleFavoriteClick}
+                disabled={isLoadingFavorite}
+                className={`absolute top-2 right-2 sm:top-3 sm:right-3 z-10 w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-110 hover:shadow-xl ${
+                  isLoadingFavorite ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+                title={isLoadingFavorite ? "Đang xử lý..." : (isFavorited ? "Bỏ yêu thích" : "Thêm vào yêu thích")}
+              >
+                {isLoadingFavorite ? (
+                  <div className="animate-spin rounded-full h-5 w-5 sm:h-6 sm:w-6 border-b-2 border-gray-600"></div>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill={isFavorited ? "red" : "none"}
+                    stroke="red"
+                    strokeWidth="2"
+                    className="w-6 h-6 sm:w-7 sm:h-7 transition-all duration-300 ease-in-out"
                   >
-                  <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 21s-6.5-4.33-10-9.5C-0.42 8.55 1.55 3.5 6 3.5c2.28 0 4.5 1.5 6 3.5 1.5-2 3.72-3.5 6-3.5 4.45 0 6.42 5.05 4 8.0C18.5 16.67 12 21 12 21z"
+                    />
                   </svg>
-                  Quay lại
-                </button>
+                )}
+              </button>
+            </div>
+            
+            {/* Thông tin món ăn */}
+            <div className="order-1 md:order-2">
+              <div className="mb-2 sm:mb-3">
+                <span className="inline-block bg-peachLight text-tomato px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
+                  {item.category === 'monchinh' ? 'Món Chính' :
+                   item.category === 'monphu' ? 'Món Phụ' :
+                   item.category === 'trangmieng' ? 'Tráng Miệng' :
+                   item.category === 'anvat' ? 'Ăn Vặt' :
+                   'Đồ Uống'}
+                </span>
               </div>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">
+                {item.name}
+              </h1>
+              {item.description && (
+                <p className="text-gray-600 text-sm sm:text-base md:text-lg leading-relaxed mb-3 sm:mb-4 line-clamp-3 md:line-clamp-none">
+                  {item.description}
+                </p>
+              )}
+              <button
+                onClick={() => window.history.back()}
+                className="inline-flex items-center px-3 sm:px-4 py-2 bg-transparent text-secondary font-medium rounded-lg border-2 border-tomato hover:bg-tomato hover:text-white transition ease-in duration-300 hover:shadow-lg transform hover:-translate-y-1 text-sm sm:text-base"
+                >
+                <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+                </svg>
+                Quay lại
+              </button>
             </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-6 py-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         
-        {/* Recipe Stats Cards nhỏ gọn */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          <div className="bg-white rounded-lg p-4 text-center shadow-sm border">
-            <div className="text-2xl mb-2">⭐</div>
-            <div className="text-xs text-gray-600 mb-1">Độ khó</div>
-            <div className="text-sm font-semibold text-green-600">
+        {/* Recipe Stats Cards - Responsive */}
+        <div className="grid grid-cols-3 md:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <div className="bg-white rounded-lg p-3 sm:p-4 text-center shadow-sm border hover:shadow-md transition-shadow">
+            <div className="flex justify-center mb-2">
+              <img src={chefHatIcon} alt="Độ khó" className="w-8 h-8 sm:w-10 sm:h-10" />
+            </div>
+            <div className="text-xs sm:text-sm text-gray-600 mb-1">Độ khó</div>
+            <div className="text-sm sm:text-base font-semibold text-green-600">
               {item.difficulty?.toLowerCase() === 'easy' ? 'Dễ' :
                item.difficulty?.toLowerCase() === 'medium' ? 'Trung bình' :
                item.difficulty?.toLowerCase() === 'hard' ? 'Khó' :
                item.difficulty || 'Dễ'}
             </div>
           </div>
-          <div className="bg-white rounded-lg p-4 text-center shadow-sm border">
-            <div className="text-2xl mb-2">⏱️</div>
-            <div className="text-xs text-gray-600 mb-1">Thời gian</div>
-            <div className="text-sm font-semibold text-pink-600">{item.cookingTime || '45 phút'}</div>
+          <div className="bg-white rounded-lg p-3 sm:p-4 text-center shadow-sm border hover:shadow-md transition-shadow">
+            <div className="flex justify-center mb-2">
+              <img src={clockIcon} alt="Thời gian" className="w-8 h-8 sm:w-10 sm:h-10" />
+            </div>
+            <div className="text-xs sm:text-sm text-gray-600 mb-1">Thời gian</div>
+            <div className="text-sm sm:text-base font-semibold text-pink-600">{item.cookingTime || '45 phút'}</div>
           </div>
-          <div className="bg-white rounded-lg p-4 text-center shadow-sm border">
-            <div className="text-2xl mb-2">👥</div>
-            <div className="text-xs text-gray-600 mb-1">Khẩu phần</div>
-            <div className="text-sm font-semibold text-blue-600">2 người</div>
+          <div className="bg-white rounded-lg p-3 sm:p-4 text-center shadow-sm border hover:shadow-md transition-shadow">
+            <div className="flex justify-center mb-2">
+              <img src={usersIcon} alt="Khẩu phần" className="w-8 h-8 sm:w-10 sm:h-10" />
+            </div>
+            <div className="text-xs sm:text-sm text-gray-600 mb-1">Khẩu phần</div>
+            <div className="text-sm sm:text-base font-semibold text-blue-600">2 người</div>
           </div>
         </div>
 
