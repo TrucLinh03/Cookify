@@ -14,13 +14,13 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 
 // Middleware
-// 🛡️ CORS configuration - Smart CORS for Development & Production
+//  CORS configuration - Smart CORS for Development & Production
 const allowedOrigins = (process.env.ALLOWED_ORIGINS || "https://cookifychef.netlify.app,https://cookify2025.netlify.app,https://cookify-auiz.onrender.com,https://cookify-1-8c21.onrender.com")
   .split(",")
   .map(origin => origin.trim())
   .filter(origin => origin.length > 0);
 
-console.log('🔐 Allowed CORS Origins:', allowedOrigins);
+console.log('Allowed CORS Origins:', allowedOrigins);
 
 const corsOptions = {
   origin: (origin, callback) => {
@@ -31,18 +31,18 @@ const corsOptions = {
     
     // Allow production origins
     if (allowedOrigins.includes(origin)) {
-      console.log(`✅ CORS allowed for: ${origin}`);
+      console.log(`CORS allowed for: ${origin}`);
       return callback(null, true);
     }
     
     // Allow all localhost origins for development
     if (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:')) {
-      console.log(`✅ CORS allowed for localhost: ${origin}`);
+      console.log(` CORS allowed for localhost: ${origin}`);
       return callback(null, true);
     }
     
     // Block other origins
-    console.warn(`❌ CORS blocked request from origin: ${origin}`);
+    console.warn(` CORS blocked request from origin: ${origin}`);
     console.warn(`   Allowed origins: ${allowedOrigins.join(', ')}`);
     // Don't throw error, just return false to avoid crashing
     callback(null, false);
@@ -98,7 +98,7 @@ async function initializeMongoDB() {
  */
 async function initialize() {
   try {
-    console.log('🚀 Initializing Cookify Chatbot Service...');
+    console.log('Initializing Cookify Chatbot Service...');
     console.log('Environment:', process.env.NODE_ENV || 'development');
     console.log('Port:', PORT);
     
@@ -111,36 +111,30 @@ async function initialize() {
     }
     
     // Initialize Gemini API
-    console.log('📡 Initializing Gemini API...');
     initializeGemini(
       process.env.GOOGLE_API_KEY,
       process.env.MODEL_EMBEDDING || 'text-embedding-004',
-      process.env.MODEL_GENERATION || 'gemini-1.5-flash'
+      process.env.MODEL_GENERATION || 'gemini-2.0-flash'
     );
-    console.log('✅ Gemini API initialized');
     
     // Initialize MongoDB
-    console.log('🗄️  Connecting to MongoDB...');
     const mongoConnected = await initializeMongoDB();
     if (!mongoConnected) {
       throw new Error('Failed to connect to MongoDB');
     }
-    console.log('✅ MongoDB connected');
     
     // Load FAQ data (optional - fallback if file exists)
     const faqPath = process.env.FAQ_DATA_PATH || './faq_dataset.json';
     try {
       loadFAQData(faqPath);
-      console.log('✅ FAQ data loaded');
     } catch (faqError) {
-      console.warn('⚠️  FAQ data not loaded (optional):', faqError.message);
+      console.warn('FAQ data not loaded (optional):', faqError.message);
     }
     
     isReady = true;
-    console.log('✅ Chatbot service initialized successfully!');
     
   } catch (error) {
-    console.error('❌ Initialization failed:', error.message);
+    console.error('Initialization failed:', error.message);
     console.error('Stack trace:', error.stack);
     // Don't exit in production, allow health checks to report status
     if (process.env.NODE_ENV !== 'production') {

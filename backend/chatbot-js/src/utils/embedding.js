@@ -18,7 +18,7 @@ function initializeGemini(apiKey, embeddingModelName, generationModelName) {
   genAI = new GoogleGenerativeAI(apiKey);
   // Remove "models/" prefix if present (API doesn't need it for some endpoints)
   embeddingModel = (embeddingModelName || 'text-embedding-004').replace('models/', '');
-  generationModel = (generationModelName || 'gemini-1.5-flash').replace('models/', '');
+  generationModel = (generationModelName || 'gemini-2.0-flash').replace('models/', '');
   
   console.log('Gemini API initialized');
   console.log(`Embedding model: ${embeddingModel}`);
