@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const verifyToken = require('../middleware/verifyToken');
+const { verifyToken } = require('../middleware/verifyToken');
 const verifyAdmin = require('../middleware/verifyAdmin');
 const Feedback = require('../model/feedbackModel');
 

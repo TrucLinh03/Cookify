@@ -4,7 +4,7 @@ const router = express.Router();
 const Favourite = require('../model/favouriteModel');
 const Recipe = require('../model/recipeModel');
 const User = require('../model/userModel');
-const verifyToken = require('../middleware/verifyToken');
+const { verifyToken } = require('../middleware/verifyToken');
 
 // GET /api/favourites/user/:id - Get user's favourite recipes
 router.get('/user/:id', verifyToken, async (req, res) => {

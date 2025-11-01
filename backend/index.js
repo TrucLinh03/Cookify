@@ -14,6 +14,7 @@ const favouriteRoute = require('./src/routes/favouriteRoutes.js');
 const feedbackRoute = require('./src/routes/feedbackRoutes.js');
 const recommendationRoute = require('./src/routes/recommendationRoutes.js');
 const blogRoute = require('./src/routes/blogRoutes.js');
+const viewHistoryRoute = require('./src/routes/viewHistoryRoutes.js');
 const app = express();
 
 // Request logging middleware
@@ -67,7 +68,12 @@ app.options('*', cors());
 app.options('*', cors());
 
 // Connect to MongoDB with error handling
-const mongoURI = process.env.mongoURI || "mongodb+srv://admin:3dk5BqyUu0FlzQ4t@liliflowerstore.byu1dsr.mongodb.net/Cookify?retryWrites=true&w=majority&appName=LiliFlowerStore";
+const mongoURI = process.env.mongoURI;
+if (!mongoURI) {
+  console.error("MongoDB URI is not defined in environment variables");
+  process.exit(1);
+}
+
 mongoose.connect(mongoURI)
   .then(() => console.log("Mongodb connected successfully!"))
   .catch((err) => {
@@ -75,27 +81,60 @@ mongoose.connect(mongoURI)
     process.exit(1);
   });
 
+// API Routes - v1
+const API_PREFIX = '/api/v1';
+
 // User routes for login/register
 app.use('/api/users', userRoute);
+app.use(`${API_PREFIX}/users`, userRoute); // Alias
 
 // Recipe routes
 app.use('/api/recipes', recipeRoute);
+app.use(`${API_PREFIX}/recipes`, recipeRoute); // Alias
 
-// Favourite routes
-app.use('/api/favourites', favouriteRoute);
+// Favourite routes (chuẩn hóa thành favorites)
+app.use('/api/favourites', favouriteRoute); // Backward compatibility
+app.use('/api/favorites', favouriteRoute); // US spelling
+app.use(`${API_PREFIX}/favorites`, favouriteRoute); // Versioned
 
 // Feedback routes
 app.use('/api/feedback', feedbackRoute);
+app.use(`${API_PREFIX}/feedback`, feedbackRoute); // Alias
 
 // Recommendation routes
 app.use('/api/recommendations', recommendationRoute);
+app.use(`${API_PREFIX}/recommendations`, recommendationRoute); // Alias
 
 // Blog routes
 app.use('/api/blog', blogRoute);
+app.use('/api/blogs', blogRoute); // Plural alias
+app.use(`${API_PREFIX}/blogs`, blogRoute); // Versioned
+
+// View History routes
+app.use('/api/view-history', viewHistoryRoute);
+app.use(`${API_PREFIX}/view-history`, viewHistoryRoute); // Versioned
 
 
 app.get('/', (req, res) => {
   res.send('Cookify App Server is running!');
+});
+
+// API Documentation endpoint
+app.get('/api', (req, res) => {
+  res.json({
+    message: 'Cookify API',
+    version: '1.0.0',
+    endpoints: {
+      users: ['/api/users', '/api/v1/users'],
+      recipes: ['/api/recipes', '/api/v1/recipes'],
+      favorites: ['/api/favourites', '/api/favorites', '/api/v1/favorites'],
+      feedback: ['/api/feedback', '/api/v1/feedback'],
+      recommendations: ['/api/recommendations', '/api/v1/recommendations'],
+      blogs: ['/api/blog', '/api/blogs', '/api/v1/blogs'],
+      viewHistory: ['/api/view-history', '/api/v1/view-history']
+    },
+    documentation: 'https://github.com/your-repo/cookify-api'
+  });
 });
 
 // Global error handler

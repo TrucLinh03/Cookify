@@ -1,7 +1,8 @@
 /**
- * Gemini Embedding Utilities
+ * Gemini Embedding Utilities with Caching
  */
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const { embeddingCache, getEmbeddingCacheKey } = require('./cache');
 
 let genAI = null;
 let embeddingModel = null;
@@ -26,7 +27,7 @@ function initializeGemini(apiKey, embeddingModelName, generationModelName) {
 }
 
 /**
- * Create embedding for a single text
+ * Create embedding for a single text with caching
  * @param {string} text - Text to embed
  * @returns {Promise<number[]>} - Embedding vector
  */
@@ -35,10 +36,22 @@ async function embedText(text) {
     throw new Error('Gemini API not initialized. Call initializeGemini() first.');
   }
   
+  // Check cache first
+  const cacheKey = getEmbeddingCacheKey(text);
+  const cachedEmbedding = embeddingCache.get(cacheKey);
+  if (cachedEmbedding) {
+    return cachedEmbedding;
+  }
+  
   try {
     const model = genAI.getGenerativeModel({ model: embeddingModel });
     const result = await model.embedContent(text);
-    return result.embedding.values;
+    const embedding = result.embedding.values;
+    
+    // Cache the result
+    embeddingCache.set(cacheKey, embedding);
+    
+    return embedding;
   } catch (error) {
     console.error('Error creating embedding:', error.message);
     throw error;

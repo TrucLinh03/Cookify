@@ -4,7 +4,7 @@ const User = require('../model/userModel');
 const Recipe = require('../model/recipeModel');
 const Favourite = require('../model/favouriteModel');
 const generateToken = require('../middleware/generateToken');
-const verifyToken = require('../middleware/verifyToken');
+const { verifyToken } = require('../middleware/verifyToken');
 const verifyAdmin = require('../middleware/verifyAdmin');
 
 const { registerUser, loginUser } = require('../controllers/userController');
@@ -261,7 +261,7 @@ router.get('/stats', verifyToken, async (req, res) => {
             const Recipe = require('../model/recipeModel');
             totalRecipes = await Recipe.countDocuments();
         } catch (error) {
-            console.log('Recipe model error:', error.message);
+            // Recipe model error - continue with default count
         }
 
         // Mock feedback count (can be updated when feedback system is implemented)

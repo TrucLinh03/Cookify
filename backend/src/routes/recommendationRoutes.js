@@ -5,7 +5,7 @@ const {
   getLatestRecipes,
   getPersonalizedRecommendations
 } = require("../controllers/recommendationController.js");
-const verifyToken = require("../middleware/verifyToken.js");
+const { verifyToken } = require("../middleware/verifyToken.js");
 const optionalAuth = require("../middleware/optionalAuth.js");
 
 const router = express.Router();

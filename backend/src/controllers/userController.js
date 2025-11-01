@@ -4,8 +4,6 @@ const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET_KEY;
 
-// Debug: Check if JWT_SECRET is loaded
-console.log('JWT_SECRET loaded:', !!JWT_SECRET);
 if (!JWT_SECRET) {
   console.error('JWT_SECRET_KEY not found in environment variables');
 }
@@ -20,8 +18,6 @@ const registerUser = async (req, res) => {
 
     const existing = await User.findOne({ email });
     if (existing) {
-      // Log for debug
-      console.log("Registration failed: email already exists", email);
       return res.status(400).json({ message: "User already exists" });
     }
 

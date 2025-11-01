@@ -17,9 +17,7 @@ const optionalAuth = (req, res, next) => {
         // Verify token
         const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
         req.user = decoded; // Attach user info to request
-        console.log('Optional auth: User authenticated:', decoded.email);
       } catch (tokenError) {
-        console.log('Optional auth: Invalid token, continuing without auth');
         // Token invalid, but continue without authentication
         req.user = null;
       }

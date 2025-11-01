@@ -8,7 +8,9 @@ const { MongoClient, ObjectId } = require('mongodb');
 const { initializeGemini, embedText, embedBatch, generateResponse } = require('./utils/embedding');
 const { multiCollectionSearch, getPopularRecipes } = require('./utils/vectorSearch');
 const { buildSearchableText } = require('./utils/buildSearchText');
-const { loadFAQData, searchFAQ, buildFAQContext } = require('./utils/faqSearch');
+const { responseCache, searchCache, getCacheKey } = require('./utils/cache');
+const { metricsCollector, logRequest, logResponse, logError } = require('./utils/metrics');
+const { testConversationContext, validateConversationContext, formatContextForDebug } = require('./utils/conversationContext');
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -123,13 +125,7 @@ async function initialize() {
       throw new Error('Failed to connect to MongoDB');
     }
     
-    // Load FAQ data (optional - fallback if file exists)
-    const faqPath = process.env.FAQ_DATA_PATH || './faq_dataset.json';
-    try {
-      loadFAQData(faqPath);
-    } catch (faqError) {
-      console.warn('FAQ data not loaded (optional):', faqError.message);
-    }
+    // FAQ data is now converted to blog posts with vector embeddings
     
     isReady = true;
     
@@ -144,11 +140,15 @@ async function initialize() {
 }
 
 /**
- * Build context prompt from search results + FAQ
+ * Build context prompt from search results and conversation history
+ * @param {string} query - User's current question
+ * @param {Array} searchResults - Vector search results
+ * @param {string} conversationContext - Recent conversation context (optional)
+ * @returns {string} - Complete prompt for AI model
  */
-function buildContextPrompt(query, searchResults, includeFAQ = true) {
+function buildContextPrompt(query, searchResults, conversationContext = '') {
   const contextParts = [];
-  const sourceTypeCounts = { recipe: 0, blog: 0, feedback: 0, favourite: 0, faq: 0 };
+  const sourceTypeCounts = { recipe: 0, blog: 0, feedback: 0, favourite: 0 };
   
   searchResults.forEach(doc => {
     sourceTypeCounts[doc.sourceType] = (sourceTypeCounts[doc.sourceType] || 0) + 1;
@@ -165,7 +165,7 @@ Thời gian: ${doc.cookingTime || 'Không rõ'}
       `.trim());
     } else if (doc.sourceType === 'blog') {
       contextParts.push(`
-📝 BÀI VIẾT: ${doc.title || 'Không có tiêu đề'}
+📝 BÀI VIẾT/MẸO: ${doc.title || 'Không có tiêu đề'}
 Nội dung: ${doc.excerpt || doc.content?.substring(0, 400) || ''}
 Danh mục: ${doc.category || 'Không rõ'}
 Tags: ${Array.isArray(doc.tags) ? doc.tags.join(', ') : ''}
@@ -186,41 +186,112 @@ Cảm xúc: ${doc.sentiment || 'Không rõ'}
     }
   });
   
-  // Add FAQ context if enabled and available
-  let faqContext = '';
-  if (includeFAQ) {
-    faqContext = buildFAQContext(query, 3);
-    if (faqContext) {
-      sourceTypeCounts.faq = 3; // Approximate
-      contextParts.push(`\n📚 CÂU HỎI THƯỜNG GẶP:\n${faqContext}`);
-    }
-  }
-  
   const context = contextParts.join('\n\n---\n\n');
   const totalSources = Object.values(sourceTypeCounts).reduce((a, b) => a + b, 0);
   
-  const prompt = `
+  // Build the complete prompt with conversation context
+  let prompt = `
 Bạn là một chuyên gia nấu ăn AI thông minh của Cookify, chuyên về ẩm thực. 
-Bạn có quyền truy cập vào nhiều nguồn thông tin: công thức nấu ăn, bài viết blog, đánh giá người dùng, món ăn yêu thích, và câu hỏi thường gặp (FAQ).
+Bạn có quyền truy cập vào nhiều nguồn thông tin: công thức nấu ăn, bài viết blog (bao gồm mẹo nấu ăn), đánh giá người dùng, và món ăn yêu thích.
+`;
 
+  // Add conversation context if available
+  if (conversationContext.trim()) {
+    prompt += `
+${conversationContext}`;
+  }
+
+  prompt += `
 THÔNG TIN THAM KHẢO (từ ${totalSources} nguồn: ${Object.entries(sourceTypeCounts).filter(([k,v]) => v > 0).map(([k,v]) => `${v} ${k}`).join(', ')}):
 ${context}
 
+[Current user question]
 CÂU HỎI: ${query}
 
 HƯỚNG DẪN TRẢ LỜI:
 1. Trả lời bằng tiếng Việt, thân thiện và dễ hiểu
-2. Kết hợp thông tin từ TẤT CẢ các nguồn (công thức, blog, đánh giá) để đưa ra câu trả lời toàn diện
-3. Nếu có đánh giá/feedback, hãy đề cập đến kinh nghiệm thực tế của người dùng
-4. Nếu có bài viết blog liên quan, hãy tham khảo tips và tricks từ đó
-5. Nếu là công thức nấu ăn, hãy trình bày rõ ràng từng bước
-6. Nếu không có thông tin phù hợp, hãy thành thật nói không biết
-7. Đưa ra lời khuyên thực tế, hữu ích và dựa trên nhiều nguồn tin
+2. QUAN TRỌNG: Nếu có lịch sử hội thoại trước đó, hãy tham khảo ngữ cảnh để hiểu câu hỏi hiện tại
+3. Kết hợp thông tin từ TẤT CẢ các nguồn (công thức, blog/mẹo, đánh giá) để đưa ra câu trả lời toàn diện
+4. Nếu có đánh giá/feedback, hãy đề cập đến kinh nghiệm thực tế của người dùng
+5. Nếu có bài viết blog/mẹo liên quan, hãy tham khảo tips và tricks từ đó
+6. Nếu là công thức nấu ăn, hãy trình bày rõ ràng từng bước
+7. Nếu câu hỏi hiện tại liên quan đến cuộc trò chuyện trước (ví dụ: "nếu không có gừng thì sao?"), hãy dựa vào ngữ cảnh để trả lời chính xác
+8. Nếu không có thông tin phù hợp, hãy thành thật nói không biết và gợi ý người dùng thử từ khóa khác
+9. Đưa ra lời khuyên thực tế, hữu ích và dựa trên nhiều nguồn tin
+10. Ưu tiên thông tin từ vector search vì độ chính xác cao hơn
 
 TRẢ LỜI:
-  `.trim();
+`.trim();
   
   return prompt;
+}
+
+/**
+ * Get recent conversation context for a user or conversation
+ * @param {string|null} userId - User ID (can be null for anonymous users)
+ * @param {string|null} conversationId - Conversation ID (can be null)
+ * @param {number} limit - Number of recent conversation pairs to retrieve (default: 5)
+ * @returns {Promise<string>} - Formatted conversation context
+ */
+async function getRecentConversationContext(userId, conversationId, limit = 5) {
+  try {
+    if (!db) {
+      console.warn('Database not connected, skipping conversation context');
+      return '';
+    }
+
+    const historyChatsCollection = db.collection('history_chats');
+    
+    // Build query - prioritize conversationId, fallback to userId
+    let query = {};
+    if (conversationId) {
+      query.conversation_id = conversationId;
+    } else if (userId) {
+      query.user_id = new ObjectId(userId);
+    } else {
+      // No user or conversation ID, return empty context
+      return '';
+    }
+
+    // Get recent chat history, sorted by creation time (newest first)
+    const recentChats = await historyChatsCollection
+      .find(query)
+      .sort({ created_at: -1 })
+      .limit(limit * 2) // Get more to ensure we have enough pairs
+      .toArray();
+
+    if (recentChats.length === 0) {
+      return '';
+    }
+
+    // Build conversation context string
+    const contextParts = [];
+    
+    // Reverse to get chronological order (oldest first)
+    const chronologicalChats = recentChats.reverse();
+    
+    // Take only the specified limit of conversation pairs
+    const limitedChats = chronologicalChats.slice(-limit);
+    
+    limitedChats.forEach(chat => {
+      if (chat.message && chat.response) {
+        contextParts.push(`User: ${chat.message.trim()}`);
+        contextParts.push(`Bot: ${chat.response.trim()}`);
+      }
+    });
+
+    if (contextParts.length === 0) {
+      return '';
+    }
+
+    const conversationContext = `[Previous conversation]\n${contextParts.join('\n')}\n`;
+    
+    return conversationContext;
+    
+  } catch (error) {
+    console.error('Error getting conversation context:', error.message);
+    return ''; // Return empty context on error, don't break the flow
+  }
 }
 
 /**
@@ -265,26 +336,46 @@ async function saveChatHistory(userId, conversationId, message, response, source
  * POST /ask - Main chatbot endpoint
  */
 app.post('/ask', async (req, res) => {
+  const startTime = Date.now();
+  
   try {
-    console.log(`📨 Received /ask request from origin: ${req.headers.origin || 'no-origin'}`);
+    // Record request metrics
+    metricsCollector.recordRequest();
+    logRequest(req, startTime);
     
     if (!isReady) {
-      console.error('❌ Service not ready');
+      console.error('Service not ready');
+      metricsCollector.recordError();
       return res.status(503).json({ error: 'Service not ready', message: 'Chatbot is still initializing' });
     }
     
     if (!db) {
-      console.error('❌ Database not connected');
+      console.error('Database not connected');
+      metricsCollector.recordError();
       return res.status(503).json({ error: 'Database not connected' });
     }
     
     const { message, user_id, conversation_id, include_popular = true } = req.body;
     
     if (!message || !message.trim()) {
+      metricsCollector.recordError();
       return res.status(400).json({ error: 'Message is required' });
     }
     
-    const startTime = Date.now();
+    // Check cache first
+    const cacheKey = getCacheKey(message, user_id || '');
+    const cachedResponse = responseCache.get(cacheKey);
+    if (cachedResponse) {
+      const processingTime = Date.now() - startTime;
+      metricsCollector.recordResponse(processingTime, cachedResponse.confidence?.score || 0, true);
+      logResponse(processingTime, cachedResponse.confidence?.score || 0, true, cachedResponse.sources?.length || 0);
+      
+      return res.json({
+        ...cachedResponse,
+        cached: true,
+        processing_time: processingTime
+      });
+    }
     
     // 1. Create query embedding
     console.log(`Query: "${message}"`);
@@ -300,18 +391,45 @@ app.post('/ask', async (req, res) => {
     
     console.log(` Found ${searchResults.length} relevant documents`);
     
-    // 3. Build prompt and generate response
-    const prompt = buildContextPrompt(message, searchResults);
+    // 3. Get recent conversation context
+    const conversationContext = await getRecentConversationContext(
+      user_id, 
+      conversation_id, // Use original conversation_id for context lookup
+      5 // Get last 5 conversation pairs
+    );
+    
+    // 4. Build prompt with conversation context and generate response
+    const prompt = buildContextPrompt(message, searchResults, conversationContext);
     const responseText = await generateResponse(prompt);
     
-    // 4. Calculate confidence score (simple average of top results)
-    const avgScore = searchResults.length > 0
-      ? searchResults.reduce((sum, r) => sum + r.score, 0) / searchResults.length
-      : 0;
-    
+    // 5. Calculate confidence score (robust)
+    // - Weighted average by source type (recipes > blogs > feedbacks)
+    // - Top-K averaging
+    // - Coverage bonus when multiple source types present
+    // - Variance-based consensus penalty
     const processingTime = Date.now() - startTime;
+
+    const weights = { recipe: 1.5, blog: 1.2, feedback: 1.0 };
+    const topK = Math.max(1, parseInt(process.env.CONFIDENCE_TOP_K) || 5);
+    const selected = searchResults.slice(0, topK);
+
+    let confidenceScore = 0;
+    if (selected.length > 0) {
+      const sumWeights = selected.reduce((s, r) => s + (weights[r.sourceType] || 1), 0);
+      const weightedSum = selected.reduce((s, r) => s + (r.score * (weights[r.sourceType] || 1)), 0);
+      const weightedAvg = sumWeights > 0 ? (weightedSum / sumWeights) : 0;
+
+      const meanRaw = selected.reduce((s, r) => s + r.score, 0) / selected.length;
+      const variance = selected.reduce((s, r) => s + Math.pow(r.score - meanRaw, 2), 0) / selected.length;
+      const consensusPenalty = variance > 0.02 ? -0.05 : 0; // penalize if scores disagree
+
+      const sourceTypes = new Set(selected.map(r => r.sourceType));
+      const coverageBonus = sourceTypes.size >= 2 ? 0.05 : 0; // small bonus for multi-source grounding
+
+      confidenceScore = Math.max(0, Math.min(1, weightedAvg + coverageBonus + consensusPenalty));
+    }
     
-    // 5. Save to chat history
+    // 6. Save to chat history
     const convId = conversation_id || `chat_${Date.now()}`;
     await saveChatHistory(
       user_id,
@@ -319,7 +437,7 @@ app.post('/ask', async (req, res) => {
       message,
       responseText,
       searchResults,
-      avgScore,
+      confidenceScore,
       {
         model_generation: process.env.MODEL_GENERATION,
         model_embedding: process.env.MODEL_EMBEDDING,
@@ -328,13 +446,13 @@ app.post('/ask', async (req, res) => {
       }
     );
     
-    // 6. Return response
-    res.json({
+    // 7. Prepare response
+    const responseData = {
       response: responseText,
       confidence: {
-        score: avgScore,
-        level: avgScore > 0.7 ? 'high' : avgScore > 0.5 ? 'medium' : 'low',
-        percentage: Math.round(avgScore * 100)
+        score: confidenceScore,
+        level: confidenceScore > 0.75 ? 'high' : confidenceScore > 0.55 ? 'medium' : 'low',
+        percentage: Math.round(confidenceScore * 100)
       },
       sources: searchResults.slice(0, 5).map(s => ({
         type: s.sourceType,
@@ -350,13 +468,25 @@ app.post('/ask', async (req, res) => {
       conversation_id: convId,
       timestamp: new Date().toISOString(),
       processing_time_ms: processingTime
-    });
+    };
     
-    console.log(`Response sent (${processingTime}ms, confidence: ${Math.round(avgScore * 100)}%)`);
+    // Cache the response (only if confidence is reasonable)
+    const cacheThreshold = parseFloat(process.env.CONFIDENCE_CACHE_THRESHOLD) || 0.35;
+    if (confidenceScore > cacheThreshold) {
+      responseCache.set(cacheKey, responseData);
+      console.log('Cached response');
+    }
+    
+    // Record metrics for successful response
+    metricsCollector.recordResponse(processingTime, confidenceScore, false);
+    logResponse(processingTime, confidenceScore, false, searchResults.length);
+    
+    res.json(responseData);
     
   } catch (error) {
-    console.error('❌ Error in /ask:', error);
-    console.error('Stack trace:', error.stack);
+    metricsCollector.recordError();
+    logError(error, 'in /ask endpoint');
+    
     res.status(500).json({ 
       error: 'Internal server error', 
       message: error.message,
@@ -382,7 +512,13 @@ app.get('/health', async (req, res) => {
       models: {
         embedding: process.env.MODEL_EMBEDDING,
         generation: process.env.MODEL_GENERATION
-      }
+      },
+      cache: {
+        responses: responseCache.getStats(),
+        embeddings: require('./utils/cache').embeddingCache.getStats(),
+        searches: searchCache.getStats()
+      },
+      metrics: metricsCollector.getMetrics()
     });
   } catch (error) {
     res.status(500).json({ status: 'unhealthy', error: error.message });
@@ -458,6 +594,201 @@ app.get('/stats', async (req, res) => {
 });
 
 /**
+ * GET /metrics - Detailed metrics endpoint
+ */
+app.get('/metrics', (req, res) => {
+  try {
+    const metrics = metricsCollector.getMetrics();
+    const cacheStats = {
+      responses: responseCache.getStats(),
+      embeddings: require('./utils/cache').embeddingCache.getStats(),
+      searches: searchCache.getStats()
+    };
+
+    res.json({
+      ...metrics,
+      cache: cacheStats,
+      uptime: process.uptime(),
+      memory: process.memoryUsage(),
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /metrics/reset - Reset metrics (admin only)
+ */
+app.post('/metrics/reset', (req, res) => {
+  try {
+    metricsCollector.reset();
+    responseCache.clear();
+    require('./utils/cache').embeddingCache.clear();
+    searchCache.clear();
+    
+    res.json({ 
+      message: 'Metrics and caches reset successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /convert-faq - Convert FAQ dataset to blog posts
+ */
+app.post('/convert-faq', async (req, res) => {
+  try {
+    if (!db) {
+      return res.status(503).json({ error: 'Database not connected' });
+    }
+
+    console.log('Starting FAQ to blogs conversion...');
+    
+    // Load FAQ data
+    const fs = require('fs');
+    const path = require('path');
+    const faqPath = path.join(__dirname, '../faq_dataset.json');
+    
+    if (!fs.existsSync(faqPath)) {
+      return res.status(404).json({ error: 'FAQ dataset file not found' });
+    }
+    
+    const faqData = JSON.parse(fs.readFileSync(faqPath, 'utf8'));
+    const blogsCollection = db.collection('blogs');
+    
+    // Category mapping
+    const categoryMapping = {
+      'cooking': 'Mẹo Nấu Ăn',
+      'storage': 'Bảo Quản Thực Phẩm', 
+      'substitution': 'Thay Thế Nguyên Liệu',
+      'nutrition': 'Dinh Dưỡng & Sức Khỏe',
+      'general': 'Mẹo Bếp Núc',
+      'safety': 'An Toàn Thực Phẩm',
+      'equipment': 'Dụng Cụ Bếp',
+      'technique': 'Kỹ Thuật Nấu Ăn'
+    };
+    
+    // Helper functions
+    const generateSlug = (question) => {
+      return question
+        .toLowerCase()
+        .replace(/[àáạảãâầấậẩẫăằắặẳẵ]/g, 'a')
+        .replace(/[èéẹẻẽêềếệểễ]/g, 'e')
+        .replace(/[ìíịỉĩ]/g, 'i')
+        .replace(/[òóọỏõôồốộổỗơờớợởỡ]/g, 'o')
+        .replace(/[ùúụủũưừứựửữ]/g, 'u')
+        .replace(/[ỳýỵỷỹ]/g, 'y')
+        .replace(/đ/g, 'd')
+        .replace(/[^a-z0-9\s]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .substring(0, 100);
+    };
+    
+    const generateBlogContent = (faq) => {
+      const categoryVN = categoryMapping[faq.category] || 'Mẹo Chung';
+      const tags = faq.tags ? faq.tags.map(tag => `#${tag}`).join(' ') : '';
+      
+      return `# ${faq.question}
+
+${faq.answer}
+
+## Thông tin thêm
+
+**Danh mục:** ${categoryVN}
+**Tags:** ${tags}
+
+---
+
+*Bài viết này được tạo từ câu hỏi thường gặp của cộng đồng Cookify. Nếu bạn có thêm câu hỏi, hãy chat với AI assistant của chúng tôi!*
+
+## Các mẹo liên quan
+
+Hãy khám phá thêm các mẹo nấu ăn khác trong danh mục **${categoryVN}** để nâng cao kỹ năng bếp núc của bạn.
+
+**Cookify** - Nơi chia sẻ đam mê ẩm thực! 👨‍🍳👩‍🍳`;
+    };
+    
+    // Convert FAQ items to blog format
+    const blogPosts = faqData.map((faq, index) => {
+      const categoryVN = categoryMapping[faq.category] || 'Mẹo Chung';
+      const slug = generateSlug(faq.question);
+      
+      return {
+        title: faq.question,
+        slug: slug,
+        excerpt: faq.answer.substring(0, 150) + (faq.answer.length > 150 ? '...' : ''),
+        content: generateBlogContent(faq),
+        category: categoryVN,
+        tags: faq.tags || [],
+        author: {
+          name: 'Cookify Admin',
+          email: 'admin@cookify.com'
+        },
+        status: 'published',
+        featured: false,
+        views: Math.floor(Math.random() * 100) + 10,
+        likes: Math.floor(Math.random() * 20) + 1,
+        meta: {
+          description: faq.answer,
+          keywords: faq.tags ? faq.tags.join(', ') : '',
+          source: 'faq_conversion',
+          faq_id: index + 1
+        },
+        created_at: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000),
+        updated_at: new Date()
+      };
+    });
+    
+    // Remove existing FAQ blogs
+    const existingCount = await blogsCollection.countDocuments({ 
+      'meta.source': 'faq_conversion' 
+    });
+    
+    if (existingCount > 0) {
+      await blogsCollection.deleteMany({ 'meta.source': 'faq_conversion' });
+    }
+    
+    // Insert new blog posts
+    await blogsCollection.insertMany(blogPosts);
+    
+    // Count by category
+    const categoryCounts = {};
+    blogPosts.forEach(post => {
+      categoryCounts[post.category] = (categoryCounts[post.category] || 0) + 1;
+    });
+    
+    console.log(`Converted ${blogPosts.length} FAQ items to blog posts`);
+    
+    res.json({
+      success: true,
+      message: 'FAQ dataset converted to blog posts successfully',
+      stats: {
+        totalConverted: blogPosts.length,
+        existingRemoved: existingCount,
+        categoryCounts
+      },
+      nextSteps: [
+        'Run /sync endpoint to generate embeddings',
+        'Test vector search with new blog content',
+        'Consider removing FAQ search from chatbot logic'
+      ],
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Error converting FAQ to blogs:', error);
+    res.status(500).json({ 
+      error: 'Failed to convert FAQ to blogs',
+      message: error.message 
+    });
+  }
+});
+
+/**
  * GET /history/:user_id - Get chat history for a user
  */
 app.get('/history/:user_id', async (req, res) => {
@@ -523,6 +854,74 @@ app.post('/feedback/:history_id', async (req, res) => {
     
   } catch (error) {
     console.error('Error in /feedback:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /test-conversation-context - Test conversation context functionality
+ */
+app.post('/test-conversation-context', async (req, res) => {
+  try {
+    if (!db) {
+      return res.status(503).json({ error: 'Database not connected' });
+    }
+
+    const { user_id, conversation_id } = req.body;
+    
+    // Use test IDs if not provided
+    const testUserId = user_id || '507f1f77bcf86cd799439011';
+    const testConversationId = conversation_id || `test_conv_${Date.now()}`;
+    
+    console.log(`Testing conversation context for user: ${testUserId}, conversation: ${testConversationId}`);
+    
+    const testResult = await testConversationContext(db, testUserId, testConversationId);
+    
+    res.json({
+      success: testResult.success,
+      message: testResult.success ? 'Conversation context test completed successfully' : 'Test failed',
+      result: testResult,
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Error in /test-conversation-context:', error);
+    res.status(500).json({ 
+      error: 'Test failed', 
+      message: error.message 
+    });
+  }
+});
+
+/**
+ * GET /conversation-context/:user_id - Get conversation context for debugging
+ */
+app.get('/conversation-context/:user_id', async (req, res) => {
+  try {
+    if (!db) {
+      return res.status(503).json({ error: 'Database not connected' });
+    }
+
+    const { user_id } = req.params;
+    const { conversation_id, limit = 5 } = req.query;
+    
+    const context = await getRecentConversationContext(user_id, conversation_id, parseInt(limit));
+    const validation = validateConversationContext(context);
+    const formattedContext = formatContextForDebug(context);
+    
+    res.json({
+      user_id,
+      conversation_id: conversation_id || null,
+      context: {
+        raw: context,
+        formatted: formattedContext,
+        validation: validation
+      },
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Error in /conversation-context:', error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -623,11 +1022,13 @@ app.get('/', (req, res) => {
     version: '1.0.0',
     status: isReady ? 'ready' : 'initializing',
     endpoints: {
-      'POST /ask': 'Send a question to the chatbot',
+      'POST /ask': 'Send a question to the chatbot (now with conversation context)',
       'GET /health': 'Health check',
       'GET /stats': 'Database statistics',
       'GET /history/:user_id': 'Get chat history for a user',
-      'POST /feedback/:history_id': 'Submit feedback for a chat'
+      'POST /feedback/:history_id': 'Submit feedback for a chat',
+      'POST /test-conversation-context': 'Test conversation context functionality',
+      'GET /conversation-context/:user_id': 'Get conversation context for debugging'
     }
   });
 });
@@ -644,7 +1045,7 @@ process.on('SIGINT', async () => {
 
 // Start server
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n🚀 Cookify Chatbot Service running on port ${PORT}`);
+  console.log(`\nCookify Chatbot Service running on port ${PORT}`);
   console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`   API docs: http://localhost:${PORT}/`);
   console.log(`   Health check: http://localhost:${PORT}/health`);
@@ -652,6 +1053,6 @@ app.listen(PORT, '0.0.0.0', () => {
   
   // Initialize after server starts
   initialize().catch(err => {
-    console.error('❌ Failed to initialize:', err);
+    console.error('Failed to initialize:', err);
   });
 });

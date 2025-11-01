@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const verifyToken = require('../middleware/verifyToken');
+const { verifyToken } = require('../middleware/verifyToken');
 const verifyAdmin = require('../middleware/verifyAdmin');
 const Blog = require('../model/blogModel');
 
@@ -205,6 +205,61 @@ router.get('/popular', async (req, res) => {
 
   } catch (error) {
     console.error('Lỗi khi lấy blog phổ biến:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Lỗi server: ' + error.message
+    });
+  }
+});
+
+// GET /api/blog/my-blogs - Lấy blog posts của user hiện tại (bao gồm tất cả status)
+router.get('/my-blogs', verifyToken, async (req, res) => {
+  try {
+    const { page = 1, limit = 10 } = req.query;
+    const { id: userId } = req.user;
+
+    const skip = (page - 1) * limit;
+
+    const blogs = await Blog.find({ 
+      author: userId 
+    })
+      .populate('author', 'name email')
+      .select('title content excerpt imageUrl category tags status createdAt updatedAt views likes comments')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .lean();
+
+    const total = await Blog.countDocuments({ 
+      author: userId 
+    });
+
+    // Add virtual fields
+    const blogsWithStats = blogs.map(blog => ({
+      ...blog,
+      likeCount: blog.likes?.length || 0,
+      commentCount: blog.comments?.length || 0
+    }));
+
+    const totalPages = Math.ceil(total / limit);
+
+    res.json({
+      success: true,
+      data: {
+        blogs: blogsWithStats,
+        pagination: {
+          currentPage: parseInt(page),
+          totalPages,
+          totalItems: total,
+          hasNext: page < totalPages,
+          hasPrev: page > 1
+        }
+      },
+      message: 'Lấy blog của user hiện tại thành công'
+    });
+
+  } catch (error) {
+    console.error('Lỗi khi lấy blog của user hiện tại:', error);
     res.status(500).json({
       success: false,
       message: 'Lỗi server: ' + error.message
@@ -821,7 +876,7 @@ router.delete('/admin/delete-all', verifyToken, verifyAdmin, async (req, res) =>
   }
 });
 
-// GET /api/blog/user/:userId - Lấy blog posts của user
+// GET /api/blog/user/:userId - Lấy blog posts của user (chỉ published)
 router.get('/user/:userId', async (req, res) => {
   try {
     const { userId } = req.params;

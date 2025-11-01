@@ -1,6 +1,6 @@
 const express = require("express");
 const { createRecipe, getRecipes, getRecipeById, updateRecipe, deleteRecipe } = require("../controllers/recipeController.js");
-const verifyToken = require("../middleware/verifyToken.js");
+const { verifyToken } = require("../middleware/verifyToken.js");
 const verifyAdmin = require("../middleware/verifyAdmin.js");
 
 const router = express.Router();
