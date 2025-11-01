@@ -33,7 +33,6 @@ const ContactPage = () => {
 
     try {
       // Send real email using email service
-      console.log('Sending email to trucling03@gmail.com:', formData);
       
       const result = await sendContactEmail(formData);
       

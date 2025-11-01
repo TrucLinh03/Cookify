@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AdminLayout from '../../components/layout/AdminLayout';
+import DatePicker from '../../components/common/DatePicker';
 import PencilIcon from '../../assets/pencil.svg';
 import ThumbsUpIcon from '../../assets/thumbs-up.svg';
 import ClockIcon from '../../assets/clock.svg';
@@ -23,6 +24,8 @@ const ManageBlogs = () => {
   const [selectedBlog, setSelectedBlog] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   const categories = [
     { value: 'all', label: 'Tất cả danh mục' },
@@ -50,7 +53,9 @@ const ManageBlogs = () => {
           search: searchTerm,
           status: statusFilter,
           category: categoryFilter,
-          sort: sortBy
+          sort: sortBy,
+          startDate: startDate || undefined,
+          endDate: endDate || undefined
         }
       });
 
@@ -206,7 +211,7 @@ const ManageBlogs = () => {
   useEffect(() => {
     setCurrentPage(1);
     fetchBlogs(1);
-  }, [statusFilter, categoryFilter, sortBy]);
+  }, [statusFilter, categoryFilter, sortBy, startDate, endDate]);
 
   return (
     <AdminLayout>
@@ -324,7 +329,12 @@ const ManageBlogs = () => {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white min-w-[140px]"
+                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white min-w-[140px] appearance-none bg-no-repeat bg-right pr-8"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
+                  backgroundPosition: 'right 0.5rem center',
+                  backgroundSize: '1.5em 1.5em'
+                }}
               >
                 <option value="all">Tất cả</option>
                 <option value="published">Đã xuất bản</option>
@@ -339,7 +349,12 @@ const ManageBlogs = () => {
               <select
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
-                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white min-w-[160px]"
+                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white min-w-[160px] appearance-none bg-no-repeat bg-right pr-8"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
+                  backgroundPosition: 'right 0.5rem center',
+                  backgroundSize: '1.5em 1.5em'
+                }}
               >
                 {categories.map((category) => (
                   <option key={category.value} value={category.value}>
@@ -354,13 +369,32 @@ const ManageBlogs = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white min-w-[140px]"
+                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white min-w-[140px] appearance-none bg-no-repeat bg-right pr-8"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
+                  backgroundPosition: 'right 0.5rem center',
+                  backgroundSize: '1.5em 1.5em'
+                }}
               >
                 <option value="newest">Mới nhất</option>
                 <option value="oldest">Cũ nhất</option>
                 <option value="most_liked">Nhiều like</option>
                 <option value="most_viewed">Nhiều view</option>
               </select>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <label className="text-sm font-medium text-gray-700">Ngày đăng:</label>
+              <DatePicker
+                startDate={startDate}
+                endDate={endDate}
+                onDateChange={(start, end) => {
+                  setStartDate(start);
+                  setEndDate(end);
+                }}
+                placeholder="Chọn khoảng thời gian"
+                className="min-w-[200px]"
+              />
             </div>
           </div>
         </div>
@@ -621,7 +655,12 @@ const ManageBlogs = () => {
                       <select
                         defaultValue={selectedBlog.status}
                         onChange={(e) => setSelectedBlog({...selectedBlog, status: e.target.value})}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-orange-500 focus:border-orange-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-orange-500 focus:border-orange-500 appearance-none bg-no-repeat bg-right pr-8"
+                        style={{
+                          backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
+                          backgroundPosition: 'right 0.5rem center',
+                          backgroundSize: '1.5em 1.5em'
+                        }}
                       >
                         <option value="published">Đã xuất bản</option>
                         <option value="draft">Bản nháp</option>

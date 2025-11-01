@@ -7,10 +7,16 @@ const axiosInstance = axios.create({
   timeout: 30000, // 30s timeout for production
 });
 
-// Request interceptor for debugging
+// Request interceptor for debugging and auth
 axiosInstance.interceptors.request.use(
   (config) => {
-    console.log(`API Request: ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`);
+    
+    // Auto-add Authorization header if token exists
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    
     return config;
   },
   (error) => {
@@ -22,7 +28,6 @@ axiosInstance.interceptors.request.use(
 // Response interceptor for error handling
 axiosInstance.interceptors.response.use(
   (response) => {
-    console.log(`API Response: ${response.status} ${response.config.url}`);
     return response;
   },
   (error) => {

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import AdminLayout from '../../components/layout/AdminLayout';
+import DatePicker from '../../components/common/DatePicker';
 import BowlFoodIcon from '../../assets/bowl-food.svg';
 import CarrotIcon from '../../assets/carrot.svg';
 import CakeIcon from '../../assets/cake.svg';
@@ -16,6 +17,8 @@ const ManageRecipes = () => {
   const [editingRecipe, setEditingRecipe] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -46,6 +49,8 @@ const ManageRecipes = () => {
   const handleRefresh = () => {
     setSearchTerm('');
     setSelectedCategory('all');
+    setStartDate('');
+    setEndDate('');
     fetchRecipes();
   };
 
@@ -53,7 +58,7 @@ const ManageRecipes = () => {
   useEffect(() => {
     fetchRecipes();
   }, []);
-  // Filter recipes based on search term and category
+  // Filter recipes based on search term, category and date
   useEffect(() => {
     let filtered = recipes;
     
@@ -73,8 +78,26 @@ const ManageRecipes = () => {
       );
     }
     
+    // Filter by date range
+    if (startDate || endDate) {
+      filtered = filtered.filter(recipe => {
+        const recipeDate = new Date(recipe.createdAt);
+        const start = startDate ? new Date(startDate) : null;
+        const end = endDate ? new Date(endDate) : null;
+        
+        if (start && end) {
+          return recipeDate >= start && recipeDate <= end;
+        } else if (start) {
+          return recipeDate >= start;
+        } else if (end) {
+          return recipeDate <= end;
+        }
+        return true;
+      });
+    }
+    
     setFilteredRecipes(filtered);
-  }, [recipes, searchTerm, selectedCategory]);
+  }, [recipes, searchTerm, selectedCategory, startDate, endDate]);
 
   const fetchRecipes = async () => {
     try {
@@ -318,6 +341,18 @@ const ManageRecipes = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
+              
+              <DatePicker
+                startDate={startDate}
+                endDate={endDate}
+                onDateChange={(start, end) => {
+                  setStartDate(start);
+                  setEndDate(end);
+                }}
+                placeholder="Ngày tạo"
+                className="min-w-[200px]"
+              />
+              
               <button
                 onClick={handleRefresh}
                 className="px-4 py-3 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-all duration-200 flex items-center space-x-2 whitespace-nowrap"

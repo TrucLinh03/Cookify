@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AdminLayout from '../../components/layout/AdminLayout';
+import DatePicker from '../../components/common/DatePicker';
 import ChatDotsIcon from '../../assets/chat-circle-dots.svg';
 import ThumbsUpIcon from '../../assets/thumbs-up.svg';
 import EyeIcon from '../../assets/eye.svg';
@@ -18,6 +19,8 @@ const ManageFeedbacks = () => {
   const [selectedFeedback, setSelectedFeedback] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   // Fetch feedbacks
   const fetchFeedbacks = async (page = 1) => {
@@ -33,7 +36,9 @@ const ManageFeedbacks = () => {
           page,
           limit: 10,
           search: searchTerm,
-          status: statusFilter
+          status: statusFilter,
+          startDate: startDate || undefined,
+          endDate: endDate || undefined
         }
       });
 
@@ -203,7 +208,7 @@ const ManageFeedbacks = () => {
   useEffect(() => {
     setCurrentPage(1);
     fetchFeedbacks(1);
-  }, [statusFilter]);
+  }, [statusFilter, startDate, endDate]);
 
   if (loading) {
     return (
@@ -278,10 +283,26 @@ const ManageFeedbacks = () => {
               </svg>
             </div>
           </div>
+          <DatePicker
+            startDate={startDate}
+            endDate={endDate}
+            onDateChange={(start, end) => {
+              setStartDate(start);
+              setEndDate(end);
+            }}
+            placeholder="Ngày tạo"
+            className="min-w-[200px]"
+          />
+          
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tomato focus:border-tomato"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tomato focus:border-tomato appearance-none bg-no-repeat bg-right pr-8"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
+              backgroundPosition: 'right 0.5rem center',
+              backgroundSize: '1.5em 1.5em'
+            }}
           >
             <option value="all">Tất cả trạng thái</option>
             <option value="visible">Hiển thị</option>

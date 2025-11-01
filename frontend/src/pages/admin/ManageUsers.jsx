@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import AdminLayout from '../../components/layout/AdminLayout';
+import DatePicker from '../../components/common/DatePicker';
 import UsersIcon from '../../assets/users-three.svg';
 import ThumbsUpIcon from '../../assets/thumbs-up.svg';
 import TrashIcon from '../../assets/trash.svg';
@@ -16,6 +17,8 @@ const ManageUsers = () => {
   const [pagination, setPagination] = useState({});
   const [selectedUser, setSelectedUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   // Get auth token
   const getAuthToken = () => {
@@ -36,8 +39,12 @@ const ManageUsers = () => {
   const fetchUsers = async (page = 1, search = '') => {
     try {
       setLoading(true);
+      let url = `/api/users/all?page=${page}&limit=10&search=${search}`;
+      if (startDate) url += `&startDate=${startDate}`;
+      if (endDate) url += `&endDate=${endDate}`;
+      
       const response = await axios.get(
-        getApiUrl(`/api/users/all?page=${page}&limit=10&search=${search}`),
+        getApiUrl(url),
         getAxiosConfig()
       );
 
@@ -138,6 +145,13 @@ const ManageUsers = () => {
     fetchUsers();
   }, []);
 
+  useEffect(() => {
+    if (startDate || endDate) {
+      setCurrentPage(1);
+      fetchUsers(1, searchTerm);
+    }
+  }, [startDate, endDate]);
+
   return (
     <AdminLayout>
       <div className="max-w-7xl mx-auto p-4">
@@ -211,6 +225,17 @@ const ManageUsers = () => {
             
             {/* Action Buttons */}
             <div className="flex gap-3 w-full lg:w-auto justify-end">
+              <DatePicker
+                startDate={startDate}
+                endDate={endDate}
+                onDateChange={(start, end) => {
+                  setStartDate(start);
+                  setEndDate(end);
+                }}
+                placeholder="Ngày đăng ký"
+                className="min-w-[200px]"
+              />
+              
               <button
                 type="submit"
                 onClick={handleSearch}
@@ -252,7 +277,12 @@ const ManageUsers = () => {
                     fetchUsers(1, searchTerm);
                   }
                 }}
-                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-tomato focus:border-tomato bg-white min-w-[120px]"
+                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-tomato focus:border-tomato bg-white min-w-[120px] appearance-none bg-no-repeat bg-right pr-8"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
+                  backgroundPosition: 'right 0.5rem center',
+                  backgroundSize: '1.5em 1.5em'
+                }}
               >
                 <option value="all">Tất cả</option>
                 <option value="active">Hoạt động</option>
@@ -272,7 +302,12 @@ const ManageUsers = () => {
                     fetchUsers(1, searchTerm);
                   }
                 }}
-                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-tomato focus:border-tomato bg-white min-w-[120px]"
+                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-tomato focus:border-tomato bg-white min-w-[120px] appearance-none bg-no-repeat bg-right pr-8"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
+                  backgroundPosition: 'right 0.5rem center',
+                  backgroundSize: '1.5em 1.5em'
+                }}
               >
                 <option value="all">Tất cả</option>
                 <option value="user">Người dùng</option>

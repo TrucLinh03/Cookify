@@ -33,6 +33,10 @@ const Profile = () => {
     blogsPosted: 0
   });
 
+  const [userBlogs, setUserBlogs] = useState([]);
+  const [blogsLoading, setBlogsLoading] = useState(false);
+  const [showBlogList, setShowBlogList] = useState(false);
+
   // Lấy token từ localStorage
   const getAuthToken = () => {
     const token = localStorage.getItem("token");
@@ -42,6 +46,11 @@ const Profile = () => {
   // Cấu hình axios với token
   const getAxiosConfig = () => {
     const token = getAuthToken();
+    if (!token) {
+      toast.error('Vui lòng đăng nhập lại');
+      navigate('/login');
+      return null;
+    }
     return {
       headers: {
         Authorization: `Bearer ${token}`
@@ -57,17 +66,114 @@ const Profile = () => {
   useEffect(() => {
     const handleFocus = () => {
       fetchUserProfile();
+      if (profileData.role !== 'admin') {
+        fetchUserBlogs();
+      }
     };
 
     window.addEventListener('focus', handleFocus);
     return () => window.removeEventListener('focus', handleFocus);
   }, []);
 
+  // Lấy danh sách blog của user
+  const fetchUserBlogs = async (userData = null) => {
+    const currentUserData = userData || profileData;
+    if (currentUserData.role === 'admin') return;
+    
+    try {
+      setBlogsLoading(true);
+      const config = getAxiosConfig();
+      
+      if (!config) {
+        setBlogsLoading(false);
+        return;
+      }
+      
+      // Get blogs by current user (includes all statuses)
+      const response = await axios.get(
+        getApiUrl('/api/blog/my-blogs'),
+        config
+      );
+            
+      if (response.data.success) {
+        // Handle different response structures
+        const blogs = response.data.data?.blogs || response.data.blogs || response.data.data || [];
+        setUserBlogs(blogs);
+      } else {
+        setUserBlogs([]);
+      }
+    } catch (error) {
+      // If endpoint doesn't exist, try alternative
+      if (error.response?.status === 404) {
+        try {
+          // Get user ID and try the user-specific endpoint
+          const profileResponse = await axios.get(getApiUrl('/api/users/profile'), config);
+          if (profileResponse.data.success) {
+            const userId = profileResponse.data.user._id || profileResponse.data.user.id;
+            const altResponse = await axios.get(
+              getApiUrl(`/api/blog/user/${userId}`),
+              config
+            );
+            
+            if (altResponse.data.success) {
+              const blogs = altResponse.data.data?.blogs || altResponse.data.blogs || altResponse.data.data || [];
+              setUserBlogs(blogs);
+              return;
+            }
+          }
+        } catch (altError) {
+          // Alternative endpoint failed, continue to show error
+        }
+      }
+      
+      setUserBlogs([]);
+      toast.error('Không thể tải danh sách bài viết: ' + (error.response?.data?.message || error.message));
+    } finally {
+      setBlogsLoading(false);
+    }
+  };
+
+  // Xóa blog
+  const deleteBlog = async (blogId) => {
+    if (!window.confirm('Bạn có chắc chắn muốn xóa bài viết này?')) {
+      return;
+    }
+
+    try {
+      const config = getAxiosConfig();
+      
+      if (!config) {
+        return;
+      }
+      
+      const response = await axios.delete(
+        getApiUrl(`/api/blog/${blogId}`),
+        config
+      );
+
+      if (response.data.success) {
+        toast.success('Xóa bài viết thành công!');
+        // Refresh blog list
+        fetchUserBlogs();
+        // Update stats
+        fetchUserProfile();
+      }
+    } catch (error) {
+      toast.error('Không thể xóa bài viết: ' + (error.response?.data?.message || error.message));
+    }
+  };
+
   // Lấy thông tin profile từ API
   const fetchUserProfile = async () => {
     try {
       setLoading(true);
       const config = getAxiosConfig();
+      
+      if (!config) {
+        setLoading(false);
+        return;
+      }
+      
       const response = await axios.get(getApiUrl('/api/users/profile'), config);
       
       if (response.data.success) {
@@ -84,6 +190,11 @@ const Profile = () => {
         
         // Update Redux store to keep header avatar in sync
         dispatch(updateUser(userData));
+        
+        // Fetch user blogs after profile is loaded
+        if (userData.role !== 'admin') {
+          fetchUserBlogs(userData);
+        }
         
         // Fetch stats only for regular users (no system stats for admin)
         if (userData.role !== 'admin') {
@@ -116,7 +227,6 @@ const Profile = () => {
               blogsPosted: blogsCount
             });
           } catch (error) {
-            console.error("Error fetching user stats:", error);
             setStats({
               favoriteRecipes: 0,
               reviewsGiven: 0,
@@ -185,6 +295,18 @@ const Profile = () => {
           description: "Xem danh sách yêu thích",
           action: () => navigate("/favourites"),
           color: "bg-red-50 text-red-600 hover:bg-red-100"
+        },
+        {
+          title: "Quản lý bài viết",
+          description: "Xem và quản lý blog của bạn",
+          action: () => navigate("/my-blogs"),
+          color: "bg-green-50 text-green-600 hover:bg-green-100"
+        },
+        {
+          title: "Tạo bài viết mới",
+          description: "Viết blog mới",
+          action: () => navigate("/blog/create"),
+          color: "bg-purple-50 text-purple-600 hover:bg-purple-100"
         }
       ];
     }
@@ -295,7 +417,7 @@ const Profile = () => {
           
           {/* Left Column - Profile Info */}
           <div className="lg:col-span-2 space-y-6">
-            
+
             {/* Quick Actions */}
             <div className="bg-white rounded-2xl shadow-lg p-8">
               <h2 className="text-3xl font-bold text-gray-800 mb-8">
@@ -392,6 +514,149 @@ const Profile = () => {
                     </div>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* Blog Management Section - Only for regular users */}
+            {profileData.role !== 'admin' && showBlogList && (
+              <div className="bg-white rounded-2xl shadow-lg p-8">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-3xl font-bold text-gray-800">📝 Bài viết của bạn</h2>
+                  <button
+                    onClick={() => navigate('/blog/create')}
+                    className="bg-tomato text-white px-6 py-2 rounded-lg hover:bg-red-600 transition-colors flex items-center space-x-2"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span>Tạo bài viết mới</span>
+                  </button>
+                </div>
+
+                {blogsLoading ? (
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-tomato mx-auto"></div>
+                    <p className="mt-4 text-gray-500">Đang tải danh sách bài viết...</p>
+                  </div>
+                ) : userBlogs.length === 0 ? (
+                  <div className="text-center py-12">
+                    <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
+                    <h3 className="text-xl font-semibold text-gray-700 mb-2">Chưa có bài viết nào</h3>
+                    <p className="text-gray-500 mb-4">Hãy bắt đầu chia sẻ câu chuyện của bạn!</p>
+                    <button
+                      onClick={() => navigate('/blog/create')}
+                      className="bg-tomato text-white px-6 py-3 rounded-lg hover:bg-red-600 transition-colors"
+                    >
+                      Viết bài viết đầu tiên
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {userBlogs.map((blog) => (
+                      <div key={blog._id} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-3 mb-2">
+                              <h3 className="text-xl font-semibold text-gray-800 hover:text-tomato cursor-pointer"
+                                  onClick={() => navigate(`/blog/${blog._id}`)}>
+                                {blog.title}
+                              </h3>
+                              <div className="flex space-x-2">
+                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                  blog.category === 'recipe_share' ? 'bg-orange-100 text-orange-800' :
+                                  blog.category === 'cooking_tips' ? 'bg-blue-100 text-blue-800' :
+                                  blog.category === 'food_story' ? 'bg-purple-100 text-purple-800' :
+                                  blog.category === 'kitchen_hacks' ? 'bg-green-100 text-green-800' :
+                                  blog.category === 'nutrition' ? 'bg-yellow-100 text-yellow-800' :
+                                  'bg-gray-100 text-gray-800'
+                                }`}>
+                                  {blog.category === 'recipe_share' ? 'Chia sẻ công thức' :
+                                   blog.category === 'cooking_tips' ? 'Mẹo nấu ăn' :
+                                   blog.category === 'food_story' ? 'Câu chuyện ẩm thực' :
+                                   blog.category === 'kitchen_hacks' ? 'Thủ thuật bếp núc' :
+                                   blog.category === 'nutrition' ? 'Dinh dưỡng' : 'Khác'}
+                                </span>
+                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                  blog.status === 'published' ? 'bg-green-100 text-green-800' :
+                                  blog.status === 'draft' ? 'bg-yellow-100 text-yellow-800' :
+                                  blog.status === 'hidden' ? 'bg-gray-100 text-gray-800' :
+                                  'bg-red-100 text-red-800'
+                                }`}>
+                                  {blog.status === 'published' ? 'Đã xuất bản' :
+                                   blog.status === 'draft' ? 'Bản nháp' :
+                                   blog.status === 'hidden' ? 'Ẩn' : 'Báo cáo'}
+                                </span>
+                              </div>
+                            </div>
+                            <p className="text-gray-600 mb-3 line-clamp-2">
+                              {blog.content.replace(/<[^>]*>/g, '').substring(0, 150)}...
+                            </p>
+                            <div className="flex items-center space-x-4 text-sm text-gray-500">
+                              <span>📅 {formatDate(blog.createdAt)}</span>
+                              <span>👀 {blog.views || 0} lượt xem</span>
+                              <span>💬 {blog.comments?.length || 0} bình luận</span>
+                              {blog.tags && blog.tags.length > 0 && (
+                                <div className="flex items-center space-x-1">
+                                  <span>🏷️</span>
+                                  <span>{blog.tags.slice(0, 2).join(', ')}</span>
+                                  {blog.tags.length > 2 && <span>...</span>}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          
+                          {blog.imageUrl && (
+                            <div className="ml-4 flex-shrink-0">
+                              <img 
+                                src={blog.imageUrl} 
+                                alt={blog.title}
+                                className="w-24 h-24 object-cover rounded-lg"
+                                onError={(e) => {
+                                  e.target.style.display = 'none';
+                                }}
+                              />
+                            </div>
+                          )}
+                        </div>
+                        
+                        <div className="flex justify-end space-x-3 mt-4 pt-4 border-t border-gray-100">
+                          {blog.status === 'published' && (
+                            <button
+                              onClick={() => navigate(`/blog/${blog._id}`)}
+                              className="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors flex items-center space-x-1"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                              </svg>
+                              <span>Xem</span>
+                            </button>
+                          )}
+                          <button
+                            onClick={() => navigate(`/edit-blog/${blog._id}`)}
+                            className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors flex items-center space-x-1"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                            <span>Sửa</span>
+                          </button>
+                          <button
+                            onClick={() => deleteBlog(blog._id)}
+                            className="px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center space-x-1"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            <span>Xóa</span>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 

@@ -1,18 +1,25 @@
-import React, { useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import React, { useEffect, useState, useRef } from 'react'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import axios from 'axios'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { useFavoritesContext } from '../../contexts/FavoritesContext'
 import Feedback from '../user/Feedback'
 import { getApiUrl } from '../../config/api.js'
+import { ViewTimeTracker } from '../../services/viewHistoryService'
 import chefHatIcon from '../../assets/chef-hat.svg'
 import clockIcon from '../../assets/clock.svg'
 import usersIcon from '../../assets/users-three.svg'
+import bowlFoodIcon from '../../assets/bowl-food.svg'
+import knifeIcon from '../../assets/knife.svg'
+import heartIcon from '../../assets/heart.svg'
+import shareIcon from '../../assets/share.svg'
+import magnifyingGlassIcon from '../../assets/magnifying-glass.svg'
 
 const SingleProduct = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
     const { user } = useSelector((state) => state.auth);
     const { favoriteUpdates, triggerFavoriteUpdate } = useFavoritesContext();
     const [item, setItem] = useState(null);
@@ -24,6 +31,9 @@ const SingleProduct = () => {
     const [isLoadingFavorite, setIsLoadingFavorite] = useState(false);
     const [relatedFavorites, setRelatedFavorites] = useState({});
     const [loadingRelatedFavorites, setLoadingRelatedFavorites] = useState({});
+    
+    // View tracking
+    const viewTrackerRef = useRef(null);
 
     // Function to convert various video URLs to embed format
     const getEmbedUrl = (url) => {
@@ -108,6 +118,22 @@ const SingleProduct = () => {
         const difficultyBonus = recipe1.difficulty === recipe2.difficulty ? 0.1 : 0;
         
         return similarityScore + categoryBonus + difficultyBonus;
+    };
+
+    // Determine view source from URL params or referrer
+    const getViewSource = () => {
+        const searchParams = new URLSearchParams(location.search);
+        const source = searchParams.get('source');
+        if (source) return source;
+        
+        // Try to determine from referrer or current path
+        const referrer = document.referrer;
+        if (referrer.includes('/search')) return 'search';
+        if (referrer.includes('/recommendations')) return 'recommendation';
+        if (referrer.includes('/category')) return 'category';
+        if (location.state?.from) return location.state.from;
+        
+        return 'direct';
     };
 
     // Function to fetch related recipes based on similar ingredients
@@ -419,7 +445,6 @@ const SingleProduct = () => {
 
                 localStorage.setItem(`favorites_${user._id}`, JSON.stringify(updatedFavorites));
             }
-        } finally {
             setLoadingRelatedFavorites(prev => ({ ...prev, [recipeId]: false }));
         }
     };
@@ -456,6 +481,28 @@ const SingleProduct = () => {
             fetchRecipe();
         }
     }, [id]);
+
+    // View tracking effect
+    useEffect(() => {
+        if (item && user) {
+            // Clean up previous tracker
+            if (viewTrackerRef.current) {
+                viewTrackerRef.current.stop();
+            }
+            
+            // Start new tracker
+            const source = getViewSource();
+            viewTrackerRef.current = new ViewTimeTracker(item._id, source);
+        }
+        
+        // Cleanup on unmount or item change
+        return () => {
+            if (viewTrackerRef.current) {
+                viewTrackerRef.current.stop();
+                viewTrackerRef.current = null;
+            }
+        };
+    }, [item, user]);
 
     if (loading) {
         return (
@@ -575,7 +622,7 @@ const SingleProduct = () => {
         <div className="grid grid-cols-3 md:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
           <div className="bg-white rounded-lg p-3 sm:p-4 text-center shadow-sm border hover:shadow-md transition-shadow">
             <div className="flex justify-center mb-2">
-              <img src={chefHatIcon} alt="Độ khó" className="w-8 h-8 sm:w-10 sm:h-10" />
+              <img src={chefHatIcon} alt="Độ khó" className="w-6 h-6 sm:w-8 sm:h-8" />
             </div>
             <div className="text-xs sm:text-sm text-gray-600 mb-1">Độ khó</div>
             <div className="text-sm sm:text-base font-semibold text-green-600">
@@ -587,14 +634,14 @@ const SingleProduct = () => {
           </div>
           <div className="bg-white rounded-lg p-3 sm:p-4 text-center shadow-sm border hover:shadow-md transition-shadow">
             <div className="flex justify-center mb-2">
-              <img src={clockIcon} alt="Thời gian" className="w-8 h-8 sm:w-10 sm:h-10" />
+              <img src={clockIcon} alt="Thời gian" className="w-6 h-6 sm:w-8 sm:h-8" />
             </div>
             <div className="text-xs sm:text-sm text-gray-600 mb-1">Thời gian</div>
             <div className="text-sm sm:text-base font-semibold text-pink-600">{item.cookingTime || '45 phút'}</div>
           </div>
           <div className="bg-white rounded-lg p-3 sm:p-4 text-center shadow-sm border hover:shadow-md transition-shadow">
             <div className="flex justify-center mb-2">
-              <img src={usersIcon} alt="Khẩu phần" className="w-8 h-8 sm:w-10 sm:h-10" />
+              <img src={usersIcon} alt="Khẩu phần" className="w-6 h-6 sm:w-8 sm:h-8" />
             </div>
             <div className="text-xs sm:text-sm text-gray-600 mb-1">Khẩu phần</div>
             <div className="text-sm sm:text-base font-semibold text-blue-600">2 người</div>
@@ -611,7 +658,7 @@ const SingleProduct = () => {
             {item.video && (
               <div className="bg-white rounded-lg shadow-sm border p-6">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                  <span className="text-lg mr-2">📹</span>
+                  <img src={shareIcon} alt="Video" className="w-5 h-5 mr-2" />
                   Video Hướng Dẫn
                 </h2>
                 <div className="aspect-video rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
@@ -647,7 +694,7 @@ const SingleProduct = () => {
             {item.ingredients && item.ingredients.length > 0 && (
               <div className="bg-white rounded-lg shadow-sm border p-6">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                  <span className="text-lg mr-2">🥬</span>
+                  <img src={bowlFoodIcon} alt="Nguyên liệu" className="w-5 h-5 mr-2" />
                   Nguyên Liệu
                 </h2>
                 <div className="space-y-3">
@@ -667,7 +714,7 @@ const SingleProduct = () => {
             {item.instructions && (
               <div className="bg-white rounded-lg shadow-sm border p-6">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                  <span className="text-lg mr-2">👨‍🍳</span>
+                  <img src={knifeIcon} alt="Hướng dẫn" className="w-5 h-5 mr-2" />
                   Hướng Dẫn Nấu
                 </h2>
                 <div className="space-y-4">
@@ -691,7 +738,7 @@ const SingleProduct = () => {
         {/* Đánh giá & Bình luận */}
         <div className="mt-8 bg-white rounded-lg shadow-sm border p-6">
           <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-            <span className="text-lg mr-2">⭐</span>
+            <img src={heartIcon} alt="Đánh giá" className="w-5 h-5 mr-2" />
             Đánh Giá & Bình Luận
           </h3>
           
@@ -715,7 +762,7 @@ const SingleProduct = () => {
         {relatedRecipes.length > 0 && (
           <div className="mt-8 bg-white rounded-lg shadow-sm border p-6">
             <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-              <span className="text-lg mr-2">🍳</span>
+              <img src={chefHatIcon} alt="Công thức liên quan" className="w-5 h-5 mr-2" />
               Công Thức Liên Quan
             </h3>
             
@@ -784,11 +831,11 @@ const SingleProduct = () => {
                       </p>
                       <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
                         <span className="flex items-center">
-                          <span className="mr-1">⏱️</span>
+                          <img src={clockIcon} alt="Thời gian" className="w-3 h-3 mr-1" />
                           {recipe.cookingTime || '30 phút'}
                         </span>
                         <span className="flex items-center">
-                          <span className="mr-1">⭐</span>
+                          <img src={chefHatIcon} alt="Độ khó" className="w-3 h-3 mr-1" />
                           {recipe.difficulty?.toLowerCase() === 'easy' ? 'Dễ' :
                            recipe.difficulty?.toLowerCase() === 'medium' ? 'Trung bình' :
                            recipe.difficulty?.toLowerCase() === 'hard' ? 'Khó' :
@@ -797,8 +844,8 @@ const SingleProduct = () => {
                       </div>
                       {recipe.similarityScore && (
                         <div className="flex items-center justify-center">
-                          <div className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
-                            <span className="mr-1">🔗</span>
+                          <div className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium flex items-center justify-center">
+                            <img src={shareIcon} alt="Liên quan" className="w-3 h-3 mr-1" />
                             Liên quan {Math.round(recipe.similarityScore * 100)}%
                           </div>
                         </div>
@@ -811,7 +858,7 @@ const SingleProduct = () => {
             
             {relatedRecipes.length === 0 && !loadingRelated && (
               <div className="text-center py-8 text-gray-500">
-                <span className="text-4xl mb-2 block">🔍</span>
+                <img src={magnifyingGlassIcon} alt="Tìm kiếm" className="w-12 h-12 mx-auto mb-2 opacity-50" />
                 <p>Không tìm thấy công thức liên quan</p>
               </div>
             )}

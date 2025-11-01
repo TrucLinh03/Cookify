@@ -12,7 +12,9 @@ const ragApi = axios.create({
   timeout: 10000, // Reduce timeout to 10 seconds for better UX
   headers: {
     'Content-Type': 'application/json',
+    'Accept': 'application/json',
   },
+  withCredentials: false, // Disable credentials for CORS
 });
 
 // Add request interceptor for debugging
@@ -58,10 +60,11 @@ const fallbackResponses = {
 // Check if RAG API is available
 const checkRagApiHealth = async () => {
   try {
-    const response = await ragApi.get('/health', { timeout: 5000 });
+    const response = await ragApi.get('/health', { timeout: 3000 });
     return response.status === 200;
   } catch (error) {
-    console.warn(' RAG API health check failed:', error.message);
+    console.warn('RAG API health check failed:', error.message);
+    // For development, we'll assume API is not available and use fallback
     return false;
   }
 };
@@ -139,11 +142,13 @@ export const getRagChatBotResponse = async (userMessage, conversationId = null) 
     // Check if RAG API is available first
     const isRagAvailable = await checkRagApiHealth();
     
-    if (isRagAvailable) {
-    } else if (FALLBACK_ENABLED) {
-      return generateFallbackResponse(userMessage);
-    } else {
-      throw new Error('RAG API is not available and fallback is disabled');
+    if (!isRagAvailable) {
+      if (FALLBACK_ENABLED) {
+        console.warn('RAG API not available, using fallback response');
+        return generateFallbackResponse(userMessage);
+      } else {
+        throw new Error('RAG API is not available and fallback is disabled');
+      }
     }
     
     // Call Node.js Chatbot API (new format)
@@ -175,14 +180,8 @@ export const getRagChatBotResponse = async (userMessage, conversationId = null) 
   } catch (error) {
     console.error('RAG API error:', error);
     
-    // Always use fallback when there's an error
-    if (FALLBACK_ENABLED) {
-      console.warn('API error occurred, using fallback response');
-      return generateFallbackResponse(userMessage);
-    }
-    
     // Handle specific error types for better user experience
-    if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND') {
+    if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND' || error.code === 'ERR_NETWORK') {
       console.warn('Connection failed, using fallback');
       if (FALLBACK_ENABLED) {
         return generateFallbackResponse(userMessage);
@@ -197,6 +196,13 @@ export const getRagChatBotResponse = async (userMessage, conversationId = null) 
       };
     }
     
+    if (error.response?.status === 404) {
+      console.warn('API endpoint not found, using fallback');
+      if (FALLBACK_ENABLED) {
+        return generateFallbackResponse(userMessage);
+      }
+    }
+    
     if (error.response?.status >= 500) {
       return {
         text: cleanResponseText(getRandomResponse(fallbackResponses.error)),
@@ -205,8 +211,9 @@ export const getRagChatBotResponse = async (userMessage, conversationId = null) 
       };
     }
     
-    // Generic error fallback
+    // Always use fallback when there's an error if enabled
     if (FALLBACK_ENABLED) {
+      console.warn('API error occurred, using fallback response');
       return generateFallbackResponse(userMessage);
     }
     
@@ -254,8 +261,6 @@ export const getRagApiStatus = async () => {
 // Test text cleaning function
 export const testTextCleaning = () => {
   const testText = "**Món phở bò** rất *ngon*! Bạn cần: 1. Xương bò. 2. Bánh phở. 3. Hành tây. Cách làm: • Ninh xương 3 tiếng. • Trần bánh phở. • Thái hành lá.";
-  console.log("Original:", testText);
-  console.log("Cleaned:", cleanResponseText(testText));
   return cleanResponseText(testText);
 };
 

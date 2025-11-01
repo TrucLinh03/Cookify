@@ -1,0 +1,120 @@
+/* Blog Detail Page Styles */
+.blog-detail-content {
+  font-size: 1.125rem; /* 18px */
+  line-height: 1.75; /* 28px */
+}
+
+.blog-detail-content h1 {
+  font-size: 2.5rem; /* 40px */
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+.blog-detail-content h2 {
+  font-size: 2rem; /* 32px */
+  line-height: 1.3;
+  margin-bottom: 1.25rem;
+  margin-top: 2rem;
+  font-weight: 600;
+}
+
+.blog-detail-content h3 {
+  font-size: 1.5rem; /* 24px */
+  line-height: 1.4;
+  margin-bottom: 1rem;
+  margin-top: 1.5rem;
+  font-weight: 600;
+}
+
+.blog-detail-content p {
+  margin-bottom: 1.5rem;
+  color: #374151; /* gray-700 */
+}
+
+.blog-detail-content ul,
+.blog-detail-content ol {
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+}
+
+.blog-detail-content li {
+  margin-bottom: 0.5rem;
+}
+
+.blog-detail-content blockquote {
+  border-left: 4px solid #ef4444; /* tomato color */
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: #6b7280; /* gray-500 */
+}
+
+.blog-detail-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1.5rem 0;
+}
+
+.blog-detail-content code {
+  background-color: #f3f4f6; /* gray-100 */
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.875rem;
+}
+
+.blog-detail-content pre {
+  background-color: #1f2937; /* gray-800 */
+  color: #f9fafb; /* gray-50 */
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.blog-detail-content pre code {
+  background-color: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+.blog-detail-content strong {
+  font-weight: 600;
+  color: #111827; /* gray-900 */
+}
+
+.blog-detail-content em {
+  font-style: italic;
+}
+
+.blog-detail-content a {
+  color: #ef4444; /* tomato */
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.blog-detail-content a:hover {
+  color: #dc2626; /* red-600 */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .blog-detail-content {
+    font-size: 1rem; /* 16px */
+    line-height: 1.6;
+  }
+  
+  .blog-detail-content h1 {
+    font-size: 2rem; /* 32px */
+  }
+  
+  .blog-detail-content h2 {
+    font-size: 1.75rem; /* 28px */
+  }
+  
+  .blog-detail-content h3 {
+    font-size: 1.25rem; /* 20px */
+  }
+}

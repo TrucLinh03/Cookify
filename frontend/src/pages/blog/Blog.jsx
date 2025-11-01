@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import DatePicker from '../../components/common/DatePicker';
 import BowlFoodIcon from '../../assets/bowl-food.svg';
 import ChefHatIcon from '../../assets/chef-hat.svg';
 import LightbulbIcon from '../../assets/lightbulb-filament.svg';
@@ -23,6 +24,8 @@ const Blog = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
   const [searchTerm, setSearchTerm] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   
   const { user } = useSelector((state) => state.auth);
 
@@ -58,6 +61,14 @@ const Blog = () => {
         params.search = searchTerm.trim();
       }
 
+      if (startDate) {
+        params.startDate = startDate;
+      }
+
+      if (endDate) {
+        params.endDate = endDate;
+      }
+
       const response = await axios.get(getApiUrl('/api/blog'), { params });
 
       if (response.data.success) {
@@ -87,7 +98,7 @@ const Blog = () => {
   useEffect(() => {
     fetchBlogs(1);
     fetchFeaturedBlogs();
-  }, [selectedCategory, sortBy]);
+  }, [selectedCategory, sortBy, startDate, endDate]);
 
   useEffect(() => {
     const delayedSearch = setTimeout(() => {
@@ -123,13 +134,13 @@ const Blog = () => {
   return (
     <div className="min-h-screen bg-peachLight">
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-r from-peach via-lightOrange to-peachDark py-20">
+      <div className="relative bg-gradient-to-r from-peach via-lightOrange to-peachDark py-10">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative max-w-7xl mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+          <h1 className="text-4xl md:text-6xl font-bold text-white mb-3">
             Góc cộng đồng Cookify
           </h1>
-          <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto">
+          <p className="text-xl md:text-2xl text-white/90 mb-3 max-w-3xl mx-auto">
             "Cùng chia sẻ mẹo hay và lan tỏa niềm vui nấu ăn."
           </p>
           
@@ -154,8 +165,8 @@ const Blog = () => {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {featuredBlogs.map((blog) => (
-                <div key={blog._id} className="group">
-                  <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                <div key={blog._id} className="group h-full">
+                  <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 h-full flex flex-col">
                     <div className="relative">
                       <img
                         src={blog.imageUrl || 'https://via.placeholder.com/400x250?text=Blog+Image'}
@@ -169,15 +180,16 @@ const Blog = () => {
                       </div>
                       <div className="absolute top-4 right-4">
                         <span className="bg-white/90 text-gray-700 px-3 py-1 rounded-full text-sm inline-flex items-center">
-                          <img src={getCategoryInfo(blog.category).icon} alt="Danh mục" className="w-4 h-4 mr-1" /> {getCategoryInfo(blog.category).label}
+                          <img src={getCategoryInfo(blog.category).icon} alt="Danh mục" className="w-4 h-4 mr-1 flex-shrink-0" /> 
+                          <span>{getCategoryInfo(blog.category).label}</span>
                         </span>
                       </div>
                     </div>
-                    <div className="p-6">
+                    <div className="p-6 flex-1 flex flex-col">
                       <h3 className="text-xl font-bold text-gray-800 mb-3 line-clamp-2 group-hover:text-tomato transition-colors">
                         {blog.title}
                       </h3>
-                      <p className="text-gray-600 mb-4 line-clamp-3">
+                      <p className="text-gray-600 mb-4 line-clamp-3 flex-1">
                         {blog.excerpt}
                       </p>
                       <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
@@ -195,27 +207,19 @@ const Blog = () => {
                             {blog.views}
                           </span>
                         </div>
-                        <span>{formatDate(blog.createdAt)}</span>
+                        <span className="text-xs text-gray-400">
+                          {formatDate(blog.createdAt)}
+                        </span>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                          <div className="w-8 h-8 bg-peachLight rounded-full flex items-center justify-center mr-3">
-                            <span className="text-tomato font-semibold text-sm">
-                              {blog.author?.name?.charAt(0) || 'U'}
-                            </span>
-                          </div>
-                          <span className="text-sm text-gray-600">{blog.author?.name || 'Anonymous'}</span>
-                        </div>
-                        <Link
-                          to={`/blog/${blog._id}`}
-                          className="text-tomato hover:text-red-600 font-medium text-sm flex items-center"
-                        >
-                          Đọc thêm
-                          <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
-                        </Link>
-                      </div>
+                      <Link
+                        to={`/blog/${blog._id || 'invalid'}`}
+                        className="inline-flex items-center text-tomato hover:text-red-600 font-medium transition-colors mt-auto"
+                      >
+                        Đọc tiếp
+                        <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -242,17 +246,35 @@ const Blog = () => {
                     }`}
                   >
                     <span className="inline-flex items-center">
-                      <img src={category.icon} alt="Danh mục" className="w-4 h-4 mr-2" /> {category.label}
+                      <img src={category.icon} alt="Danh mục" className="w-4 h-4 mr-2 flex-shrink-0" /> 
+                      <span>{category.label}</span>
                     </span>
                   </button>
                 ))}
               </div>
 
+              {/* Date Filter */}
+              <DatePicker
+                startDate={startDate}
+                endDate={endDate}
+                onDateChange={(start, end) => {
+                  setStartDate(start);
+                  setEndDate(end);
+                }}
+                placeholder="Ngày đăng"
+                className="min-w-[200px]"
+              />
+
               {/* Sort */}
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-tomato focus:border-transparent min-w-[150px]"
+                className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-tomato focus:border-transparent min-w-[150px] appearance-none bg-no-repeat bg-right pr-8"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
+                  backgroundPosition: 'right 0.5rem center',
+                  backgroundSize: '1.5em 1.5em'
+                }}
               >
                 {sortOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -265,6 +287,11 @@ const Blog = () => {
             {/* Search - Second Row (Full Width) */}
             <form onSubmit={handleSearch} className="w-full">
               <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <svg className="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
                 <input
                   type="text"
                   placeholder="Tìm kiếm câu chuyện theo tiêu đề, nội dung hoặc tác giả..."
@@ -299,8 +326,8 @@ const Blog = () => {
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
               {blogs.map((blog) => (
-                <div key={blog._id} className="group">
-                  <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                <div key={blog._id} className="group h-full">
+                  <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 h-full flex flex-col">
                     <div className="relative">
                       <img
                         src={blog.imageUrl || 'https://via.placeholder.com/400x250?text=Blog+Image'}
@@ -309,15 +336,16 @@ const Blog = () => {
                       />
                       <div className="absolute top-4 right-4">
                         <span className="bg-white/90 text-gray-700 px-3 py-1 rounded-full text-sm inline-flex items-center">
-                          <img src={getCategoryInfo(blog.category).icon} alt="Danh mục" className="w-4 h-4 mr-1" /> {getCategoryInfo(blog.category).label}
+                          <img src={getCategoryInfo(blog.category).icon} alt="Danh mục" className="w-4 h-4 mr-1 flex-shrink-0" /> 
+                          <span>{getCategoryInfo(blog.category).label}</span>
                         </span>
                       </div>
                     </div>
-                    <div className="p-6">
+                    <div className="p-6 flex-1 flex flex-col">
                       <h3 className="text-xl font-bold text-gray-800 mb-3 line-clamp-2 group-hover:text-tomato transition-colors">
                         {blog.title}
                       </h3>
-                      <p className="text-gray-600 mb-4 line-clamp-3">
+                      <p className="text-gray-600 mb-4 line-clamp-3 flex-1">
                         {blog.excerpt}
                       </p>
                       <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
@@ -342,9 +370,9 @@ const Blog = () => {
                             {blog.views}
                           </span>
                         </div>
-                        <span>{formatDate(blog.createdAt)}</span>
+                        <span className="text-xs">{formatDate(blog.createdAt)}</span>
                       </div>
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between mt-auto">
                         <div className="flex items-center">
                           <div className="w-8 h-8 bg-peachLight rounded-full flex items-center justify-center mr-3">
                             <span className="text-tomato font-semibold text-sm">
@@ -354,7 +382,7 @@ const Blog = () => {
                           <span className="text-sm text-gray-600">{blog.author?.name || 'Anonymous'}</span>
                         </div>
                         <Link
-                          to={`/blog/${blog._id}`}
+                          to={`/blog/${blog._id || 'invalid'}`}
                           className="text-tomato hover:text-red-600 font-medium text-sm flex items-center"
                         >
                           Đọc thêm

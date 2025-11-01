@@ -3,12 +3,11 @@ import ClockImg from "../assets/clock.svg";
 import HeartIcon from '../assets/heart.svg';
 import { useNavigate } from "react-router-dom";
 import { useSelector } from 'react-redux';
-import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useFavoritesContext } from '../contexts/FavoritesContext';
-import { getApiUrl } from '../config/api.js';
+import favoritesService from '../services/favoritesService.js';
 
-const Card = ({ item }) => {
+const Card = ({ item, source = 'direct' }) => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const { favoriteUpdates, triggerFavoriteUpdate } = useFavoritesContext();
@@ -23,12 +22,10 @@ const Card = ({ item }) => {
         if (!token) return;
 
         try {
-          const response = await axios.get(getApiUrl(`/api/favourites/check/${item._id}`), {
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
+          const response = await favoritesService.checkIsFavorite(item._id);
           
-          if (response.data.success) {
-            setIsFavorited(response.data.isFavorited);
+          if (response.success) {
+            setIsFavorited(response.isFavorited);
           }
         } catch (error) {
           console.error('Error checking favorite status:', error);
@@ -94,9 +91,10 @@ const Card = ({ item }) => {
   const categoryStyle = getCategoryStyle(item?.category);
 
   const handleCardClick = () => {
-    if (item?._id) {
-      navigate(`/recipes/${item._id}`);
-    }
+    // Navigate with source information for view tracking
+    navigate(`/recipes/${item._id}?source=${encodeURIComponent(source)}`, {
+      state: { from: source }
+    });
   };
 
   const handleFavoriteClick = async (e) => {
@@ -120,11 +118,9 @@ const Card = ({ item }) => {
     try {
       if (isFavorited) {
         // Remove from favorites
-        const response = await axios.delete(getApiUrl(`/api/users/favourites/${item._id}`), {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
+        const response = await favoritesService.removeFromFavorites(item._id);
         
-        if (response.data.success) {
+        if (response.success) {
           setIsFavorited(false);
           toast.success('Đã bỏ yêu thích công thức!');
           // Update localStorage as backup
@@ -134,16 +130,14 @@ const Card = ({ item }) => {
           // Trigger update for other components
           triggerFavoriteUpdate();
         } else {
-          console.error('Remove favorite failed:', response.data);
-          toast.error('Không thể bỏ yêu thích: ' + (response.data.message || 'Lỗi không xác định'));
+          console.error('Remove favorite failed:', response);
+          toast.error('Không thể bỏ yêu thích: ' + (response.message || 'Lỗi không xác định'));
         }
       } else {
         // Add to favorites
-        const response = await axios.post(getApiUrl(`/api/users/favourites/${item._id}`), {}, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
+        const response = await favoritesService.addToFavorites(item._id);
         
-        if (response.data.success) {
+        if (response.success) {
           setIsFavorited(true);
           toast.success('Đã thêm vào danh sách yêu thích!');
           // Update localStorage as backup
@@ -153,8 +147,8 @@ const Card = ({ item }) => {
           // Trigger update for other components
           triggerFavoriteUpdate();
         } else {
-          console.error('Add favorite failed:', response.data);
-          toast.error('Không thể thêm yêu thích: ' + (response.data.message || 'Lỗi không xác định'));
+          console.error('Add favorite failed:', response);
+          toast.error('Không thể thêm yêu thích: ' + (response.message || 'Lỗi không xác định'));
         }
       }
     } catch (error) {

@@ -12,6 +12,7 @@ import EyeIcon from '../../assets/eye.svg';
 import ClockIcon from '../../assets/clock.svg';
 import HeartIcon from '../../assets/heart.svg';
 import { getApiUrl } from '../../config/api.js';
+import '../../styles/blog-detail.css';
 
 const BlogDetail = () => {
   const { id } = useParams();
@@ -37,11 +38,22 @@ const BlogDetail = () => {
   };
 
   useEffect(() => {
-    fetchBlogDetail();
-    fetchRelatedBlogs();
+    if (id && id !== 'undefined' && id !== 'invalid') {
+      fetchBlogDetail();
+      fetchRelatedBlogs();
+    } else {
+      setError('ID bài viết không hợp lệ');
+      setLoading(false);
+    }
   }, [id]);
 
   const fetchBlogDetail = async () => {
+    if (!id || id === 'undefined' || id === 'invalid') {
+      setError('ID bài viết không hợp lệ');
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       const response = await axios.get(getApiUrl(`/api/blog/${id}`));
@@ -68,8 +80,10 @@ const BlogDetail = () => {
     try {
       const response = await axios.get(getApiUrl('/api/blog?limit=4'));
       if (response.data.success) {
-        // Filter out current blog
-        const filtered = response.data.data.blogs.filter(b => b._id !== id);
+        // Filter out current blog if id is valid
+        const filtered = id && id !== 'undefined' && id !== 'invalid' 
+          ? response.data.data.blogs.filter(b => b._id !== id)
+          : response.data.data.blogs;
         setRelatedBlogs(filtered.slice(0, 3));
       }
     } catch (error) {
@@ -80,6 +94,11 @@ const BlogDetail = () => {
   const handleLike = async () => {
     if (!user) {
       alert('Vui lòng đăng nhập để thích bài viết');
+      return;
+    }
+
+    if (!id || id === 'undefined' || id === 'invalid') {
+      alert('ID bài viết không hợp lệ');
       return;
     }
 
@@ -115,6 +134,11 @@ const BlogDetail = () => {
 
     if (!commentContent.trim()) {
       alert('Vui lòng nhập nội dung bình luận');
+      return;
+    }
+
+    if (!id || id === 'undefined' || id === 'invalid') {
+      alert('ID bài viết không hợp lệ');
       return;
     }
 
@@ -287,7 +311,7 @@ const BlogDetail = () => {
           {/* Content */}
           <div className="px-8 pb-8">
             <div className="prose prose-lg max-w-none">
-              <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+              <div className="blog-detail-content text-gray-700 leading-relaxed whitespace-pre-wrap">
                 {blog.content}
               </div>
             </div>

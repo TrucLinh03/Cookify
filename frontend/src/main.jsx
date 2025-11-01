@@ -26,8 +26,10 @@ import ManageBlogs from './pages/admin/ManageBlogs';
 import EditProfile from './pages/user/EditProfile.jsx';
 import Profile from './pages/user/Profile.jsx';
 import Favourite from './pages/user/Favourite.jsx';
+import MyBlogs from './pages/user/MyBlogs.jsx';
 import Blog from './pages/blog/Blog.jsx';
 import CreateBlog from './pages/blog/CreateBlog.jsx';
+import EditBlog from './pages/blog/EditBlog.jsx';
 import BlogDetail from './pages/blog/BlogDetail.jsx';
 import { getApiUrl } from './config/api.js';
 
@@ -91,6 +93,10 @@ const router = createBrowserRouter([
         element: <CreateBlog/>
       },
       {
+        path: "/edit-blog/:id",
+        element: <EditBlog/>
+      },
+      {
         path: "/blog/:id",
         element: <BlogDetail/>
       },
@@ -147,6 +153,12 @@ const router = createBrowserRouter([
         path: "/favourites",
         element: (
           <Favourite/>
+        ),
+      },
+      {
+        path: "/my-blogs",
+        element: (
+          <MyBlogs/>
         ),
       },
       {

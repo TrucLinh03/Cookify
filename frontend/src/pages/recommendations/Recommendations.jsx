@@ -92,19 +92,15 @@ const Recommendations = () => {
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-yellow-200 rounded-full opacity-20 blur-3xl"></div>
         </div>
 
-        <div className="relative max-w-7xl mx-auto text-center">
-          <div className="inline-flex items-center px-4 py-2 bg-orange-100 text-orange-800 rounded-full text-sm font-medium mb-6">
-            Gợi Ý Dành Riêng Cho Bạn
-          </div>
-          
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
+        <div className="relative max-w-7xl mx-auto text-center"> 
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-3">
             Khám Phá Công Thức
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-yellow-600">
               {" "}Được Yêu Thích
             </span>
           </h1>
           
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-3">
             Tìm hiểu những công thức nấu ăn được cộng đồng yêu thích nhất, 
             từ những món ăn truyền thống đến các xu hướng ẩm thực mới nhất.
           </p>
@@ -147,8 +143,25 @@ const Recommendations = () => {
               {metadata && (
                 <div className="text-right">
                   {metadata.type === 'personalized' && (
-                    <div className="text-xs text-blue-600">
-                      Dựa trên {metadata.userFavoritesCount} món yêu thích
+                    <div className="space-y-1">
+                      <div className="text-xs text-blue-600">
+                        Dựa trên {metadata.userFavoritesCount} món yêu thích
+                      </div>
+                      {metadata.userViewHistoryCount > 0 && (
+                        <div className="text-xs text-green-600">
+                          {metadata.userViewHistoryCount} lượt xem
+                        </div>
+                      )}
+                      {metadata.userFeedbackCount > 0 && (
+                        <div className="text-xs text-purple-600">
+                          {metadata.userFeedbackCount} đánh giá
+                        </div>
+                      )}
+                      {metadata.algorithm === 'enhanced_hybrid_with_behavior' && (
+                        <div className="text-xs text-gray-500">
+                          AI nâng cao ({Math.round(metadata.contentWeight * 100)}% nội dung, {Math.round(metadata.collaborativeWeight * 100)}% cộng đồng)
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -191,58 +204,9 @@ const Recommendations = () => {
                   </div>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {recipes.map((recipe, index) => (
-                    <div key={recipe._id} className="relative transform hover:scale-105 transition-transform duration-300">
-                      <Card item={recipe} />
-                      
-                      {index < 3 && (
-                        <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg z-10">
-                          {index + 1}
-                        </div>
-                      )}
-                      
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 rounded-b-lg">
-                        <div className="flex items-center justify-between text-white text-sm">
-                          {recipe.avgRating > 0 && (
-                            <div className="flex items-center">
-                              <img src={ChefHatIcon} alt="Rating" className="w-4 h-4 mr-1 opacity-90" />
-                              <span>{recipe.avgRating}</span>
-                              <span className="text-gray-300 ml-1">({recipe.totalRatings})</span>
-                            </div>
-                          )}
-                          
-                          {recipe.totalLikes > 0 && (
-                            <div className="flex items-center">
-                              <img src={HeartIcon} alt="Likes" className="w-4 h-4 mr-1 opacity-90" />
-                              <span>{recipe.totalLikes}</span>
-                            </div>
-                          )}
-                          
-                          {activeTab === 'personalized' && recipe.recommendationScore && (
-                            <div className="flex items-center">
-                              <img src={MagnifyingGlassIcon} alt="Score" className="w-4 h-4 mr-1 opacity-90" />
-                              <span>{Math.round(recipe.recommendationScore * 100)}%</span>
-                            </div>
-                          )}
-                          
-                          {activeTab === 'latest' && recipe.daysAgo !== undefined && (
-                            <div className="flex items-center">
-                              <img src={ClockIcon} alt="Time" className="w-4 h-4 mr-1 opacity-90" />
-                              <span>{recipe.daysAgo === 0 ? 'Hôm nay' : `${recipe.daysAgo} ngày`}</span>
-                            </div>
-                          )}
-                        </div>
-                        
-                        {activeTab === 'personalized' && recipe.reasons && recipe.reasons.length > 0 && (
-                          <div className="mt-2">
-                            <div className="text-xs text-gray-300 truncate flex items-center">
-                              <img src={LightbulbIcon} alt="Reason" className="w-3.5 h-3.5 mr-1 opacity-90" /> {recipe.reasons[0]}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {recipes.map((recipe) => (
+                    <Card key={recipe._id} item={recipe} source="recommendation" />
                   ))}
                 </div>
               )}

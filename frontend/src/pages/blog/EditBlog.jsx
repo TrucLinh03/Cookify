@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -11,7 +11,8 @@ import CarrotIcon from '../../assets/carrot.svg';
 import SmileyIcon from '../../assets/smiley.svg';
 import { getApiUrl } from '../../config/api.js';
 
-const CreateBlog = () => {
+const EditBlog = () => {
+  const { id } = useParams();
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -21,6 +22,7 @@ const CreateBlog = () => {
   });
   const [tagInput, setTagInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [fetchLoading, setFetchLoading] = useState(true);
   const [errors, setErrors] = useState({});
   
   const navigate = useNavigate();
@@ -40,6 +42,51 @@ const CreateBlog = () => {
     navigate('/login');
     return null;
   }
+
+  // Fetch blog data on component mount
+  useEffect(() => {
+    fetchBlogData();
+  }, [id]);
+
+  const fetchBlogData = async () => {
+    try {
+      setFetchLoading(true);
+      const token = localStorage.getItem('token');
+      const response = await axios.get(
+        getApiUrl(`/api/blog/${id}`),
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+
+      if (response.data.success) {
+        const blog = response.data.data;
+        
+        // Check if user owns this blog
+        if (blog.author._id !== user.id && blog.author._id !== user._id) {
+          toast.error('Bạn không có quyền chỉnh sửa bài viết này');
+          navigate('/profile');
+          return;
+        }
+
+        setFormData({
+          title: blog.title || '',
+          content: blog.content || '',
+          imageUrl: blog.imageUrl || '',
+          category: blog.category || 'recipe_share',
+          tags: blog.tags || []
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching blog:', error);
+      toast.error('Không thể tải thông tin bài viết');
+      navigate('/profile');
+    } finally {
+      setFetchLoading(false);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -119,8 +166,8 @@ const CreateBlog = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post(
-        getApiUrl('/api/blog'),
+      const response = await axios.put(
+        getApiUrl(`/api/blog/${id}`),
         formData,
         {
           headers: {
@@ -131,11 +178,11 @@ const CreateBlog = () => {
       );
 
       if (response.data.success) {
-        toast.success('Tạo bài viết thành công!');
+        toast.success('Cập nhật bài viết thành công!');
         navigate('/profile');
       }
     } catch (error) {
-      console.error('Error creating blog:', error);
+      console.error('Error updating blog:', error);
       toast.error('Có lỗi xảy ra: ' + (error.response?.data?.message || error.message));
     } finally {
       setLoading(false);
@@ -146,16 +193,27 @@ const CreateBlog = () => {
     return categories.find(cat => cat.value === categoryValue) || categories[0];
   };
 
+  if (fetchLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-cream-50 to-yellow-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-tomato mx-auto"></div>
+          <p className="mt-4 text-gray-600">Đang tải thông tin bài viết...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-cream-50 to-yellow-50 py-12">
       <div className="max-w-4xl mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">
-            Chia sẻ câu chuyện của bạn
+            Chỉnh sửa bài viết
           </h1>
           <p className="text-xl text-gray-600">
-            Hãy kể cho chúng tôi nghe về những trải nghiệm ẩm thực tuyệt vời của bạn
+            Cập nhật nội dung bài viết của bạn
           </p>
         </div>
 
@@ -236,65 +294,19 @@ const CreateBlog = () => {
               {errors.imageUrl && (
                 <p className="text-red-500 text-sm mt-2">{errors.imageUrl}</p>
               )}
-              {formData.imageUrl && isValidUrl(formData.imageUrl) && (
+              {formData.imageUrl && (
                 <div className="mt-4">
-                  <img
-                    src={formData.imageUrl}
-                    alt="Preview"
-                    className="w-full max-w-md h-48 object-cover rounded-xl border"
+                  <p className="text-sm text-gray-600 mb-2">Xem trước hình ảnh:</p>
+                  <img 
+                    src={formData.imageUrl} 
+                    alt="Preview" 
+                    className="w-full max-w-md h-48 object-cover rounded-lg border"
                     onError={(e) => {
                       e.target.style.display = 'none';
                     }}
                   />
                 </div>
               )}
-            </div>
-
-            {/* Tags */}
-            <div>
-              <label className="block text-lg font-semibold text-gray-700 mb-3">
-                Thẻ tag (tối đa 10)
-              </label>
-              <div className="flex flex-wrap gap-2 mb-3">
-                {formData.tags.map((tag, index) => (
-                  <span
-                    key={index}
-                    className="inline-flex items-center px-3 py-1 bg-peachLight text-tomato rounded-full text-sm"
-                  >
-                    #{tag}
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveTag(tag)}
-                      className="ml-2 text-tomato hover:text-red-600"
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))}
-              </div>
-              <div className="flex">
-                <input
-                  type="text"
-                  value={tagInput}
-                  onChange={(e) => setTagInput(e.target.value)}
-                  placeholder="Nhập tag và nhấn Enter"
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-l-xl focus:ring-2 focus:ring-tomato focus:border-transparent"
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
-                      handleAddTag(e);
-                    }
-                  }}
-                  disabled={formData.tags.length >= 10}
-                />
-                <button
-                  type="button"
-                  onClick={handleAddTag}
-                  disabled={formData.tags.length >= 10 || !tagInput.trim()}
-                  className="px-6 py-3 bg-tomato text-white rounded-r-xl hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
-                >
-                  Thêm
-                </button>
-              </div>
             </div>
 
             {/* Content */}
@@ -307,9 +319,9 @@ const CreateBlog = () => {
                 name="content"
                 value={formData.content}
                 onChange={handleInputChange}
-                placeholder="Hãy chia sẻ câu chuyện, công thức, hoặc kinh nghiệm nấu ăn của bạn một cách chi tiết và sinh động..."
-                rows={15}
-                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-tomato focus:border-transparent transition-all resize-vertical ${
+                placeholder="Hãy chia sẻ câu chuyện, kinh nghiệm hoặc công thức của bạn..."
+                rows={12}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-tomato focus:border-transparent transition-all resize-none ${
                   errors.content ? 'border-red-500' : 'border-gray-300'
                 }`}
               />
@@ -321,79 +333,72 @@ const CreateBlog = () => {
               </p>
             </div>
 
-            {/* Preview */}
-            {formData.title && formData.content && (
-              <div className="border-t pt-8">
-                <h3 className="text-xl font-semibold text-gray-700 mb-4">
-                  Xem trước bài viết
-                </h3>
-                <div className="bg-gray-50 rounded-xl p-6">
-                  <div className="flex items-center mb-4">
-                    <span className="bg-peachLight text-tomato px-3 py-1 rounded-full text-sm inline-flex items-center">
-                      <img src={getCategoryInfo(formData.category).icon} alt="Danh mục" className="w-4 h-4 mr-2" /> {getCategoryInfo(formData.category).label}
-                    </span>
-                  </div>
-                  <h4 className="text-2xl font-bold text-gray-800 mb-3">
-                    {formData.title}
-                  </h4>
-                  {formData.imageUrl && isValidUrl(formData.imageUrl) && (
-                    <img
-                      src={formData.imageUrl}
-                      alt="Preview"
-                      className="w-full h-48 object-cover rounded-lg mb-4"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  )}
-                  <div className="text-gray-700 whitespace-pre-wrap">
-                    {formData.content.substring(0, 300)}
-                    {formData.content.length > 300 && '...'}
-                  </div>
-                  {formData.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-4">
-                      {formData.tags.map((tag, index) => (
-                        <span
-                          key={index}
-                          className="text-tomato text-sm"
-                        >
-                          #{tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
+            {/* Tags */}
+            <div>
+              <label htmlFor="tags" className="block text-lg font-semibold text-gray-700 mb-3">
+                Thẻ tag (tối đa 10 thẻ)
+              </label>
+              <div className="flex flex-wrap gap-2 mb-3">
+                {formData.tags.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-tomato text-white"
+                  >
+                    {tag}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveTag(tag)}
+                      className="ml-2 text-white hover:text-gray-200"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
               </div>
-            )}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  placeholder="Nhập tag và nhấn Enter"
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tomato focus:border-transparent"
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      handleAddTag(e);
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={handleAddTag}
+                  className="px-6 py-2 bg-tomato text-white rounded-lg hover:bg-red-600 transition-colors"
+                >
+                  Thêm
+                </button>
+              </div>
+            </div>
 
             {/* Submit Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-6">
+            <div className="flex justify-between pt-6">
               <button
                 type="button"
-                onClick={() => navigate('/blog')}
-                className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors"
+                onClick={() => navigate('/profile')}
+                className="px-8 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium"
               >
                 Hủy bỏ
               </button>
               <button
                 type="submit"
-                disabled={loading || !formData.title.trim() || !formData.content.trim() || formData.content.length < 50}
-                className={`flex-1 px-6 py-3 rounded-xl font-semibold transition-all ${
-                  loading || !formData.title.trim() || !formData.content.trim() || formData.content.length < 50
-                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    : 'bg-tomato text-white hover:bg-red-600 transform hover:scale-105'
-                }`}
+                disabled={loading}
+                className="px-8 py-3 bg-tomato text-white rounded-xl hover:bg-red-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
               >
                 {loading ? (
-                  <div className="flex items-center justify-center">
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Đang đăng...
-                  </div>
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <span>Đang cập nhật...</span>
+                  </>
                 ) : (
-                  'Đăng bài viết'
+                  <span>Cập nhật bài viết</span>
                 )}
               </button>
             </div>
@@ -404,4 +409,4 @@ const CreateBlog = () => {
   );
 };
 
-export default CreateBlog;
+export default EditBlog;

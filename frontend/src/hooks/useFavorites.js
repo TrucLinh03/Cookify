@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
 import { useFavoritesContext } from '../contexts/FavoritesContext';
-import { getApiUrl } from '../config/api.js';
+import favoritesService from '../services/favoritesService.js';
 
 export const useFavorites = () => {
   const { user } = useSelector((state) => state.auth);
@@ -23,13 +22,11 @@ export const useFavorites = () => {
 
     setIsLoading(true);
     try {
-      const response = await axios.get(getApiUrl('/api/users/favourites'), {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      const response = await favoritesService.getUserFavorites();
       
-      if (response.data.success) {
-        setFavorites(response.data.favourites);
-        setFavoriteCount(response.data.favourites.length);
+      if (response.success) {
+        setFavorites(response.favourites);
+        setFavoriteCount(response.favourites.length);
       }
     } catch (error) {
       console.error('Error fetching favorites:', error);
@@ -48,11 +45,9 @@ export const useFavorites = () => {
     if (!token) return false;
 
     try {
-      const response = await axios.post(getApiUrl(`/api/users/favourites/${recipeId}`), {}, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      const response = await favoritesService.addToFavorites(recipeId);
       
-      if (response.data.success) {
+      if (response.success) {
         setFavoriteCount(prev => prev + 1);
         // Update localStorage as backup
         const favorites = JSON.parse(localStorage.getItem(`favorites_${user._id}`) || '[]');
@@ -74,11 +69,9 @@ export const useFavorites = () => {
     if (!token) return false;
 
     try {
-      const response = await axios.delete(getApiUrl(`/api/users/favourites/${recipeId}`), {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      const response = await favoritesService.removeFromFavorites(recipeId);
       
-      if (response.data.success) {
+      if (response.success) {
         setFavoriteCount(prev => Math.max(0, prev - 1));
         // Update localStorage as backup
         const favorites = JSON.parse(localStorage.getItem(`favorites_${user._id}`) || '[]');
@@ -100,12 +93,10 @@ export const useFavorites = () => {
     if (!token) return false;
 
     try {
-      const response = await axios.get(getApiUrl(`/api/favourites/check/${recipeId}`), {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      const response = await favoritesService.checkIsFavorite(recipeId);
       
-      if (response.data.success) {
-        return response.data.isFavorited;
+      if (response.success) {
+        return response.isFavorited;
       }
     } catch (error) {
       console.error('Error checking favorite status:', error);

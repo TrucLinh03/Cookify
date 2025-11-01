@@ -32,24 +32,6 @@ export const API_CONFIG = {
   IS_PRODUCTION: isProduction
 };
 
-// Debug logging (only in development)
-if (isDevelopment) {
-  console.log('🔧 API Configuration:', {
-    hostname: window.location.hostname,
-    isDevelopment,
-    isProduction,
-    BASE_URL: API_CONFIG.BASE_URL,
-    CHATBOT_URL: API_CONFIG.CHATBOT_URL,
-    envVars: {
-      VITE_API_BASE_URL: import.meta.env.VITE_API_BASE_URL,
-      VITE_CHATBOT_API_BASE_URL: import.meta.env.VITE_CHATBOT_API_BASE_URL,
-      MODE: import.meta.env.MODE,
-      DEV: import.meta.env.DEV,
-      PROD: import.meta.env.PROD
-    }
-  });
-}
-
 // Helper functions
 export const getApiUrl = (endpoint) => {
   return `${API_CONFIG.BASE_URL}${endpoint}`;
