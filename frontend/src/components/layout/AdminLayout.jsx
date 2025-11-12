@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import SecureStorage from '../../utils/secureStorage';
 import avatarDefault from '../../assets/avatar.png';
 import OverviewIcon from '../../assets/chef-hat.svg';
 import RecipesIcon from '../../assets/knife.svg';
@@ -46,8 +47,7 @@ const AdminLayout = ({ children }) => {
   ];
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    SecureStorage.clearAll();
     window.location.href = '/login';
   };
 

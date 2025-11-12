@@ -13,6 +13,12 @@ const DatePicker = ({
   const [tempEndDate, setTempEndDate] = useState(endDate || '');
   const dropdownRef = useRef(null);
 
+  // Sync temp dates with props when they change
+  useEffect(() => {
+    setTempStartDate(startDate || '');
+    setTempEndDate(endDate || '');
+  }, [startDate, endDate]);
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -109,12 +115,12 @@ const DatePicker = ({
   };
 
   return (
-    <div className={`relative ${className}`} ref={dropdownRef}>
+    <div className={`relative ${className}`} ref={dropdownRef} style={{ zIndex: isOpen ? 9999 : 'auto' }}>
       {/* Trigger Button */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-lg shadow-sm bg-white text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-tomato focus:border-tomato transition-all"
       >
         <div className="flex items-center">
           <img src={CalendarIcon} alt="Calendar" className="w-4 h-4 mr-2 text-gray-400" />
@@ -134,7 +140,7 @@ const DatePicker = ({
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute z-50 mt-1 w-80 bg-white border border-gray-200 rounded-lg shadow-lg">
+        <div className="absolute z-[9999] mt-1 right-0 w-80 bg-white border border-gray-200 rounded-lg shadow-xl">
           <div className="p-4">
             {/* Quick Presets */}
             <div className="mb-4">

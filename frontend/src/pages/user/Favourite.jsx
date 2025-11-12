@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useFavoritesContext } from '../../contexts/FavoritesContext';
 import { getApiUrl } from '../../config/api.js';
+import SecureStorage from '../../utils/secureStorage';
 
 const Favourite = () => {
   const [favouriteRecipes, setFavouriteRecipes] = useState([]);
@@ -19,7 +20,7 @@ const Favourite = () => {
 
   useEffect(() => {
     const fetchFavouriteRecipes = async () => {
-      const token = localStorage.getItem('token');
+      const token = SecureStorage.getToken();
       if (!token) {
         navigate('/login');
         return;
@@ -39,7 +40,7 @@ const Favourite = () => {
       } catch (err) {
         console.error('Error fetching favourite recipes:', err);
         if (err.response?.status === 401) {
-          localStorage.removeItem('token');
+          SecureStorage.clearAll();
           navigate('/login');
         } else {
           setError('Không thể tải danh sách công thức yêu thích');
@@ -53,7 +54,7 @@ const Favourite = () => {
   }, [navigate, userId, favoriteUpdates]);
 
   const handleRemoveFavourite = async (recipeId) => {
-    const token = localStorage.getItem('token');
+    const token = SecureStorage.getToken();
     if (!token) {
       navigate('/login');
       return;

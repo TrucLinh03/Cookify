@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 import AdminLayout from '../../components/layout/AdminLayout';
 import DatePicker from '../../components/common/DatePicker';
+import SecureStorage from '../../utils/secureStorage';
 import PencilIcon from '../../assets/pencil.svg';
 import ThumbsUpIcon from '../../assets/thumbs-up.svg';
 import ClockIcon from '../../assets/clock.svg';
@@ -41,22 +43,29 @@ const ManageBlogs = () => {
   const fetchBlogs = async (page = 1) => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
+      const token = SecureStorage.getToken();
+      
+      const params = {
+        page,
+        limit: 10,
+        search: searchTerm,
+        status: statusFilter,
+        category: categoryFilter,
+        sort: sortBy
+      };
+
+      if (startDate) {
+        params.startDate = startDate;
+      }
+      if (endDate) {
+        params.endDate = endDate;
+      }
       
       const response = await axios.get(getApiUrl('/api/blog/admin/all'), {
         headers: {
           'Authorization': `Bearer ${token}`
         },
-        params: {
-          page,
-          limit: 10,
-          search: searchTerm,
-          status: statusFilter,
-          category: categoryFilter,
-          sort: sortBy,
-          startDate: startDate || undefined,
-          endDate: endDate || undefined
-        }
+        params
       });
 
       if (response.data.success) {
@@ -67,7 +76,7 @@ const ManageBlogs = () => {
       }
     } catch (error) {
       console.error('Error fetching blogs:', error);
-      alert('Có lỗi xảy ra khi tải danh sách blog: ' + (error.response?.data?.message || error.message));
+      toast.error('Có lỗi xảy ra khi tải danh sách blog: ' + (error.response?.data?.message || error.message));
     } finally {
       setLoading(false);
     }
@@ -76,7 +85,7 @@ const ManageBlogs = () => {
   // Update blog status/featured
   const updateBlogStatus = async (blogId, updates) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = SecureStorage.getToken();
       
       const response = await axios.patch(getApiUrl(`/api/blog/admin/manage/${blogId}`), updates, {
         headers: {
@@ -85,21 +94,21 @@ const ManageBlogs = () => {
       });
 
       if (response.data.success) {
-        alert('Cập nhật thành công!');
+        toast.success('Cập nhật thành công!');
         fetchBlogs(currentPage);
         setShowModal(false);
         setSelectedBlog(null);
       }
     } catch (error) {
       console.error('Error updating blog:', error);
-      alert('Có lỗi xảy ra: ' + (error.response?.data?.message || error.message));
+      toast.error('Có lỗi xảy ra: ' + (error.response?.data?.message || error.message));
     }
   };
 
   // Delete blog
   const deleteBlog = async (blogId) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = SecureStorage.getToken();
       
       const response = await axios.delete(getApiUrl(`/api/blog/admin/manage/${blogId}`), {
         headers: {
@@ -108,14 +117,14 @@ const ManageBlogs = () => {
       });
 
       if (response.data.success) {
-        alert('Xóa blog thành công!');
+        toast.success('Xóa blog thành công!');
         fetchBlogs(currentPage);
         setShowModal(false);
         setSelectedBlog(null);
       }
     } catch (error) {
       console.error('Error deleting blog:', error);
-      alert('Có lỗi xảy ra: ' + (error.response?.data?.message || error.message));
+      toast.error('Có lỗi xảy ra: ' + (error.response?.data?.message || error.message));
     }
   };
 
@@ -126,7 +135,7 @@ const ManageBlogs = () => {
     const userInput = prompt(confirmMessage);
     
     if (userInput !== "XOA TAT CA") {
-      alert('Hủy bỏ thao tác xóa tất cả blog.');
+      toast.info('Hủy bỏ thao tác xóa tất cả blog.');
       return;
     }
 
@@ -138,7 +147,7 @@ const ManageBlogs = () => {
 
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
+      const token = SecureStorage.getToken();
       
       const response = await axios.delete(getApiUrl('/api/blog/admin/delete-all'), {
         headers: {
@@ -147,13 +156,13 @@ const ManageBlogs = () => {
       });
 
       if (response.data.success) {
-        alert(`Đã xóa thành công ${response.data.deletedCount || 0} blog!`);
+        toast.success(`Đã xóa thành công ${response.data.deletedCount || 0} blog!`);
         fetchBlogs(1); // Refresh to page 1
         setCurrentPage(1);
       }
     } catch (error) {
       console.error('Error deleting all blogs:', error);
-      alert('Có lỗi xảy ra khi xóa tất cả blog: ' + (error.response?.data?.message || error.message));
+      toast.error('Có lỗi xảy ra khi xóa tất cả blog: ' + (error.response?.data?.message || error.message));
     } finally {
       setLoading(false);
     }
@@ -199,10 +208,8 @@ const ManageBlogs = () => {
 
   useEffect(() => {
     const delayedSearch = setTimeout(() => {
-      if (searchTerm !== '') {
-        setCurrentPage(1);
-        fetchBlogs(1);
-      }
+      setCurrentPage(1);
+      fetchBlogs(1);
     }, 500);
 
     return () => clearTimeout(delayedSearch);
@@ -548,7 +555,18 @@ const ManageBlogs = () => {
                   <td colSpan="7" className="px-6 py-12 text-center">
                     <div className="text-gray-500">
                       <img src={PencilIcon} alt="Empty" className="w-12 h-12 mb-4 opacity-80 mx-auto" />
-                      <p>Không có blog nào được tìm thấy</p>
+                      <p className="text-lg font-medium mb-2">
+                        {startDate || endDate 
+                          ? 'Không có blog nào trong khoảng thời gian này' 
+                          : searchTerm 
+                          ? `Không tìm thấy blog với từ khóa "${searchTerm}"`
+                          : 'Không có blog nào được tìm thấy'}
+                      </p>
+                      {(startDate || endDate || searchTerm) && (
+                        <p className="text-sm text-gray-400">
+                          Thử xóa bộ lọc hoặc tìm kiếm với từ khóa khác
+                        </p>
+                      )}
                     </div>
                   </td>
                 </tr>

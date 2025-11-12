@@ -11,6 +11,10 @@ const Recipe = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [isSearching, setIsSearching] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState('tatca');
+    
+    // Pagination states
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(12); // 12 items per page
 
     useEffect(() => {
         const fetchData = async () => {
@@ -104,6 +108,7 @@ const Recipe = () => {
           }
           
           setFilteredItems(filtered);
+          setCurrentPage(1); // Reset to first page when filters change
           setIsSearching(false);
         }, 300); // Debounce 300ms
 
@@ -146,6 +151,55 @@ const Recipe = () => {
         setSelectedCategory(category);
       };
 
+      // Pagination logic
+      const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const currentItems = filteredItems.slice(startIndex, endIndex);
+
+      // Handle page change
+      const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+        // Scroll to top when page changes
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      // Generate page numbers for pagination
+      const getPageNumbers = () => {
+        const pageNumbers = [];
+        const maxVisiblePages = 5;
+        
+        if (totalPages <= maxVisiblePages) {
+          for (let i = 1; i <= totalPages; i++) {
+            pageNumbers.push(i);
+          }
+        } else {
+          if (currentPage <= 3) {
+            for (let i = 1; i <= 4; i++) {
+              pageNumbers.push(i);
+            }
+            pageNumbers.push('...');
+            pageNumbers.push(totalPages);
+          } else if (currentPage >= totalPages - 2) {
+            pageNumbers.push(1);
+            pageNumbers.push('...');
+            for (let i = totalPages - 3; i <= totalPages; i++) {
+              pageNumbers.push(i);
+            }
+          } else {
+            pageNumbers.push(1);
+            pageNumbers.push('...');
+            for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+              pageNumbers.push(i);
+            }
+            pageNumbers.push('...');
+            pageNumbers.push(totalPages);
+          }
+        }
+        
+        return pageNumbers;
+      };
+
       // Category filter component
       const CategoryFilter = () => {
 
@@ -168,6 +222,61 @@ const Recipe = () => {
                 <span className="text-lg">{category.displayName}</span>
               </button>
             ))}
+          </div>
+        );
+      };
+
+      // Pagination component
+      const PaginationComponent = () => {
+        if (totalPages <= 1) return null;
+
+        const pageNumbers = getPageNumbers();
+
+        return (
+          <div className="flex justify-center items-center space-x-2 mt-12 mb-8">
+            {/* Previous button */}
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`px-3 py-2 rounded-lg font-medium transition-all duration-200 ${
+                currentPage === 1
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'bg-white text-gray-700 hover:bg-orange-50 hover:text-orange-600 border border-gray-200 hover:border-orange-200'
+              }`}
+            >
+              ‹ Trước
+            </button>
+
+            {/* Page numbers */}
+            {pageNumbers.map((pageNumber, index) => (
+              <button
+                key={index}
+                onClick={() => typeof pageNumber === 'number' ? handlePageChange(pageNumber) : null}
+                disabled={pageNumber === '...'}
+                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                  pageNumber === currentPage
+                    ? 'bg-orange-500 text-white shadow-lg transform scale-105'
+                    : pageNumber === '...'
+                    ? 'text-gray-400 cursor-default'
+                    : 'bg-white text-gray-700 hover:bg-orange-50 hover:text-orange-600 border border-gray-200 hover:border-orange-200'
+                }`}
+              >
+                {pageNumber}
+              </button>
+            ))}
+
+            {/* Next button */}
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className={`px-3 py-2 rounded-lg font-medium transition-all duration-200 ${
+                currentPage === totalPages
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'bg-white text-gray-700 hover:bg-orange-50 hover:text-orange-600 border border-gray-200 hover:border-orange-200'
+              }`}
+            >
+              Sau ›
+            </button>
           </div>
         );
       };
@@ -227,6 +336,11 @@ const Recipe = () => {
                       trong danh mục <span className="font-semibold text-blue-600">
                         {categories.find(cat => cat.name === selectedCategory)?.displayName}
                       </span>
+                      {totalPages > 1 && (
+                        <span className="text-gray-500 ml-2">
+                          (Trang {currentPage}/{totalPages})
+                        </span>
+                      )}
                     </p>
                     {parseSearchQuery(searchQuery).length > 1 && (
                       <p className="text-xs text-gray-500 mt-1">
@@ -238,6 +352,11 @@ const Recipe = () => {
                   <div>
                     <p>
                       Tìm thấy <span className="font-semibold text-orange-600">{filteredItems.length}</span> kết quả cho "{searchQuery}"
+                      {totalPages > 1 && (
+                        <span className="text-gray-500 ml-2">
+                          (Trang {currentPage}/{totalPages})
+                        </span>
+                      )}
                     </p>
                     {parseSearchQuery(searchQuery).length > 1 && (
                       <p className="text-xs text-gray-500 mt-1">
@@ -251,6 +370,11 @@ const Recipe = () => {
                     <span className="font-semibold text-blue-600 ml-1">
                       {categories.find(cat => cat.name === selectedCategory)?.displayName}
                     </span>
+                    {totalPages > 1 && (
+                      <span className="text-gray-500 ml-2">
+                        (Trang {currentPage}/{totalPages})
+                      </span>
+                    )}
                   </p>
                 )}
               </div>
@@ -268,7 +392,7 @@ const Recipe = () => {
       ) : (
         <ul className='mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8'>
           {filteredItems.length > 0 ? (
-            filteredItems.map(item => (
+            currentItems.map(item => (
               <Card key={item._id} item={item}/>
             ))
           ) : (
@@ -317,6 +441,9 @@ const Recipe = () => {
           )}
         </ul>
       )}
+      
+      {/* Pagination */}
+      <PaginationComponent />
     </div>
   )
 }

@@ -9,6 +9,7 @@ import BowlFoodIcon from '../../assets/bowl-food.svg';
 import MagnifyingGlassIcon from '../../assets/magnifying-glass.svg';
 import ChefHatIcon from '../../assets/chef-hat.svg';
 import { getApiUrl } from '../../config/api.js';
+import SecureStorage from '../../utils/secureStorage';
 
 const Recommendations = () => {
   const [activeTab, setActiveTab] = useState('popular');
@@ -20,7 +21,7 @@ const Recommendations = () => {
 
   // Check authentication status
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = SecureStorage.getToken();
     setIsAuthenticated(!!token);
   }, []);
 
@@ -49,7 +50,7 @@ const Recommendations = () => {
         };
 
         // Add auth header if available and needed
-        const token = localStorage.getItem('token');
+        const token = SecureStorage.getToken();
         if (token && (activeTab === 'personalized')) {
           config.headers = {
             'Authorization': `Bearer ${token}`
@@ -159,7 +160,7 @@ const Recommendations = () => {
                       )}
                       {metadata.algorithm === 'enhanced_hybrid_with_behavior' && (
                         <div className="text-xs text-gray-500">
-                          AI nâng cao ({Math.round(metadata.contentWeight * 100)}% nội dung, {Math.round(metadata.collaborativeWeight * 100)}% cộng đồng)
+                          Gợi ý dựa trên ({Math.round(metadata.contentWeight * 100)}% nội dung, {Math.round(metadata.collaborativeWeight * 100)}% cộng đồng)
                         </div>
                       )}
                     </div>
@@ -193,6 +194,27 @@ const Recommendations = () => {
 
           {!loading && !error && (
             <>
+              {/* Hiển thị message hướng dẫn nếu là fallback */}
+              {metadata?.type === 'personalized_fallback' && (
+                <div className="mb-6 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">
+                  <div className="flex items-start">
+                    <img src={LightbulbIcon} alt="Tip" className="w-6 h-6 mr-3 mt-1 opacity-80" />
+                    <div>
+                      <h3 className="font-semibold text-blue-900 mb-2">
+                        💡 Gợi ý cho bạn
+                      </h3>
+                      <p className="text-blue-800 text-sm mb-2">
+                        {metadata.suggestion}
+                      </p>
+                      <p className="text-blue-700 text-xs">
+                        Hiện tại chúng tôi đang hiển thị các công thức phổ biến nhất. 
+                        Hãy tương tác với các công thức để nhận gợi ý phù hợp hơn với sở thích của bạn!
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {recipes.length === 0 ? (
                 <div className="text-center py-20">
                   <img src={BowlFoodIcon} alt="Empty" className="w-16 h-16 mb-4 opacity-80 mx-auto" />
@@ -206,7 +228,7 @@ const Recommendations = () => {
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {recipes.map((recipe) => (
-                    <Card key={recipe._id} item={recipe} source="recommendation" />
+                    <Card key={recipe._id} item={recipe} source="recommendation" contextTab={activeTab} />
                   ))}
                 </div>
               )}

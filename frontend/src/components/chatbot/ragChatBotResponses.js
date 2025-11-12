@@ -1,28 +1,38 @@
 // RAG-powered chat bot responses for Cookify
 import axios from 'axios';
 import { getChatbotUrl } from '../../config/api.js';
+import SecureStorage from '../../utils/secureStorage';
 
 // Configuration
 const RAG_API_BASE_URL = getChatbotUrl();
 const FALLBACK_ENABLED = true;
 
+// Request queue management to prevent overflowedQueue error
+let pendingRequests = 0;
+const MAX_CONCURRENT_REQUESTS = 2;
+const requestQueue = [];
+
 // Create axios instance with default config
 const ragApi = axios.create({
   baseURL: RAG_API_BASE_URL,
-  timeout: 10000, // Reduce timeout to 10 seconds for better UX
+  timeout: 30000, // Increased to 30 seconds for AI processing
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
   withCredentials: false, // Disable credentials for CORS
+  maxRedirects: 5,
+  maxContentLength: 50 * 1024 * 1024, // 50MB
 });
 
-// Add request interceptor for debugging
+// Add request interceptor for debugging and queue management
 ragApi.interceptors.request.use(
   (config) => {
+    pendingRequests++;
     return config;
   },
   (error) => {
+    pendingRequests--;
     return Promise.reject(error);
   }
 );
@@ -30,13 +40,26 @@ ragApi.interceptors.request.use(
 // Add response interceptor for better error handling
 ragApi.interceptors.response.use(
   (response) => {
+    pendingRequests--;
+    processQueue(); // Process next request in queue
     return response;
   },
   (error) => {
-    console.error('Chatbot API Error:', error.response?.status, error.message);
+    pendingRequests--;
+    processQueue(); // Process next request in queue
     return Promise.reject(error);
   }
 );
+
+// Process queued requests
+const processQueue = () => {
+  if (requestQueue.length > 0 && pendingRequests < MAX_CONCURRENT_REQUESTS) {
+    const nextRequest = requestQueue.shift();
+    if (nextRequest) {
+      nextRequest();
+    }
+  }
+};
 
 // Fallback responses for when RAG API is unavailable
 const fallbackResponses = {
@@ -57,16 +80,19 @@ const fallbackResponses = {
   ]
 };
 
-// Check if RAG API is available
-const checkRagApiHealth = async () => {
-  try {
-    const response = await ragApi.get('/health', { timeout: 3000 });
-    return response.status === 200;
-  } catch (error) {
-    console.warn('RAG API health check failed:', error.message);
-    // For development, we'll assume API is not available and use fallback
-    return false;
+// Check if RAG API is available with retry
+const checkRagApiHealth = async (retries = 2) => {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await ragApi.get('/health', { timeout: 5000 });
+      return response.status === 200;
+    } catch (error) {
+      if (i < retries - 1) {
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1s before retry
+      }
+    }
   }
+  return false;
 };
 
 // Get random response from array
@@ -136,6 +162,27 @@ const generateFallbackResponse = (userMessage) => {
   };
 };
 
+// Queue-aware API call wrapper
+const queuedApiCall = (apiCall) => {
+  return new Promise((resolve, reject) => {
+    const executeRequest = async () => {
+      try {
+        const result = await apiCall();
+        resolve(result);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // If too many pending requests, queue it
+    if (pendingRequests >= MAX_CONCURRENT_REQUESTS) {
+      requestQueue.push(executeRequest);
+    } else {
+      executeRequest();
+    }
+  });
+};
+
 // Main function to get RAG-powered chat response
 export const getRagChatBotResponse = async (userMessage, conversationId = null) => {
   try {    
@@ -144,21 +191,34 @@ export const getRagChatBotResponse = async (userMessage, conversationId = null) 
     
     if (!isRagAvailable) {
       if (FALLBACK_ENABLED) {
-        console.warn('RAG API not available, using fallback response');
         return generateFallbackResponse(userMessage);
       } else {
         throw new Error('RAG API is not available and fallback is disabled');
       }
     }
     
-    // Call Node.js Chatbot API (new format)
+    // Resolve userId from JWT (if available)
+    let resolvedUserId = null;
+    try {
+      const token = SecureStorage.getToken && SecureStorage.getToken();
+      if (token && typeof token === 'string' && token.split('.').length === 3) {
+        const payloadPart = token.split('.')[1];
+        const decoded = JSON.parse(atob(payloadPart));
+        resolvedUserId = decoded?.id || decoded?._id || decoded?.userId || null;
+      }
+    } catch (e) {
+      // Silently ignore token parse errors; keep resolvedUserId = null
+    }
+
+    // Call Node.js Chatbot API with queue management
     const requestData = {
       message: userMessage.trim(),
-      user_id: null, // Can be set from user context if available
+      user_id: resolvedUserId, // Pass user id if available
       conversation_id: conversationId
     };
-        
-    const response = await ragApi.post('/ask', requestData);
+    
+    // Use queued API call to prevent overflowedQueue
+    const response = await queuedApiCall(() => ragApi.post('/ask', requestData));
     const ragResponse = response.data;
     
       
@@ -171,7 +231,9 @@ export const getRagChatBotResponse = async (userMessage, conversationId = null) 
       suggestions: suggestions,
       source: 'node_chatbot',
       score: ragResponse.confidence?.score || 0,
-      confidence: ragResponse.confidence,
+      confidence: ragResponse.confidence, // Full confidence object with level, percentage, description
+      sourceBreakdown: ragResponse.sourceBreakdown, // Source breakdown by type
+      answerSourceType: ragResponse.answer_source_type || null,
       retrievedDocs: ragResponse.sources || [],
       conversationId: ragResponse.conversation_id,
       ragResponse: true
@@ -182,7 +244,6 @@ export const getRagChatBotResponse = async (userMessage, conversationId = null) 
     
     // Handle specific error types for better user experience
     if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND' || error.code === 'ERR_NETWORK') {
-      console.warn('Connection failed, using fallback');
       if (FALLBACK_ENABLED) {
         return generateFallbackResponse(userMessage);
       }
@@ -197,7 +258,6 @@ export const getRagChatBotResponse = async (userMessage, conversationId = null) 
     }
     
     if (error.response?.status === 404) {
-      console.warn('API endpoint not found, using fallback');
       if (FALLBACK_ENABLED) {
         return generateFallbackResponse(userMessage);
       }
@@ -213,7 +273,6 @@ export const getRagChatBotResponse = async (userMessage, conversationId = null) 
     
     // Always use fallback when there's an error if enabled
     if (FALLBACK_ENABLED) {
-      console.warn('API error occurred, using fallback response');
       return generateFallbackResponse(userMessage);
     }
     

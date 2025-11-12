@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { getApiUrl } from '../../config/api.js';
+import SecureStorage from '../../utils/secureStorage';
 import ChefHatIcon from '../../assets/chef-hat.svg';
 import CheckIcon from '../../assets/thumbs-up.svg';
 import PencilIcon from '../../assets/pencil.svg';
@@ -85,7 +86,7 @@ const MyBlogs = () => {
   }, [userBlogs, searchTerm, filterStatus, filterCategory, sortBy]);
 
   const getAuthToken = () => {
-    return localStorage.getItem("token");
+    return SecureStorage.getToken();
   };
 
   const getAxiosConfig = () => {

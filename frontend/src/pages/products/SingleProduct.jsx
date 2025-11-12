@@ -7,6 +7,7 @@ import { useFavoritesContext } from '../../contexts/FavoritesContext'
 import Feedback from '../user/Feedback'
 import { getApiUrl } from '../../config/api.js'
 import { ViewTimeTracker } from '../../services/viewHistoryService'
+import SecureStorage from '../../utils/secureStorage'
 import chefHatIcon from '../../assets/chef-hat.svg'
 import clockIcon from '../../assets/clock.svg'
 import usersIcon from '../../assets/users-three.svg'
@@ -180,7 +181,7 @@ const SingleProduct = () => {
     useEffect(() => {
         const checkFavoriteStatus = async () => {
             if (user && item?._id) {
-                const token = localStorage.getItem('token');
+                const token = SecureStorage.getToken();
                 if (!token) return;
 
                 try {
@@ -192,9 +193,8 @@ const SingleProduct = () => {
                         setIsFavorited(response.data.isFavorited);
                     }
                 } catch (error) {
-                    console.error('Error checking favorite status:', error);
-                    // Fallback to localStorage for offline functionality
-                    const favorites = JSON.parse(localStorage.getItem(`favorites_${user._id}`) || '[]');
+                    // Fallback to SecureStorage for offline functionality
+                    const favorites = SecureStorage.getFavorites(user._id);
                     setIsFavorited(favorites.includes(item._id));
                 }
             }
@@ -207,7 +207,7 @@ const SingleProduct = () => {
     useEffect(() => {
         const checkRelatedFavorites = async () => {
             if (user && relatedRecipes.length > 0) {
-                const token = localStorage.getItem('token');
+                const token = SecureStorage.getToken();
                 if (!token) return;
 
                 const favorites = {};
@@ -221,9 +221,8 @@ const SingleProduct = () => {
                             favorites[recipe._id] = response.data.isFavorited;
                         }
                     } catch (error) {
-                        console.error('Error checking favorite status for related recipe:', error);
-                        // Fallback to localStorage
-                        const localFavorites = JSON.parse(localStorage.getItem(`favorites_${user._id}`) || '[]');
+                        // Fallback to SecureStorage
+                        const localFavorites = SecureStorage.getFavorites(user._id);
                         favorites[recipe._id] = localFavorites.includes(recipe._id);
                     }
                 }
@@ -245,7 +244,7 @@ const SingleProduct = () => {
 
         if (!item?._id || isLoadingFavorite) return;
 
-        const token = localStorage.getItem('token');
+        const token = SecureStorage.getToken();
         if (!token) {
             navigate('/login');
             return;
@@ -263,10 +262,10 @@ const SingleProduct = () => {
                 if (response.data.success) {
                     setIsFavorited(false);
                     toast.success('Đã bỏ yêu thích công thức!');
-                    // Update localStorage as backup
-                    const favorites = JSON.parse(localStorage.getItem(`favorites_${user._id}`) || '[]');
+                    // Update SecureStorage as backup
+                    const favorites = SecureStorage.getFavorites(user._id);
                     const updatedFavorites = favorites.filter(id => id !== item._id);
-                    localStorage.setItem(`favorites_${user._id}`, JSON.stringify(updatedFavorites));
+                    SecureStorage.setFavorites(user._id, updatedFavorites);
                     // Trigger update for other components
                     triggerFavoriteUpdate();
                 } else {
@@ -281,10 +280,10 @@ const SingleProduct = () => {
                 if (response.data.success) {
                     setIsFavorited(true);
                     toast.success('Đã thêm vào danh sách yêu thích!');
-                    // Update localStorage as backup
-                    const favorites = JSON.parse(localStorage.getItem(`favorites_${user._id}`) || '[]');
+                    // Update SecureStorage as backup
+                    const favorites = SecureStorage.getFavorites(user._id);
                     const updatedFavorites = [...favorites, item._id];
-                    localStorage.setItem(`favorites_${user._id}`, JSON.stringify(updatedFavorites));
+                    SecureStorage.setFavorites(user._id, updatedFavorites);
                     // Trigger update for other components
                     triggerFavoriteUpdate();
                 } else {
@@ -292,11 +291,9 @@ const SingleProduct = () => {
                 }
             }
         } catch (error) {
-            console.error('Error updating favorite:', error);
-            
             // Handle specific error cases
             if (error.response?.status === 401) {
-                localStorage.removeItem('token');
+                SecureStorage.clearAll();
                 navigate('/login');
                 return;
             }
@@ -318,10 +315,10 @@ const SingleProduct = () => {
                     toast.error('Lỗi: ' + message);
                 }
             } else {
-                // For other errors, fallback to localStorage
+                // For other errors, fallback to SecureStorage
                 toast.error('Có lỗi xảy ra: ' + (error.response?.data?.message || error.message));
                 
-                const favorites = JSON.parse(localStorage.getItem(`favorites_${user._id}`) || '[]');
+                const favorites = SecureStorage.getFavorites(user._id);
                 let updatedFavorites;
 
                 if (isFavorited) {
@@ -334,7 +331,7 @@ const SingleProduct = () => {
                     toast.success('Đã thêm yêu thích (offline)');
                 }
 
-                localStorage.setItem(`favorites_${user._id}`, JSON.stringify(updatedFavorites));
+                SecureStorage.setFavorites(user._id, updatedFavorites);
             }
         } finally {
             setIsLoadingFavorite(false);
@@ -352,7 +349,7 @@ const SingleProduct = () => {
 
         if (!recipeId || loadingRelatedFavorites[recipeId]) return;
 
-        const token = localStorage.getItem('token');
+        const token = SecureStorage.getToken();
         if (!token) {
             navigate('/login');
             return;
@@ -372,10 +369,10 @@ const SingleProduct = () => {
                 if (response.data.success) {
                     setRelatedFavorites(prev => ({ ...prev, [recipeId]: false }));
                     toast.success('Đã bỏ yêu thích công thức!');
-                    // Update localStorage as backup
-                    const favorites = JSON.parse(localStorage.getItem(`favorites_${user._id}`) || '[]');
+                    // Update SecureStorage as backup
+                    const favorites = SecureStorage.getFavorites(user._id);
                     const updatedFavorites = favorites.filter(id => id !== recipeId);
-                    localStorage.setItem(`favorites_${user._id}`, JSON.stringify(updatedFavorites));
+                    SecureStorage.setFavorites(user._id, updatedFavorites);
                     // Trigger update for other components
                     triggerFavoriteUpdate();
                 } else {
@@ -390,10 +387,10 @@ const SingleProduct = () => {
                 if (response.data.success) {
                     setRelatedFavorites(prev => ({ ...prev, [recipeId]: true }));
                     toast.success('Đã thêm vào danh sách yêu thích!');
-                    // Update localStorage as backup
-                    const favorites = JSON.parse(localStorage.getItem(`favorites_${user._id}`) || '[]');
+                    // Update SecureStorage as backup
+                    const favorites = SecureStorage.getFavorites(user._id);
                     const updatedFavorites = [...favorites, recipeId];
-                    localStorage.setItem(`favorites_${user._id}`, JSON.stringify(updatedFavorites));
+                    SecureStorage.setFavorites(user._id, updatedFavorites);
                     // Trigger update for other components
                     triggerFavoriteUpdate();
                 } else {
@@ -401,11 +398,9 @@ const SingleProduct = () => {
                 }
             }
         } catch (error) {
-            console.error('Error updating favorite:', error);
-            
             // Handle specific error cases
             if (error.response?.status === 401) {
-                localStorage.removeItem('token');
+                SecureStorage.clearAll();
                 navigate('/login');
                 return;
             }
@@ -427,10 +422,10 @@ const SingleProduct = () => {
                     toast.error('Lỗi: ' + message);
                 }
             } else {
-                // For other errors, fallback to localStorage
+                // For other errors, fallback to SecureStorage
                 toast.error('Có lỗi xảy ra: ' + (error.response?.data?.message || error.message));
                 
-                const favorites = JSON.parse(localStorage.getItem(`favorites_${user._id}`) || '[]');
+                const favorites = SecureStorage.getFavorites(user._id);
                 let updatedFavorites;
 
                 if (relatedFavorites[recipeId]) {
@@ -443,7 +438,7 @@ const SingleProduct = () => {
                     toast.success('Đã thêm yêu thích (offline)');
                 }
 
-                localStorage.setItem(`favorites_${user._id}`, JSON.stringify(updatedFavorites));
+                SecureStorage.setFavorites(user._id, updatedFavorites);
             }
             setLoadingRelatedFavorites(prev => ({ ...prev, [recipeId]: false }));
         }
@@ -466,7 +461,9 @@ const SingleProduct = () => {
                     setError(response.data.message || 'Không thể tải công thức');
                 }
             } catch (err) {
-                console.error('Lỗi khi tải công thức:', err);
+                if (import.meta.env.DEV) {
+                    console.error('Lỗi khi tải công thức:', err);
+                }
                 if (err.response?.status === 404) {
                     setError('Không tìm thấy công thức');
                 } else {
@@ -713,21 +710,50 @@ const SingleProduct = () => {
             {/* Hướng dẫn nấu */}
             {item.instructions && (
               <div className="bg-white rounded-lg shadow-sm border p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
                   <img src={knifeIcon} alt="Hướng dẫn" className="w-5 h-5 mr-2" />
                   Hướng Dẫn Nấu
                 </h2>
-                <div className="space-y-4">
-                  {item.instructions.split('\n').map((step, index) => (
-                    step.trim() && (
-                      <div key={index} className="flex items-start">
-                        <div className="w-6 h-6 bg-tomato text-white rounded-full flex items-center justify-center text-xs font-medium mr-4 mt-1 flex-shrink-0">
-                          {index + 1}
+                <div className="space-y-5">
+                  {(() => {
+                    // Parse instructions - Tách theo "Bước X:" hoặc newline
+                    const steps = item.instructions
+                      .split(/Bước \d+:|\n\n/)
+                      .map(step => step.trim())
+                      .filter(step => step.length > 0);
+                    
+                    return steps.map((step, index) => {
+                      // Kiểm tra xem bước có tiêu đề (kết thúc bằng ":") không
+                      const colonIndex = step.indexOf(':');
+                      const hasTitle = colonIndex > 0 && colonIndex < 50; // Tiêu đề ngắn hơn 50 ký tự
+                      
+                      let title = '';
+                      let content = step;
+                      
+                      if (hasTitle) {
+                        title = step.substring(0, colonIndex + 1);
+                        content = step.substring(colonIndex + 1).trim();
+                      }
+                      
+                      return (
+                        <div key={index} className="flex items-start gap-4 p-4 bg-orange-50 rounded-lg border border-orange-100 hover:bg-orange-100 transition-colors">
+                          <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 text-white rounded-full flex items-center justify-center font-bold text-sm shadow-md">
+                            {index + 1}
+                          </div>
+                          <div className="flex-1 pt-1">
+                            {hasTitle ? (
+                              <>
+                                <p className="text-gray-900 font-semibold text-base mb-2">{title}</p>
+                                {content && <p className="text-gray-700 leading-relaxed text-base">{content}</p>}
+                              </>
+                            ) : (
+                              <p className="text-gray-800 leading-relaxed text-base">{step}</p>
+                            )}
+                          </div>
                         </div>
-                        <p className="text-gray-700 leading-relaxed flex-1">{step.trim()}</p>
-                      </div>
-                    )
-                  ))}
+                      );
+                    });
+                  })()}
                 </div>
               </div>
             )}

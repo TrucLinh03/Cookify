@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
 import { useLoginUserMutation } from '../../redux/features/auth/authApi';
 import { setUser } from '../../redux/features/auth/authSlice';
+import SecureStorage from '../../utils/secureStorage';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -20,22 +22,24 @@ const Login = () => {
     try {
       const res = await loginUser({ email, password }).unwrap();
       
-      // Lưu token vào localStorage
+      // Lưu token vào SecureStorage (localStorage với prefix để persistent)
       if (res.token) {
-        localStorage.setItem('token', res.token);
+        SecureStorage.setToken(res.token);
       }
       
-      // Lưu user vào Redux store
+      // Lưu user vào Redux store (sẽ tự động lưu vào SecureStorage)
       dispatch(setUser({ user: res.user }));
       
-      alert('Login successful!');
+      toast.success(`Chào mừng ${res.user.name}! Đăng nhập thành công.`);
       if (res.user.role === 'admin') {
         navigate('/dashboard/admin');
       } else {
         navigate('/');
       }
     } catch (err) {
-      console.error('Login error:', err);
+      if (import.meta.env.DEV) {
+        console.error('Login error:', err);
+      }
       if (err?.status === 403) {
         // Tài khoản bị cấm
         setMessage(err?.data?.message || 'Tài khoản của bạn đã bị cấm.');

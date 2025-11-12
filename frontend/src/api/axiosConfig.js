@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { getApiUrl } from '../config/api.js';
+import SecureStorage from '../utils/secureStorage';
 
 const axiosInstance = axios.create({
   baseURL: getApiUrl('/api'),
@@ -10,9 +11,8 @@ const axiosInstance = axios.create({
 // Request interceptor for debugging and auth
 axiosInstance.interceptors.request.use(
   (config) => {
-    
     // Auto-add Authorization header if token exists
-    const token = localStorage.getItem('token');
+    const token = SecureStorage.getToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -20,7 +20,9 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error) => {
-    console.error('Request Error:', error);
+    if (import.meta.env.DEV) {
+      console.error('Request Error:', error);
+    }
     return Promise.reject(error);
   }
 );
@@ -31,7 +33,16 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   (error) => {
-    console.error('API Error:', error.response?.status, error.response?.data || error.message);
+    if (import.meta.env.DEV) {
+      console.error('API Error:', error.response?.status, error.response?.data || error.message);
+    }
+    
+    // Handle 401 Unauthorized - clear storage and redirect to login
+    if (error.response?.status === 401) {
+      SecureStorage.clearAll();
+      window.location.href = '/login';
+    }
+    
     return Promise.reject(error);
   }
 );

@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 import AdminLayout from '../../components/layout/AdminLayout';
+import { getApiUrl } from '../../config/api.js';
+import SecureStorage from '../../utils/secureStorage';
 import DatePicker from '../../components/common/DatePicker';
+import Select from '../../components/common/Select';
 import ChatDotsIcon from '../../assets/chat-circle-dots.svg';
 import ThumbsUpIcon from '../../assets/thumbs-up.svg';
 import EyeIcon from '../../assets/eye.svg';
 import TrashIcon from '../../assets/trash.svg';
-import { getApiUrl } from '../../config/api.js';
 
 const ManageFeedbacks = () => {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -26,7 +29,7 @@ const ManageFeedbacks = () => {
   const fetchFeedbacks = async (page = 1) => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
+      const token = SecureStorage.getToken();
       
       const response = await axios.get(getApiUrl('/api/feedback/admin/all'), {
         headers: {
@@ -34,23 +37,41 @@ const ManageFeedbacks = () => {
         },
         params: {
           page,
-          limit: 10,
+          limit: 100,
           search: searchTerm,
-          status: statusFilter,
-          startDate: startDate || undefined,
-          endDate: endDate || undefined
+          status: statusFilter !== 'all' ? statusFilter : undefined
         }
       });
 
       if (response.data.success) {
-        setFeedbacks(response.data.data.feedbacks);
+        let filteredFeedbacks = response.data.data.feedbacks;
+        
+        // Client-side date filtering
+        if (startDate || endDate) {
+          filteredFeedbacks = filteredFeedbacks.filter(feedback => {
+            const feedbackDate = new Date(feedback.createdAt);
+            const start = startDate ? new Date(startDate) : null;
+            const end = endDate ? new Date(endDate) : null;
+            
+            if (start && end) {
+              return feedbackDate >= start && feedbackDate <= end;
+            } else if (start) {
+              return feedbackDate >= start;
+            } else if (end) {
+              return feedbackDate <= end;
+            }
+            return true;
+          });
+        }
+        
+        setFeedbacks(filteredFeedbacks);
         setCurrentPage(response.data.data.pagination.currentPage);
         setTotalPages(response.data.data.pagination.totalPages);
         setStats(response.data.data.stats);
       }
     } catch (error) {
       console.error('Error fetching feedbacks:', error);
-      alert('Có lỗi xảy ra khi tải danh sách feedback: ' + (error.response?.data?.message || error.message));
+      toast.error('Có lỗi xảy ra khi tải danh sách feedback: ' + (error.response?.data?.message || error.message));
     } finally {
       setLoading(false);
     }
@@ -59,7 +80,7 @@ const ManageFeedbacks = () => {
   // Update feedback status
   const updateFeedbackStatus = async (feedbackId, newStatus) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = SecureStorage.getToken();
       
       const response = await axios.patch(getApiUrl(`/api/feedback/admin/manage/${feedbackId}`), {
         status: newStatus
@@ -70,21 +91,21 @@ const ManageFeedbacks = () => {
       });
 
       if (response.data.success) {
-        alert(`Cập nhật trạng thái thành công!`);
+        toast.success(`Cập nhật trạng thái thành công!`);
         fetchFeedbacks(currentPage);
         setShowModal(false);
         setSelectedFeedback(null);
       }
     } catch (error) {
       console.error('Error updating feedback:', error);
-      alert('Có lỗi xảy ra: ' + (error.response?.data?.message || error.message));
+      toast.error('Có lỗi xảy ra: ' + (error.response?.data?.message || error.message));
     }
   };
 
   // Delete feedback
   const deleteFeedback = async (feedbackId) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = SecureStorage.getToken();
       
       const response = await axios.delete(getApiUrl(`/api/feedback/admin/manage/${feedbackId}`), {
         headers: {
@@ -93,14 +114,14 @@ const ManageFeedbacks = () => {
       });
 
       if (response.data.success) {
-        alert('Xóa feedback thành công!');
+        toast.success('Xóa feedback thành công!');
         fetchFeedbacks(currentPage);
         setShowModal(false);
         setSelectedFeedback(null);
       }
     } catch (error) {
       console.error('Error deleting feedback:', error);
-      alert('Có lỗi xảy ra: ' + (error.response?.data?.message || error.message));
+      toast.error('Có lỗi xảy ra: ' + (error.response?.data?.message || error.message));
     }
   };
 
@@ -111,7 +132,7 @@ const ManageFeedbacks = () => {
     const userInput = prompt(confirmMessage);
     
     if (userInput !== "XOA TAT CA") {
-      alert('Hủy bỏ thao tác xóa tất cả feedback.');
+      toast.info('Hủy bỏ thao tác xóa tất cả feedback.');
       return;
     }
 
@@ -123,7 +144,7 @@ const ManageFeedbacks = () => {
 
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
+      const token = SecureStorage.getToken();
       
       const response = await axios.delete(getApiUrl('/api/feedback/admin/delete-all'), {
         headers: {
@@ -132,13 +153,13 @@ const ManageFeedbacks = () => {
       });
 
       if (response.data.success) {
-        alert(`Đã xóa thành công ${response.data.deletedCount || 0} feedback!`);
+        toast.success(`Đã xóa thành công ${response.data.deletedCount || 0} feedback!`);
         fetchFeedbacks(1); // Refresh to page 1
         setCurrentPage(1);
       }
     } catch (error) {
       console.error('Error deleting all feedbacks:', error);
-      alert('Có lỗi xảy ra khi xóa tất cả feedback: ' + (error.response?.data?.message || error.message));
+      toast.error('Có lỗi xảy ra khi xóa tất cả feedback: ' + (error.response?.data?.message || error.message));
     } finally {
       setLoading(false);
     }
@@ -294,21 +315,17 @@ const ManageFeedbacks = () => {
             className="min-w-[200px]"
           />
           
-          <select
+          <Select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tomato focus:border-tomato appearance-none bg-no-repeat bg-right pr-8"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
-              backgroundPosition: 'right 0.5rem center',
-              backgroundSize: '1.5em 1.5em'
-            }}
-          >
-            <option value="all">Tất cả trạng thái</option>
-            <option value="visible">Hiển thị</option>
-            <option value="hidden">Ẩn</option>
-            <option value="reported">Báo cáo</option>
-          </select>
+            options={[
+              { value: 'all', label: 'Tất cả trạng thái' },
+              { value: 'visible', label: 'Hiển thị' },
+              { value: 'hidden', label: 'Ẩn' },
+              { value: 'reported', label: 'Báo cáo' }
+            ]}
+            className="min-w-[200px]"
+          />
           
           {/* Delete All Button */}
           <button

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 import { getApiUrl } from '../../config/api.js';
+import SecureStorage from '../../utils/secureStorage';
 
 const Feedback = ({ recipeId, onFeedbackSubmitted }) => {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -45,7 +47,7 @@ const Feedback = ({ recipeId, onFeedbackSubmitted }) => {
   // Check if user has already rated this recipe
   const checkUserRating = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = SecureStorage.getToken();
       if (!token) return;
 
       const response = await axios.get(getApiUrl(`/api/feedback/check/${recipeId}`), {
@@ -67,8 +69,8 @@ const Feedback = ({ recipeId, onFeedbackSubmitted }) => {
   // Get current user ID from token
   const getCurrentUserId = () => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) return null;
+      const token = SecureStorage.getToken();
+      if (!token || typeof token !== 'string') return null;
       
       const payload = JSON.parse(atob(token.split('.')[1]));
       return payload.id;
@@ -113,9 +115,9 @@ const Feedback = ({ recipeId, onFeedbackSubmitted }) => {
     }
 
     try {
-      const token = localStorage.getItem('token');
+      const token = SecureStorage.getToken();
       if (!token) {
-        alert('Vui lòng đăng nhập');
+        toast.error('Vui lòng đăng nhập');
         return;
       }
 
@@ -126,7 +128,7 @@ const Feedback = ({ recipeId, onFeedbackSubmitted }) => {
       });
 
       if (response.data.success) {
-        alert('Xóa đánh giá thành công!');
+        toast.success('Xóa đánh giá thành công!');
         await fetchFeedbacks();
         await checkUserRating();
         
@@ -136,7 +138,7 @@ const Feedback = ({ recipeId, onFeedbackSubmitted }) => {
       }
     } catch (error) {
       console.error('Lỗi khi xóa feedback:', error);
-      alert('Có lỗi xảy ra khi xóa đánh giá: ' + (error.response?.data?.message || error.message));
+      toast.error('Có lỗi xảy ra khi xóa đánh giá: ' + (error.response?.data?.message || error.message));
     }
     setShowDropdown(null);
   };
@@ -146,21 +148,21 @@ const Feedback = ({ recipeId, onFeedbackSubmitted }) => {
     e.preventDefault();
     
     if (!editForm.rating || !editForm.comment.trim()) {
-      alert('Vui lòng chọn điểm đánh giá và viết bình luận');
+      toast.warning('Vui lòng chọn điểm đánh giá và viết bình luận');
       return;
     }
 
     if (editForm.comment.trim().length < 10) {
-      alert('Bình luận phải có ít nhất 10 ký tự');
+      toast.warning('Bình luận phải có ít nhất 10 ký tự');
       return;
     }
 
     try {
       setSubmitting(true);
-      const token = localStorage.getItem('token');
+      const token = SecureStorage.getToken();
       
       if (!token) {
-        alert('Vui lòng đăng nhập');
+        toast.error('Vui lòng đăng nhập');
         return;
       }
 
@@ -186,11 +188,11 @@ const Feedback = ({ recipeId, onFeedbackSubmitted }) => {
           onFeedbackSubmitted();
         }
         
-        alert('Cập nhật đánh giá thành công!');
+        toast.success('Cập nhật đánh giá thành công!');
       }
     } catch (error) {
       console.error('Lỗi khi cập nhật feedback:', error);
-      alert('Có lỗi xảy ra khi cập nhật đánh giá: ' + (error.response?.data?.message || error.message));
+      toast.error('Có lỗi xảy ra khi cập nhật đánh giá: ' + (error.response?.data?.message || error.message));
     } finally {
       setSubmitting(false);
     }
@@ -207,21 +209,21 @@ const Feedback = ({ recipeId, onFeedbackSubmitted }) => {
     e.preventDefault();
     
     if (!newFeedback.rating || !newFeedback.comment.trim()) {
-      alert('Vui lòng chọn điểm đánh giá và viết bình luận');
+      toast.warning('Vui lòng chọn điểm đánh giá và viết bình luận');
       return;
     }
 
     if (newFeedback.comment.trim().length < 10) {
-      alert('Bình luận phải có ít nhất 10 ký tự');
+      toast.warning('Bình luận phải có ít nhất 10 ký tự');
       return;
     }
 
     try {
       setSubmitting(true);
-      const token = localStorage.getItem('token');
+      const token = SecureStorage.getToken();
             
       if (!token) {
-        alert('Vui lòng đăng nhập để đánh giá');
+        toast.error('Vui lòng đăng nhập để đánh giá');
         return;
       }
 
@@ -251,7 +253,7 @@ const Feedback = ({ recipeId, onFeedbackSubmitted }) => {
           onFeedbackSubmitted();
         }
         
-        alert('Đánh giá đã được gửi thành công!');
+        toast.success('Đánh giá đã được gửi thành công!');
       }
     } catch (error) {
       console.error('Lỗi khi gửi feedback:', error);
@@ -262,11 +264,11 @@ const Feedback = ({ recipeId, onFeedbackSubmitted }) => {
       });
       
       if (error.response?.status === 400) {
-        alert(error.response.data.message || 'Dữ liệu không hợp lệ');
+        toast.error(error.response.data.message || 'Dữ liệu không hợp lệ');
       } else if (error.response?.status === 401) {
-        alert('Vui lòng đăng nhập để đánh giá');
+        toast.warning('Vui lòng đăng nhập để đánh giá');
       } else {
-        alert('Có lỗi xảy ra khi gửi đánh giá: ' + (error.response?.data?.message || error.message));
+        toast.error('Có lỗi xảy ra khi gửi đánh giá: ' + (error.response?.data?.message || error.message));
       }
     } finally {
       setSubmitting(false);

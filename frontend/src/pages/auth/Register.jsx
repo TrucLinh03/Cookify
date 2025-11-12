@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useRegisterUserMutation } from '../../redux/features/auth/authApi';
 import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
 import { setUser } from '../../redux/features/auth/authSlice';
-import axiosInstance from '../../api/axiosConfig';
+import SecureStorage from '../../utils/secureStorage';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -17,19 +18,30 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setMessage('');
+    
     try {
       const res = await registerUser({ name, email, password }).unwrap();
+      
+      // Lưu token vào SecureStorage (localStorage với prefix để persistent)
+      if (res.token) {
+        SecureStorage.setToken(res.token);
+      }
+      
+      // Lưu user vào Redux store (sẽ tự động lưu vào SecureStorage)
       dispatch(setUser({ user: res.user }));
-      alert('Registration successful!');
+      
+      toast.success(`Chào mừng ${res.user.name}! Đăng ký thành công.`);
       navigate('/');
     } catch (err) {
-      // Log error response data if available
-      if (err && err.data) {
-        console.error('Registration error:', err.data);
-      } else {
-        console.error(err);
+      if (import.meta.env.DEV) {
+        console.error('Registration error:', err);
       }
-      setMessage('Registration failed. Please try again.');
+      if (err?.data?.message) {
+        setMessage(err.data.message);
+      } else {
+        setMessage('Đăng ký thất bại. Vui lòng thử lại.');
+      }
     }
   };
 

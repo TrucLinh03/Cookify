@@ -6,8 +6,9 @@ import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { useFavoritesContext } from '../contexts/FavoritesContext';
 import favoritesService from '../services/favoritesService.js';
+import SecureStorage from '../utils/secureStorage';
 
-const Card = ({ item, source = 'direct' }) => {
+const Card = ({ item, source = 'direct', contextTab = null }) => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const { favoriteUpdates, triggerFavoriteUpdate } = useFavoritesContext();
@@ -18,7 +19,7 @@ const Card = ({ item, source = 'direct' }) => {
   useEffect(() => {
     const checkFavoriteStatus = async () => {
       if (user && item?._id) {
-        const token = localStorage.getItem('token');
+        const token = SecureStorage.getToken();
         if (!token) return;
 
         try {
@@ -87,6 +88,23 @@ const Card = ({ item, source = 'direct' }) => {
     return categoryNames[category?.toLowerCase()] || category || 'Khác';
   };
 
+  // Format backend 'reasons' into human-friendly strings
+  const prettyReason = (text) => {
+    if (!text || typeof text !== 'string') return text;
+    let t = text;
+    // Normalize known category slugs to Vietnamese labels
+    t = t.replace(/\bmonchinh\b/gi, 'món chính')
+         .replace(/\bmonphu\b/gi, 'món phụ')
+         .replace(/\btrangmieng\b/gi, 'tráng miệng')
+         .replace(/\banvat\b/gi, 'món ăn vặt')
+         .replace(/\bdouong\b/gi, 'đồ uống');
+    // Trim very long decimals like 0.2857142857 -> 0.29
+    t = t.replace(/(\d+\.\d{2})\d+/g, '$1');
+    // Remove stray technical tokens
+    t = t.replace(/\s+mon\s*chinh/gi, ' món chính');
+    return t;
+  };
+
   const difficultyStyle = getDifficultyStyle(item?.difficulty);
   const categoryStyle = getCategoryStyle(item?.category);
 
@@ -107,7 +125,7 @@ const Card = ({ item, source = 'direct' }) => {
 
     if (!item?._id || isLoading) return;
 
-    const token = localStorage.getItem('token');
+    const token = SecureStorage.getToken();
     if (!token) {
       navigate('/login');
       return;
@@ -223,6 +241,27 @@ const Card = ({ item, source = 'direct' }) => {
             {getDifficultyName(item?.difficulty)}
           </div>
 
+          {/* Match Badge - Lower middle on image (personalized) */}
+          {item?.matchBadge && item?.matchPercentage && (
+            <div className="absolute left-1/2 transform -translate-x-1/2 z-10" style={{ top: '30%' }}>
+              {item.matchBadge === 'perfect' && (
+                <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
+                  ⭐ Perfect Match
+                </div>
+              )}
+              {item.matchBadge === 'excellent' && (
+                <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                  🔥 Highly Recommended
+                </div>
+              )}
+              {item.matchBadge === 'good' && (
+                <div className="bg-gradient-to-r from-green-500 to-teal-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">
+                  ✨ Good Match
+                </div>
+              )}
+            </div>
+          )}
+
           <button
             onClick={handleFavoriteClick}
             disabled={isLoading}
@@ -261,12 +300,50 @@ const Card = ({ item, source = 'direct' }) => {
               }}
             />
             
+            {/* Remove badge from image - will show at bottom */}
+            
             {/* Match Count Badge - Bottom Right */}
             {item?.matchCount !== undefined && item?.totalSearchIngredients && (
               <div className="absolute bottom-3 right-3 z-10 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-lg">
                 <span className="flex items-center gap-1">
                   {item.matchCount}/{item.totalSearchIngredients}
                 </span>
+              </div>
+            )}
+
+            {/* Recommendation metrics overlay - Bottom Right */}
+            {contextTab === 'popular' && (
+              <div className="absolute bottom-3 right-3 z-10 flex items-center gap-1">
+                {/* Average rating */}
+                {typeof item?.avgRating === 'number' && (
+                  <div className="bg-white/95 backdrop-blur px-2 py-0.5 rounded-full text-xs font-semibold shadow border border-yellow-200 text-yellow-700 flex items-center gap-1">
+                    {/* Star icon */}
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-yellow-500">
+                      <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.787 1.401 8.168L12 18.897l-7.335 3.868 1.401-8.168L.132 9.21l8.2-1.192L12 .587z"/>
+                    </svg>
+                    {Number(item.avgRating).toFixed(1)}
+                  </div>
+                )}
+                {/* Total reviews/comments */}
+                {typeof item?.totalRatings === 'number' && (
+                  <div className="bg-white/95 backdrop-blur px-2 py-0.5 rounded-full text-xs font-semibold shadow border border-blue-200 text-blue-700 flex items-center gap-1">
+                    {/* Comment icon */}
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-blue-500">
+                      <path d="M20 2H4a2 2 0 00-2 2v14l4-4h14a2 2 0 002-2V4a2 2 0 00-2-2z"/>
+                    </svg>
+                    {item.totalRatings}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {contextTab === 'favorites' && typeof item?.totalLikes === 'number' && (
+              <div className="absolute bottom-3 right-3 z-10 bg-white/95 backdrop-blur px-2 py-0.5 rounded-full text-xs font-semibold shadow border border-red-200 text-red-600 flex items-center gap-1">
+                {/* Heart icon */}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4 fill-red-500">
+                  <path d="M12 21s-6.5-4.33-10-9.5C-0.42 8.55 1.55 3.5 6 3.5c2.28 0 4.5 1.5 6 3.5 1.5-2 3.72-3.5 6-3.5 4.45 0 6.42 5.05 4 8.0C18.5 16.67 12 21 12 21z"/>
+                </svg>
+                {item.totalLikes}
               </div>
             )}
           </div>
@@ -303,6 +380,23 @@ const Card = ({ item, source = 'direct' }) => {
                 </span>
               </div>
             </div>
+
+            {/* Recommendation Reasons - Bottom of Card */}
+            {item?.reasons && item.reasons.length > 0 && (
+              <div className="mt-3 pt-3 border-t border-gray-100">
+                <div className="space-y-1.5">
+                  {item.reasons.slice(0, 2).map((reason, index) => (
+                    <div 
+                      key={index}
+                      className="text-xs text-gray-600 flex items-start gap-1.5 leading-relaxed"
+                    >
+                      <span className="flex-shrink-0 mt-0.5">•</span>
+                      <span className="flex-1">{prettyReason(reason)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -102,9 +102,7 @@ const Blog = () => {
 
   useEffect(() => {
     const delayedSearch = setTimeout(() => {
-      if (searchTerm !== '') {
-        fetchBlogs(1);
-      }
+      fetchBlogs(1);
     }, 500);
 
     return () => clearTimeout(delayedSearch);
@@ -459,7 +457,7 @@ const Blog = () => {
           <div className="text-center py-16">
             <img src={PencilIcon} alt="Empty" className="w-16 h-16 mb-4 opacity-80 mx-auto" />
             <h3 className="text-2xl font-bold text-gray-800 mb-2">
-              Chưa có câu chuyện nào
+              {startDate || endDate ? 'Không có bài viết trong khoảng thời gian này' : 'Chưa có câu chuyện nào'}
             </h3>
             <p className="text-gray-600 mb-6">
               Hãy là người đầu tiên chia sẻ câu chuyện ẩm thực của bạn!

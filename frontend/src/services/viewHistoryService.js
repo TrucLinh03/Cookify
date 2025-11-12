@@ -1,4 +1,15 @@
-import axiosInstance from '../api/axiosConfig';
+import axios from 'axios';
+import { getApiUrl } from '../config/api.js';
+import SecureStorage from '../utils/secureStorage';
+
+// Create axios instance with base URL
+const axiosInstance = axios.create({
+  baseURL: getApiUrl(),
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
 
 /**
  * Service để quản lý view history
@@ -12,7 +23,7 @@ class ViewHistoryService {
    */
   static async logView(recipeId, duration = 0, source = 'direct') {
     try {
-      const token = localStorage.getItem('token');
+      const token = SecureStorage.getToken();
       if (!token) {
         // Không log nếu user chưa đăng nhập
         return null;
@@ -41,7 +52,7 @@ class ViewHistoryService {
    */
   static async getViewHistory(limit = 50) {
     try {
-      const token = localStorage.getItem('token');
+      const token = SecureStorage.getToken();
       if (!token) {
         throw new Error('Authentication required');
       }
@@ -64,7 +75,7 @@ class ViewHistoryService {
    */
   static async getCategoryPreferences() {
     try {
-      const token = localStorage.getItem('token');
+      const token = SecureStorage.getToken();
       if (!token) {
         throw new Error('Authentication required');
       }
@@ -87,7 +98,7 @@ class ViewHistoryService {
    */
   static async getViewFrequency() {
     try {
-      const token = localStorage.getItem('token');
+      const token = SecureStorage.getToken();
       if (!token) {
         throw new Error('Authentication required');
       }

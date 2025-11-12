@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 import AdminLayout from '../../components/layout/AdminLayout';
 import DatePicker from '../../components/common/DatePicker';
+import Select from '../../components/common/Select';
+import SecureStorage from '../../utils/secureStorage';
 import BowlFoodIcon from '../../assets/bowl-food.svg';
 import CarrotIcon from '../../assets/carrot.svg';
 import CakeIcon from '../../assets/cake.svg';
@@ -23,13 +26,15 @@ const ManageRecipes = () => {
     name: '',
     description: '',
     ingredients: [''],
-    instructions: '',
+    instructions: [''],
     imageUrl: '',
     video: '',
     category: '',
     difficulty: '',
     cookingTime: ''
   });
+  const [imagePreview, setImagePreview] = useState('');
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
 
   // Get category counts
@@ -82,16 +87,19 @@ const ManageRecipes = () => {
     if (startDate || endDate) {
       filtered = filtered.filter(recipe => {
         const recipeDate = new Date(recipe.createdAt);
-        const start = startDate ? new Date(startDate) : null;
-        const end = endDate ? new Date(endDate) : null;
         
-        if (start && end) {
-          return recipeDate >= start && recipeDate <= end;
-        } else if (start) {
-          return recipeDate >= start;
-        } else if (end) {
-          return recipeDate <= end;
+        if (startDate) {
+          const start = new Date(startDate);
+          start.setHours(0, 0, 0, 0);
+          if (recipeDate < start) return false;
         }
+        
+        if (endDate) {
+          const end = new Date(endDate);
+          end.setHours(23, 59, 59, 999);
+          if (recipeDate > end) return false;
+        }
+        
         return true;
       });
     }
@@ -118,6 +126,46 @@ const ManageRecipes = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  // Handle image file upload
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('Vui lòng chọn file ảnh!');
+      return;
+    }
+
+    // Validate file size (max 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error('Kích thước ảnh không được vượt quá 2MB!');
+      return;
+    }
+
+    setIsUploadingImage(true);
+
+    // Convert to base64
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = reader.result;
+      setFormData(prev => ({ ...prev, imageUrl: base64String }));
+      setImagePreview(base64String);
+      setIsUploadingImage(false);
+    };
+    reader.onerror = () => {
+      toast.error('Có lỗi khi đọc file ảnh!');
+      setIsUploadingImage(false);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Remove uploaded image
+  const handleRemoveImage = () => {
+    setFormData(prev => ({ ...prev, imageUrl: '' }));
+    setImagePreview('');
+  };
+
   // Xử lý thay đổi ingredients
   const handleIngredientChange = (index, value) => {
     const newIngredients = [...formData.ingredients];
@@ -141,6 +189,29 @@ const ManageRecipes = () => {
     }
   };
 
+  // Xử lý thay đổi instructions
+  const handleInstructionChange = (index, value) => {
+    const newInstructions = [...formData.instructions];
+    newInstructions[index] = value;
+    setFormData(prev => ({ ...prev, instructions: newInstructions }));
+  };
+
+  // Thêm instruction mới
+  const addInstruction = () => {
+    setFormData(prev => ({
+      ...prev,
+      instructions: [...prev.instructions, '']
+    }));
+  };
+
+  // Xóa instruction
+  const removeInstruction = (index) => {
+    if (formData.instructions.length > 1) {
+      const newInstructions = formData.instructions.filter((_, i) => i !== index);
+      setFormData(prev => ({ ...prev, instructions: newInstructions }));
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -148,15 +219,25 @@ const ManageRecipes = () => {
     const validIngredients = formData.ingredients.filter(ing => ing.trim());
     
     if (validIngredients.length === 0) {
-      alert('Vui lòng thêm ít nhất một nguyên liệu!');
+      toast.warning('Vui lòng thêm ít nhất một nguyên liệu!');
       return;
     }
     
-    // Chuẩn bị dữ liệu
+    // Validate instructions
+    const validInstructions = formData.instructions.filter(inst => inst.trim());
+    
+    if (validInstructions.length === 0) {
+      toast.warning('Vui lòng thêm ít nhất một bước hướng dẫn!');
+      return;
+    }
+    
+    // Chuẩn bị dữ liệu - Join instructions thành string với số thứ tự
+    const instructionsText = validInstructions.map((step, index) => `Bước ${index + 1}: ${step}`).join('\n\n');
+    
     const submitData = {
       name: formData.name,
       description: formData.description,
-      instructions: formData.instructions,
+      instructions: instructionsText,
       imageUrl: formData.imageUrl,
       video: formData.video,
       category: formData.category,
@@ -166,7 +247,7 @@ const ManageRecipes = () => {
     };
     
     try {
-      const token = localStorage.getItem('token');
+      const token = SecureStorage.getToken();
       const config = {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -178,17 +259,17 @@ const ManageRecipes = () => {
         // Cập nhật công thức
         const response = await axios.put(getApiUrl(`/api/recipes/${editingRecipe._id}`), submitData, config);
         if (response.data.success) {
-          alert("Cập nhật công thức thành công!");
+          toast.success('Cập nhật công thức thành công!');
         } else {
-          alert(response.data.message || "Có lỗi xảy ra khi cập nhật");
+          toast.error(response.data.message || 'Có lỗi xảy ra khi cập nhật');
         }
       } else {
         // Thêm công thức mới
         const response = await axios.post(getApiUrl('/api/recipes'), submitData, config);
         if (response.data.success) {
-          alert("Thêm công thức thành công!");
+          toast.success('Thêm công thức thành công!');
         } else {
-          alert(response.data.message || "Có lỗi xảy ra khi thêm công thức");
+          toast.error(response.data.message || 'Có lỗi xảy ra khi thêm công thức');
         }
       }
       fetchRecipes(); // load lại danh sách
@@ -196,9 +277,10 @@ const ManageRecipes = () => {
     } catch (err) {
       console.error("Lỗi xử lý công thức:", err.response?.data || err.message);
       if (err.response?.status === 401) {
-        alert("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+        toast.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+        setTimeout(() => window.location.href = '/login', 2000);
       } else {
-        alert(err.response?.data?.message || "Không thể xử lý công thức. Kiểm tra console để biết chi tiết.");
+        toast.error(err.response?.data?.message || 'Không thể xử lý công thức. Vui lòng thử lại.');
       }
     }
   };
@@ -206,24 +288,37 @@ const ManageRecipes = () => {
   const handleEdit = (recipe) => {
     setEditingRecipe(recipe);
     
+    // Parse instructions từ string thành array
+    let instructionsArray = [''];
+    if (recipe.instructions) {
+      // Tách theo "Bước X:" hoặc newline
+      const steps = recipe.instructions
+        .split(/Bước \d+:|\n\n/)
+        .map(step => step.trim())
+        .filter(step => step.length > 0);
+      instructionsArray = steps.length > 0 ? steps : [''];
+    }
+    
     setFormData({
       name: recipe.name || '',
       description: recipe.description || '',
       ingredients: recipe.ingredients && recipe.ingredients.length > 0 ? recipe.ingredients : [''],
-      instructions: recipe.instructions || '',
+      instructions: instructionsArray,
       imageUrl: recipe.imageUrl || '',
       video: recipe.video || '',
       category: recipe.category || '',
       difficulty: recipe.difficulty || '',
       cookingTime: recipe.cookingTime || ''
     });
+    // Set image preview if editing
+    setImagePreview(recipe.imageUrl || '');
     setShowForm(true);
   };
 
   const handleDelete = async (recipeId) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa công thức này?')) {
       try {
-        const token = localStorage.getItem('token');
+        const token = SecureStorage.getToken();
         const config = {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -232,17 +327,18 @@ const ManageRecipes = () => {
         
         const response = await axios.delete(getApiUrl(`/api/recipes/${recipeId}`), config);
         if (response.data.success) {
-          alert("Xóa công thức thành công!");
+          toast.success('Xóa công thức thành công!');
           fetchRecipes();
         } else {
-          alert(response.data.message || "Có lỗi xảy ra khi xóa");
+          toast.error(response.data.message || 'Có lỗi xảy ra khi xóa');
         }
       } catch (err) {
         console.error("Lỗi xóa công thức:", err.response?.data || err.message);
         if (err.response?.status === 401) {
-          alert("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+          toast.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+          setTimeout(() => window.location.href = '/login', 2000);
         } else {
-          alert(err.response?.data?.message || "Không thể xóa công thức.");
+          toast.error(err.response?.data?.message || 'Không thể xóa công thức.');
         }
       }
     }
@@ -255,13 +351,15 @@ const ManageRecipes = () => {
       name: '',
       description: '',
       ingredients: [''],
-      instructions: '',
+      instructions: [''],
       imageUrl: '',
       video: '',
       category: '',
       difficulty: '',
       cookingTime: ''
     });
+    setImagePreview('');
+    setIsUploadingImage(false);
   };
 
   // Badge hiển thị loại món - màu pastel nhẹ nhàng
@@ -516,66 +614,114 @@ const ManageRecipes = () => {
                   />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Loại món</label>
-                    <select
-                      name="category"
-                      value={formData.category}
-                      onChange={handleChange}
-                      required
-                      className="w-full border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 p-3 rounded-lg outline-none transition"
-                    >
-                    <option value="">Chọn loại món</option>
-                    <option value="monchinh">Món Chính</option>
-                    <option value="monphu">Món Phụ</option>
-                    <option value="trangmieng">Tráng Miệng</option>
-                    <option value="anvat">Món Ăn Vặt</option>
-                    <option value="douong">Đồ Uống</option>
-                    </select>
-                  </div>
+                  <Select
+                    label="Loại món"
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    options={[
+                      { value: '', label: 'Chọn loại món' },
+                      { value: 'monchinh', label: 'Món Chính' },
+                      { value: 'monphu', label: 'Món Phụ' },
+                      { value: 'trangmieng', label: 'Tráng Miệng' },
+                      { value: 'anvat', label: 'Món Ăn Vặt' },
+                      { value: 'douong', label: 'Đồ Uống' }
+                    ]}
+                    required
+                  />
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Độ khó</label>
-                    <select
-                      name="difficulty"
-                      value={formData.difficulty}
-                      onChange={handleChange}
-                      required
-                      className="w-full border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 p-3 rounded-lg outline-none transition"
-                    >
-                      <option value="">Chọn độ khó</option>
-                      <option value="easy">Dễ</option>
-                      <option value="medium">Trung bình</option>
-                      <option value="hard">Khó</option>
-                    </select>
-                  </div>
+                  <Select
+                    label="Độ khó"
+                    name="difficulty"
+                    value={formData.difficulty}
+                    onChange={handleChange}
+                    options={[
+                      { value: '', label: 'Chọn độ khó' },
+                      { value: 'easy', label: 'Dễ' },
+                      { value: 'medium', label: 'Trung bình' },
+                      { value: 'hard', label: 'Khó' }
+                    ]}
+                    required
+                  />
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Thời gian nấu</label>
-                    <input
-                      type="text"
-                      name="cookingTime"
-                      value={formData.cookingTime}
-                      onChange={handleChange}
-                      placeholder="30 phút hoặc 1.5 giờ"
-                      required
-                      className="w-full border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 p-3 rounded-lg outline-none transition"
-                    />
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Thời gian nấu</label>
+                  <input
+                    type="text"
+                    name="cookingTime"
+                    value={formData.cookingTime}
+                    onChange={handleChange}
+                    placeholder="30 phút hoặc 1.5 giờ"
+                    required
+                    className="w-full border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 p-3 rounded-lg outline-none transition"
+                  />
+                </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Hình ảnh</label>
-                    <input
-                      type="text"
-                      name="imageUrl"
-                      value={formData.imageUrl}
-                      onChange={handleChange}
-                      placeholder="URL hình ảnh"
-                      required
-                      className="w-full border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 p-3 rounded-lg outline-none transition"
-                    />
-                  </div>
+                {/* Image Upload Section */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Hình ảnh món ăn *</label>
+                  
+                  {imagePreview ? (
+                    <div className="space-y-3">
+                      <div className="relative inline-block">
+                        <img
+                          src={imagePreview}
+                          alt="Preview"
+                          className="w-full max-w-md h-48 object-cover rounded-lg border-2 border-gray-300"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleRemoveImage}
+                          className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-colors shadow-lg"
+                          title="Xóa ảnh"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => document.getElementById('imageUpload').click()}
+                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                      >
+                        Thay đổi ảnh
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-500 transition-colors">
+                      <input
+                        id="imageUpload"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                      />
+                      <label
+                        htmlFor="imageUpload"
+                        className="cursor-pointer flex flex-col items-center space-y-2"
+                      >
+                        {isUploadingImage ? (
+                          <div className="flex flex-col items-center">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                            <p className="text-sm text-gray-600 mt-2">Đang tải ảnh...</p>
+                          </div>
+                        ) : (
+                          <>
+                            <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <div className="text-sm text-gray-600">
+                              <span className="font-semibold text-blue-600 hover:text-blue-700">Nhấn để chọn ảnh</span>
+                              <span> hoặc kéo thả ảnh vào đây</span>
+                            </div>
+                            <p className="text-xs text-gray-500">PNG, JPG, GIF tối đa 2MB</p>
+                          </>
+                        )}
+                      </label>
+                    </div>
+                  )}
+                  <input type="hidden" name="imageUrl" value={formData.imageUrl} required />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Video hướng dẫn</label>
@@ -636,17 +782,44 @@ const ManageRecipes = () => {
                     ))}
                   </div>
                 </div>
+                {/* Hướng dẫn nấu - Form mới với nút thêm bước */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Hướng dẫn nấu</label>
-                  <textarea
-                    name="instructions"
-                    value={formData.instructions}
-                    onChange={handleChange}
-                    placeholder="Các bước thực hiện chi tiết"
-                    required
-                    rows={4}
-                    className="w-full border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 p-3 rounded-lg outline-none transition resize-none"
-                  />
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="block text-sm font-medium text-gray-700">Hướng dẫn nấu</label>
+                    <button
+                      type="button"
+                      onClick={addInstruction}
+                      className="px-3 py-1 bg-orange-600 text-white text-sm rounded-lg hover:bg-orange-700 transition-colors"
+                    >
+                      + Thêm bước
+                    </button>
+                  </div>
+                  
+                  <div className="space-y-3 max-h-80 overflow-y-auto">
+                    {formData.instructions.map((instruction, index) => (
+                      <div key={index} className="flex gap-2 items-start">
+                        <div className="flex-shrink-0 w-8 h-8 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center font-semibold text-sm mt-2">
+                          {index + 1}
+                        </div>
+                        <textarea
+                          placeholder={`Ví dụ: Rửa sạch thịt bò, cắt miếng vừa ăn...`}
+                          value={instruction}
+                          onChange={(e) => handleInstructionChange(index, e.target.value)}
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none resize-none"
+                          rows={3}
+                          required
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeInstruction(index)}
+                          className="px-3 py-2 text-red-600 hover:text-red-800 font-bold text-lg flex-shrink-0"
+                          disabled={formData.instructions.length === 1}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="flex justify-end gap-3 pt-4 border-t">

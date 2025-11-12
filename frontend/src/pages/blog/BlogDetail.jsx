@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import { toast } from 'react-toastify';
+import { getApiUrl } from '../../config/api.js';
+import SecureStorage from '../../utils/secureStorage';
 import ChefHatIcon from '../../assets/chef-hat.svg';
 import LightbulbIcon from '../../assets/lightbulb-filament.svg';
 import ChatDotsIcon from '../../assets/chat-circle-dots.svg';
@@ -11,7 +14,6 @@ import SmileyIcon from '../../assets/smiley.svg';
 import EyeIcon from '../../assets/eye.svg';
 import ClockIcon from '../../assets/clock.svg';
 import HeartIcon from '../../assets/heart.svg';
-import { getApiUrl } from '../../config/api.js';
 import '../../styles/blog-detail.css';
 
 const BlogDetail = () => {
@@ -93,17 +95,17 @@ const BlogDetail = () => {
 
   const handleLike = async () => {
     if (!user) {
-      alert('Vui lòng đăng nhập để thích bài viết');
+      toast.warning('Vui lòng đăng nhập để thích bài viết');
       return;
     }
 
     if (!id || id === 'undefined' || id === 'invalid') {
-      alert('ID bài viết không hợp lệ');
+      toast.error('ID bài viết không hợp lệ');
       return;
     }
 
     try {
-      const token = localStorage.getItem('token');
+      const token = SecureStorage.getToken();
       const response = await axios.post(
         getApiUrl(`/api/blog/${id}/like`),
         {},
@@ -120,7 +122,7 @@ const BlogDetail = () => {
       }
     } catch (error) {
       console.error('Error liking blog:', error);
-      alert('Có lỗi xảy ra khi thích bài viết');
+      toast.error('Có lỗi xảy ra khi thích bài viết');
     }
   };
 
@@ -128,23 +130,23 @@ const BlogDetail = () => {
     e.preventDefault();
     
     if (!user) {
-      alert('Vui lòng đăng nhập để bình luận');
+      toast.warning('Vui lòng đăng nhập để bình luận');
       return;
     }
 
     if (!commentContent.trim()) {
-      alert('Vui lòng nhập nội dung bình luận');
+      toast.warning('Vui lòng nhập nội dung bình luận');
       return;
     }
 
     if (!id || id === 'undefined' || id === 'invalid') {
-      alert('ID bài viết không hợp lệ');
+      toast.error('ID bài viết không hợp lệ');
       return;
     }
 
     try {
       setSubmittingComment(true);
-      const token = localStorage.getItem('token');
+      const token = SecureStorage.getToken();
       const response = await axios.post(
         getApiUrl(`/api/blog/${id}/comment`),
         { content: commentContent.trim() },
@@ -159,11 +161,11 @@ const BlogDetail = () => {
         // Refresh blog to get updated comments
         await fetchBlogDetail();
         setCommentContent('');
-        alert('Bình luận thành công!');
+        toast.success('Bình luận thành công!');
       }
     } catch (error) {
       console.error('Error commenting:', error);
-      alert('Có lỗi xảy ra khi bình luận: ' + (error.response?.data?.message || error.message));
+      toast.error('Có lỗi xảy ra khi bình luận: ' + (error.response?.data?.message || error.message));
     } finally {
       setSubmittingComment(false);
     }

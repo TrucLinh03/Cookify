@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import ChatWindow from './ChatWindow';
+import SecureStorage from '../../utils/secureStorage';
 import chefHatIcon from '../../assets/chef-hat.svg';
 
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [userRole, setUserRole] = useState(null);
   const location = useLocation();
-  const [position, setPosition] = useState({ edge: 'bottom', offset: 16 });
+  // Default: right side, 15% from bottom
+  const [position, setPosition] = useState({ edge: 'right', offset: null, bottomPercent: 5 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
   // Check user role on component mount
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
+    const token = SecureStorage.getToken();
+    if (token && typeof token === 'string') {
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
         setUserRole(payload.role);
@@ -32,14 +34,14 @@ const ChatBot = () => {
   };
 
   const handleMouseDown = (e) => {
-    if (e.target.closest('button')) {
-      setIsDragging(true);
-      const rect = e.currentTarget.getBoundingClientRect();
-      setDragStart({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
-      });
-    }
+    // If the actual click is on the button, do NOT start dragging
+    if (e.target.closest('button')) return;
+    setIsDragging(true);
+    const rect = e.currentTarget.getBoundingClientRect();
+    setDragStart({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    });
   };
 
   const handleMouseMove = (e) => {
@@ -102,19 +104,30 @@ const ChatBot = () => {
     const gap = 16; // Khoảng cách giữa nút và cửa sổ
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
+    const bottomByPercent = position.bottomPercent != null ? `${position.bottomPercent}vh` : null;
+    const isMobile = viewportWidth <= 640;
     
+    // Mobile: pin to right with margin and CLEAR the floating button area
+    if (isMobile) {
+      const clearPx = 80; // ~64 button + 16 gap
+      return {
+        right: '12px',
+        bottom: bottomByPercent ? `calc(${bottomByPercent} + ${clearPx}px)` : `${12 + clearPx}px`
+      };
+    }
+
     switch (position.edge) {
       case 'left':
         // Nút ở bên trái -> cửa sổ hiển thị bên phải nút
         return {
           left: `${buttonSize + gap + 8}px`,
-          bottom: `${Math.max(16, viewportHeight - position.offset - chatWindowHeight)}px`
+          bottom: `${Math.max(16, viewportHeight - (position.offset ?? 0) - chatWindowHeight)}px`
         };
       case 'right':
         // Nút ở bên phải -> cửa sổ hiển thị bên trái nút
         return {
           right: `${buttonSize + gap + 8}px`,
-          bottom: `${Math.max(16, viewportHeight - position.offset - chatWindowHeight)}px`
+          bottom: bottomByPercent || `${Math.max(16, viewportHeight - (position.offset ?? 0) - chatWindowHeight)}px`
         };
       case 'top':
         // Nút ở trên -> cửa sổ hiển thị bên dưới nút
@@ -128,12 +141,12 @@ const ChatBot = () => {
         const leftPosBottom = Math.min(position.offset, viewportWidth - chatWindowWidth - 16);
         return {
           left: `${Math.max(16, leftPosBottom)}px`,
-          bottom: `${buttonSize + gap + 8}px`
+          bottom: bottomByPercent || `${buttonSize + gap + 8}px`
         };
       default:
         return {
           right: `${buttonSize + gap + 8}px`,
-          bottom: '16px'
+          bottom: bottomByPercent || '16px'
         };
     }
   };
@@ -162,10 +175,18 @@ const ChatBot = () => {
         <div 
           className={`fixed z-50 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
           style={{
-            ...(position.edge === 'left' && { left: '16px', top: `${position.offset}px` }),
-            ...(position.edge === 'right' && { right: '16px', top: `${position.offset}px` }),
-            ...(position.edge === 'top' && { top: '16px', left: `${position.offset}px` }),
-            ...(position.edge === 'bottom' && { bottom: '16px', right: '16px' })
+            ...(position.edge === 'left' && { left: '16px', top: `${position.offset ?? 16}px` }),
+            ...(position.edge === 'right' && (
+              position.bottomPercent != null
+                ? { right: '16px', bottom: `${position.bottomPercent}vh` }
+                : { right: '16px', top: `${position.offset ?? 16}px` }
+            )),
+            ...(position.edge === 'top' && { top: '16px', left: `${position.offset ?? 16}px` }),
+            ...(position.edge === 'bottom' && (
+              position.bottomPercent != null
+                ? { bottom: `${position.bottomPercent}vh`, right: '16px' }
+                : { bottom: '16px', right: '16px' }
+            ))
           }}
           onMouseDown={handleMouseDown}
         >

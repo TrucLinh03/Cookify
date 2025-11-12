@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useFavoritesContext } from '../contexts/FavoritesContext';
 import favoritesService from '../services/favoritesService.js';
+import SecureStorage from '../utils/secureStorage';
 
 export const useFavorites = () => {
   const { user } = useSelector((state) => state.auth);
@@ -17,7 +18,7 @@ export const useFavorites = () => {
       return;
     }
 
-    const token = localStorage.getItem('token');
+    const token = SecureStorage.getToken();
     if (!token) return;
 
     setIsLoading(true);
@@ -41,7 +42,7 @@ export const useFavorites = () => {
   const addToFavorites = useCallback(async (recipeId) => {
     if (!user) return false;
 
-    const token = localStorage.getItem('token');
+    const token = SecureStorage.getToken();
     if (!token) return false;
 
     try {
@@ -65,7 +66,7 @@ export const useFavorites = () => {
   const removeFromFavorites = useCallback(async (recipeId) => {
     if (!user) return false;
 
-    const token = localStorage.getItem('token');
+    const token = SecureStorage.getToken();
     if (!token) return false;
 
     try {
@@ -89,7 +90,7 @@ export const useFavorites = () => {
   const checkIsFavorited = useCallback(async (recipeId) => {
     if (!user || !recipeId) return false;
 
-    const token = localStorage.getItem('token');
+    const token = SecureStorage.getToken();
     if (!token) return false;
 
     try {

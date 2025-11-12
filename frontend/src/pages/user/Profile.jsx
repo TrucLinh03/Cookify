@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { updateUser } from "../../redux/features/auth/authSlice";
 import { getApiUrl } from '../../config/api.js';
+import SecureStorage from '../../utils/secureStorage';
 import EditIcon from '../../assets/pencil.svg';
 
 const Profile = () => {
@@ -37,9 +38,9 @@ const Profile = () => {
   const [blogsLoading, setBlogsLoading] = useState(false);
   const [showBlogList, setShowBlogList] = useState(false);
 
-  // Lấy token từ localStorage
+  // Lấy token từ SecureStorage
   const getAuthToken = () => {
-    const token = localStorage.getItem("token");
+    const token = SecureStorage.getToken();
     return token;
   };
 

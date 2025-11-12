@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AdminLayout from '../../components/layout/AdminLayout';
+import SecureStorage from '../../utils/secureStorage';
 import RecipesIcon from '../../assets/knife.svg';
 import UsersIcon from '../../assets/users-three.svg';
 import FeedbackIcon from '../../assets/chat-circle-dots.svg';
@@ -51,7 +52,7 @@ const AdminDashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = SecureStorage.getToken();
       if (!token) {
         console.error('No auth token found');
         setLoading(false);
@@ -121,7 +122,7 @@ const AdminDashboard = () => {
 
   const fetchRecentActivities = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = SecureStorage.getToken();
       if (!token) {
         setActivitiesLoading(false);
         return;
@@ -130,22 +131,22 @@ const AdminDashboard = () => {
       // Fetch recent data from multiple endpoints
       const [usersResponse, recipesResponse, feedbackResponse, blogsResponse] = await Promise.all([
         // Recent users (last 5)
-        axios.get(getApiUrl('/api/users/admin/all?page=1&limit=5&sortBy=createdAt&sortOrder=desc'), {
+        axios.get(getApiUrl('/api/users/all?page=1&limit=5'), {
           headers: { 'Authorization': `Bearer ${token}` }
         }).catch(() => ({ data: { success: false } })),
         
-        // Recent recipes (last 5) - assuming there's an endpoint
-        axios.get(getApiUrl('/api/recipes?page=1&limit=5&sortBy=createdAt&sortOrder=desc'), {
+        // Recent recipes (last 5)
+        axios.get(getApiUrl('/api/recipes?page=1&limit=5'), {
           headers: { 'Authorization': `Bearer ${token}` }
         }).catch(() => ({ data: { success: false } })),
         
         // Recent feedback (last 5)
-        axios.get(getApiUrl('/api/feedback/admin/all?page=1&limit=5&sortBy=created_at&sortOrder=desc'), {
+        axios.get(getApiUrl('/api/feedback/admin/all?page=1&limit=5'), {
           headers: { 'Authorization': `Bearer ${token}` }
         }).catch(() => ({ data: { success: false } })),
         
         // Recent blogs (last 5)
-        axios.get(getApiUrl('/api/blog/admin/all?page=1&limit=5&sortBy=createdAt&sortOrder=desc'), {
+        axios.get(getApiUrl('/api/blog/admin/all?page=1&limit=5'), {
           headers: { 'Authorization': `Bearer ${token}` }
         }).catch(() => ({ data: { success: false } }))
       ]);

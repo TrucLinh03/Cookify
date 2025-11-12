@@ -3,11 +3,13 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import AdminLayout from '../../components/layout/AdminLayout';
 import DatePicker from '../../components/common/DatePicker';
+import Select from '../../components/common/Select';
 import UsersIcon from '../../assets/users-three.svg';
 import ThumbsUpIcon from '../../assets/thumbs-up.svg';
 import TrashIcon from '../../assets/trash.svg';
 import CrownIcon from '../../assets/chef-hat.svg';
 import { getApiUrl } from '../../config/api.js';
+import SecureStorage from '../../utils/secureStorage';
 
 const ManageUsers = () => {
   const [users, setUsers] = useState([]);
@@ -19,10 +21,12 @@ const ManageUsers = () => {
   const [showModal, setShowModal] = useState(false);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [roleFilter, setRoleFilter] = useState('all');
 
   // Get auth token
   const getAuthToken = () => {
-    return localStorage.getItem("token");
+    return SecureStorage.getToken();
   };
 
   // Axios config with auth
@@ -39,9 +43,7 @@ const ManageUsers = () => {
   const fetchUsers = async (page = 1, search = '') => {
     try {
       setLoading(true);
-      let url = `/api/users/all?page=${page}&limit=10&search=${search}`;
-      if (startDate) url += `&startDate=${startDate}`;
-      if (endDate) url += `&endDate=${endDate}`;
+      let url = `/api/users/all?page=${page}&limit=100&search=${search}`;
       
       const response = await axios.get(
         getApiUrl(url),
@@ -49,7 +51,37 @@ const ManageUsers = () => {
       );
 
       if (response.data.success) {
-        setUsers(response.data.data.users);
+        let filteredUsers = response.data.data.users;
+        
+        // Client-side filtering by status
+        if (statusFilter !== 'all') {
+          filteredUsers = filteredUsers.filter(u => u.status === statusFilter);
+        }
+        
+        // Client-side filtering by role
+        if (roleFilter !== 'all') {
+          filteredUsers = filteredUsers.filter(u => u.role === roleFilter);
+        }
+        
+        // Client-side filtering by date
+        if (startDate || endDate) {
+          filteredUsers = filteredUsers.filter(u => {
+            const userDate = new Date(u.createdAt);
+            const start = startDate ? new Date(startDate) : null;
+            const end = endDate ? new Date(endDate) : null;
+            
+            if (start && end) {
+              return userDate >= start && userDate <= end;
+            } else if (start) {
+              return userDate >= start;
+            } else if (end) {
+              return userDate <= end;
+            }
+            return true;
+          });
+        }
+        
+        setUsers(filteredUsers);
         setPagination(response.data.data.pagination);
       }
     } catch (error) {
@@ -146,11 +178,14 @@ const ManageUsers = () => {
   }, []);
 
   useEffect(() => {
-    if (startDate || endDate) {
-      setCurrentPage(1);
-      fetchUsers(1, searchTerm);
-    }
+    setCurrentPage(1);
+    fetchUsers(1, searchTerm);
   }, [startDate, endDate]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+    fetchUsers(1, searchTerm);
+  }, [statusFilter, roleFilter]);
 
   return (
     <AdminLayout>
@@ -204,7 +239,7 @@ const ManageUsers = () => {
       </div>
 
       {/* Search and Filters */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-6">
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-6 relative">
         <div className="space-y-4">
           {/* Search Bar */}
           <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
@@ -264,56 +299,36 @@ const ManageUsers = () => {
           </div>
           
           {/* Filter Controls */}
-          <div className="flex flex-wrap gap-3">
-            <div className="flex items-center space-x-2">
-              <label className="text-sm font-medium text-gray-700">Trạng thái:</label>
-              <select
-                onChange={(e) => {
-                  const status = e.target.value;
-                  if (status === 'all') {
-                    fetchUsers(1, searchTerm);
-                  } else {
-                    // Filter users by status locally for now
-                    fetchUsers(1, searchTerm);
-                  }
-                }}
-                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-tomato focus:border-tomato bg-white min-w-[120px] appearance-none bg-no-repeat bg-right pr-8"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
-                  backgroundPosition: 'right 0.5rem center',
-                  backgroundSize: '1.5em 1.5em'
-                }}
-              >
-                <option value="all">Tất cả</option>
-                <option value="active">Hoạt động</option>
-                <option value="banned">Bị cấm</option>
-              </select>
-            </div>
+          <div className="flex flex-wrap gap-3 relative z-10">
+            <Select
+              label="Trạng thái"
+              value={statusFilter}
+              onChange={(e) => {
+                setStatusFilter(e.target.value);
+                setCurrentPage(1);
+              }}
+              options={[
+                { value: 'all', label: 'Tất cả' },
+                { value: 'active', label: 'Hoạt động' },
+                { value: 'banned', label: 'Bị cấm' }
+              ]}
+              className="min-w-[120px]"
+            />
 
-            <div className="flex items-center space-x-2">
-              <label className="text-sm font-medium text-gray-700">Vai trò:</label>
-              <select
-                onChange={(e) => {
-                  const role = e.target.value;
-                  if (role === 'all') {
-                    fetchUsers(1, searchTerm);
-                  } else {
-                    // Filter users by role locally for now
-                    fetchUsers(1, searchTerm);
-                  }
-                }}
-                className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-tomato focus:border-tomato bg-white min-w-[120px] appearance-none bg-no-repeat bg-right pr-8"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
-                  backgroundPosition: 'right 0.5rem center',
-                  backgroundSize: '1.5em 1.5em'
-                }}
-              >
-                <option value="all">Tất cả</option>
-                <option value="user">Người dùng</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div>
+            <Select
+              label="Vai trò"
+              value={roleFilter}
+              onChange={(e) => {
+                setRoleFilter(e.target.value);
+                setCurrentPage(1);
+              }}
+              options={[
+                { value: 'all', label: 'Tất cả' },
+                { value: 'user', label: 'Người dùng' },
+                { value: 'admin', label: 'Admin' }
+              ]}
+              className="min-w-[120px]"
+            />
           </div>
         </div>
       </div>

@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { updateUser } from '../../redux/features/auth/authSlice';
+import SecureStorage from '../../utils/secureStorage';
 import UserIcon from '../../assets/users-three.svg';
 import EmailIcon from '../../assets/chat-circle-dots.svg';
 import EditIcon from '../../assets/pencil.svg';
@@ -32,7 +33,7 @@ const EditProfile = () => {
 
   useEffect(() => {
     const fetchUserProfile = async () => {
-      const token = localStorage.getItem('token');
+      const token = SecureStorage.getToken();
       if (!token) {
         navigate('/login');
         return;
@@ -61,7 +62,7 @@ const EditProfile = () => {
       } catch (err) {
         console.error('Error fetching profile:', err);
         if (err.response?.status === 401) {
-          localStorage.removeItem('token');
+          SecureStorage.clearAll();
           navigate('/login');
         } else {
           toast.error('Không thể tải thông tin profile');
@@ -175,7 +176,7 @@ const EditProfile = () => {
     setSaving(true);
 
     try {
-      const token = localStorage.getItem('token');
+      const token = SecureStorage.getToken();
       
       // Prepare update data
       const updateData = {
