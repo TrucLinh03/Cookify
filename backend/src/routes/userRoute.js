@@ -35,8 +35,11 @@ router.get('/profile', verifyToken, async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error getting profile:', error);
-        res.status(500).json({ message: 'Error retrieving profile' });
+        res.status(500).json({ 
+            success: false,
+            message: 'Error retrieving profile',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
     }
 });
 
@@ -63,8 +66,11 @@ router.get('/profile/:userId', verifyToken, async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error getting user profile:', error);
-        res.status(500).json({ message: 'Error retrieving user profile' });
+        res.status(500).json({ 
+            success: false,
+            message: 'Error retrieving user profile',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
     }
 });
 
@@ -120,10 +126,10 @@ router.get('/all', verifyToken, async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error getting all users:', error);
         res.status(500).json({ 
             success: false,
-            message: 'Error retrieving users' 
+            message: 'Error retrieving users',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
 });
@@ -187,10 +193,10 @@ router.patch('/manage/:id', verifyToken, async (req, res) => {
             data: { user }
         });
     } catch (error) {
-        console.error('Error updating user:', error);
         res.status(500).json({ 
             success: false,
-            message: 'Error updating user' 
+            message: 'Error updating user',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
 });
@@ -231,71 +237,15 @@ router.delete('/manage/:id', verifyToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Delete user error:', error);
         res.status(500).json({
             success: false,
             message: 'Server error',
-            error: error.message
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
 });
 
-router.get('/stats', verifyToken, async (req, res) => {
-    try {
-        // Check if user is admin
-        if (req.user.role !== 'admin') {
-            return res.status(403).json({ 
-                success: false,
-                message: 'Access denied. Admin only.' 
-            });
-        }
-
-        // Get user count
-        const totalUsers = await User.countDocuments();
-        const activeUsers = await User.countDocuments({ status: 'active' });
-        const bannedUsers = await User.countDocuments({ status: 'banned' });
-
-        // Get recipe count
-        let totalRecipes = 0;
-        try {
-            const Recipe = require('../model/recipeModel');
-            totalRecipes = await Recipe.countDocuments();
-        } catch (error) {
-            // Recipe model error - continue with default count
-        }
-
-        // Mock feedback count (can be updated when feedback system is implemented)
-        const totalFeedbacks = 0;
-
-        const stats = {
-            users: {
-                total: totalUsers,
-                active: activeUsers,
-                banned: bannedUsers
-            },
-            recipes: {
-                total: totalRecipes
-            },
-            feedbacks: {
-                total: totalFeedbacks
-            }
-        };
-
-        res.json({
-            success: true,
-            message: 'Statistics retrieved successfully',
-            data: stats
-        });
-
-    } catch (error) {
-        console.error('Get stats error:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Server error',
-            error: error.message
-        });
-    }
-});
+// Removed duplicate - stats route is defined below with verifyAdmin middleware
 
 router.patch('/edit-profile', verifyToken, async (req, res) => {
     try {
@@ -388,8 +338,6 @@ router.patch('/edit-profile', verifyToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error updating user profile:", error);
-        console.error("Error stack:", error.stack);
         
         // Handle specific MongoDB errors
         if (error.name === 'ValidationError') {
@@ -442,10 +390,10 @@ router.get('/favourites', verifyToken, async (req, res) => {
             totalFavorites: favourites.length
         });
     } catch (error) {
-        console.error('Error getting favourites:', error);
         res.status(500).json({ 
             success: false,
-            message: 'Không thể tải danh sách yêu thích' 
+            message: 'Không thể tải danh sách yêu thích',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
 });
@@ -493,10 +441,10 @@ router.post('/favourites/:recipeId', verifyToken, async (req, res) => {
             message: 'Recipe added to favourites successfully'
         });
     } catch (error) {
-        console.error('Error adding to favourites:', error);
         res.status(500).json({ 
             success: false,
-            message: 'Không thể thêm vào danh sách yêu thích' 
+            message: 'Không thể thêm vào danh sách yêu thích',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
 });
@@ -531,10 +479,10 @@ router.delete('/favourites/:recipeId', verifyToken, async (req, res) => {
             message: 'Recipe removed from favourites successfully'
         });
     } catch (error) {
-        console.error('Error removing from favourites:', error);
         res.status(500).json({ 
             success: false,
-            message: 'Không thể bỏ yêu thích' 
+            message: 'Không thể bỏ yêu thích',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
 });
@@ -581,10 +529,10 @@ router.get('/test-db', verifyToken, verifyAdmin, async (req, res) => {
     });
     
   } catch (error) {
-    console.error('Database test error:', error);
     res.status(500).json({
       success: false,
-      message: 'Database test failed: ' + error.message
+      message: 'Database test failed',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -637,10 +585,10 @@ router.get('/stats', verifyToken, verifyAdmin, async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Lỗi khi lấy thống kê:', error);
     res.status(500).json({
       success: false,
-      message: 'Lỗi server: ' + error.message
+      message: 'Lỗi server',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -684,10 +632,10 @@ router.get('/all', verifyToken, verifyAdmin, async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Lỗi khi lấy tất cả users:', error);
     res.status(500).json({
       success: false,
-      message: 'Lỗi server: ' + error.message
+      message: 'Lỗi server',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -748,10 +696,10 @@ router.patch('/manage/:id', verifyToken, verifyAdmin, async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Lỗi khi cập nhật user:', error);
     res.status(500).json({
       success: false,
-      message: 'Lỗi server: ' + error.message
+      message: 'Lỗi server',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -784,10 +732,10 @@ router.delete('/manage/:id', verifyToken, verifyAdmin, async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Lỗi khi xóa user:', error);
     res.status(500).json({
       success: false,
-      message: 'Lỗi server: ' + error.message
+      message: 'Lỗi server',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });

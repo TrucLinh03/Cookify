@@ -17,12 +17,14 @@ const blogRoute = require('./src/routes/blogRoutes.js');
 const viewHistoryRoute = require('./src/routes/viewHistoryRoutes.js');
 const app = express();
 
-// Request logging middleware
-app.use((req, res, next) => {
-  const timestamp = new Date().toISOString();
-  console.log(`${timestamp} - ${req.method} ${req.url}`);
-  next();
-});
+// Request logging middleware (only in development)
+if (process.env.NODE_ENV === 'development') {
+  app.use((req, res, next) => {
+    const timestamp = new Date().toISOString();
+    console.log(`${timestamp} - ${req.method} ${req.url}`);
+    next();
+  });
+}
 
 // Middleware
 app.use(express.json({ limit: '10mb' })); // Increase JSON payload limit for base64 images
@@ -51,7 +53,9 @@ app.use(cors({
     }
     
     // Block other origins
-    console.warn(`CORS blocked request from origin: ${origin}`);
+    if (process.env.NODE_ENV === 'development') {
+      console.warn(`CORS blocked request from origin: ${origin}`);
+    }
     callback(new Error('CORS blocked: This origin is not allowed'));
   },
   credentials: true,

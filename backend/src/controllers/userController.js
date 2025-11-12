@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET_KEY;
 
 if (!JWT_SECRET) {
-  console.error('JWT_SECRET_KEY not found in environment variables');
+  throw new Error('JWT_SECRET_KEY not found in environment variables');
 }
 
 // Đăng ký tài khoản mới
@@ -91,8 +91,11 @@ const loginUser = async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("Login error:", err);
-    res.status(500).json({ message: "Server error during login" });
+    res.status(500).json({ 
+      success: false,
+      message: "Server error during login",
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
   }
 };
 

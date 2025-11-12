@@ -63,10 +63,61 @@ const getPopularRecipes = async (req, res) => {
           createdAt: "$recipe.createdAt",
           avgRating: { $round: ["$avgRating", 1] },
           totalRatings: 1,
+          // ✅ OPTIMIZED: Thêm Time Decay Factor
+          daysOld: {
+            $divide: [
+              { $subtract: [new Date(), "$recipe.createdAt"] },
+              1000 * 60 * 60 * 24 // Convert to days
+            ]
+          },
+          timeDecayFactor: {
+            $cond: {
+              if: { $lte: [{ $divide: [{ $subtract: [new Date(), "$recipe.createdAt"] }, 1000 * 60 * 60 * 24] }, 7] },
+              then: 1.0, // < 7 days: full boost
+              else: {
+                $cond: {
+                  if: { $lte: [{ $divide: [{ $subtract: [new Date(), "$recipe.createdAt"] }, 1000 * 60 * 60 * 24] }, 30] },
+                  then: 0.8, // < 30 days: 80%
+                  else: {
+                    $cond: {
+                      if: { $lte: [{ $divide: [{ $subtract: [new Date(), "$recipe.createdAt"] }, 1000 * 60 * 60 * 24] }, 90] },
+                      then: 0.5, // < 90 days: 50%
+                      else: 0.3 // > 90 days: 30%
+                    }
+                  }
+                }
+              }
+            }
+          },
           popularityScore: {
             $add: [
-              { $multiply: ["$avgRating", 0.7] },
-              { $multiply: [{ $ln: "$totalRatings" }, 0.3] }
+              { $multiply: ["$avgRating", 0.5] }, // Rating: 50% (giảm từ 70%)
+              { $multiply: [{ $ln: "$totalRatings" }, 0.2] }, // Volume: 20% (giảm từ 30%)
+              { 
+                $multiply: [
+                  // Time Decay: 30% (mới)
+                  {
+                    $cond: {
+                      if: { $lte: [{ $divide: [{ $subtract: [new Date(), "$recipe.createdAt"] }, 1000 * 60 * 60 * 24] }, 7] },
+                      then: 1.5, // Boost món mới
+                      else: {
+                        $cond: {
+                          if: { $lte: [{ $divide: [{ $subtract: [new Date(), "$recipe.createdAt"] }, 1000 * 60 * 60 * 24] }, 30] },
+                          then: 1.2,
+                          else: {
+                            $cond: {
+                              if: { $lte: [{ $divide: [{ $subtract: [new Date(), "$recipe.createdAt"] }, 1000 * 60 * 60 * 24] }, 90] },
+                              then: 0.8,
+                              else: 0.5
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  0.3
+                ]
+              }
             ]
           }
         }
@@ -223,6 +274,7 @@ const getMostFavoritedRecipes = async (req, res) => {
 /**
  * 3. Gợi ý theo thời gian (Latest Recipes)
  * Sắp xếp theo thời gian tạo mới nhất
+ * OPTIMIZED: Fixed N+1 query problem - Batch queries
  */
 const getLatestRecipes = async (req, res) => {
   try {
@@ -234,33 +286,60 @@ const getLatestRecipes = async (req, res) => {
       .limit(limit)
       .lean();
 
-    // Thêm thông tin rating và favorites cho mỗi recipe
-    const recipesWithStats = await Promise.all(
-      latestRecipes.map(async (recipe) => {
-        // Lấy thống kê rating
-        const ratingStats = await Feedback.aggregate([
-          { $match: { recipe_id: recipe._id } },
-          {
-            $group: {
-              _id: null,
-              avgRating: { $avg: "$rating" },
-              totalRatings: { $sum: 1 }
-            }
+    if (latestRecipes.length === 0) {
+      return res.json({
+        success: true,
+        data: [],
+        message: 'Không tìm thấy công thức nào',
+        metadata: { type: 'latest', algorithm: 'creation_time_based', limit: limit }
+      });
+    }
+
+    // ✅ OPTIMIZED: Batch queries thay vì N+1 queries
+    const recipeIds = latestRecipes.map(r => r._id);
+
+    // Parallel batch queries
+    const [ratingStats, favoriteCounts] = await Promise.all([
+      // Batch query cho ratings
+      Feedback.aggregate([
+        { $match: { recipe_id: { $in: recipeIds } } },
+        {
+          $group: {
+            _id: "$recipe_id",
+            avgRating: { $avg: "$rating" },
+            totalRatings: { $sum: 1 }
           }
-        ]);
+        }
+      ]),
+      // Batch query cho favorites
+      Favorite.aggregate([
+        { $match: { recipe_id: { $in: recipeIds } } },
+        {
+          $group: {
+            _id: "$recipe_id",
+            totalLikes: { $sum: 1 }
+          }
+        }
+      ])
+    ]);
 
-        // Lấy số lượt yêu thích
-        const favoriteCount = await Favorite.countDocuments({ recipe_id: recipe._id });
+    // Map results to recipes
+    const ratingMap = new Map(ratingStats.map(r => [r._id.toString(), r]));
+    const favoriteMap = new Map(favoriteCounts.map(f => [f._id.toString(), f]));
 
-        return {
-          ...recipe,
-          avgRating: ratingStats.length > 0 ? Math.round(ratingStats[0].avgRating * 10) / 10 : 0,
-          totalRatings: ratingStats.length > 0 ? ratingStats[0].totalRatings : 0,
-          totalLikes: favoriteCount,
-          daysAgo: Math.floor((new Date() - new Date(recipe.createdAt)) / (1000 * 60 * 60 * 24))
-        };
-      })
-    );
+    const recipesWithStats = latestRecipes.map(recipe => {
+      const recipeIdStr = recipe._id.toString();
+      const rating = ratingMap.get(recipeIdStr);
+      const favorite = favoriteMap.get(recipeIdStr);
+
+      return {
+        ...recipe,
+        avgRating: rating ? Math.round(rating.avgRating * 10) / 10 : 0,
+        totalRatings: rating ? rating.totalRatings : 0,
+        totalLikes: favorite ? favorite.totalLikes : 0,
+        daysAgo: Math.floor((new Date() - new Date(recipe.createdAt)) / (1000 * 60 * 60 * 24))
+      };
+    });
 
     res.json({
       success: true,
@@ -268,8 +347,12 @@ const getLatestRecipes = async (req, res) => {
       message: `Tìm thấy ${recipesWithStats.length} công thức mới nhất`,
       metadata: {
         type: 'latest',
-        algorithm: 'creation_time_based',
-        limit: limit
+        algorithm: 'creation_time_based_optimized',
+        limit: limit,
+        performance: {
+          queriesUsed: 3, // 1 find + 2 aggregates (instead of 1 + N*2)
+          optimized: true
+        }
       }
     });
 
@@ -319,8 +402,77 @@ const getPersonalizedRecommendations = async (req, res) => {
     // Kiểm tra dữ liệu có đủ để tạo gợi ý không
     const totalUserData = userFavorites.length + userViewHistory.length + userFeedback.length;
     if (totalUserData === 0) {
-      // Nếu user chưa có dữ liệu, trả về popular recipes
-      return getPopularRecipes(req, res);
+      // Nếu user chưa có dữ liệu, trả về popular recipes với message hướng dẫn
+      console.log(`User ${userId} has no data, returning popular recipes as fallback`);
+      
+      // Lấy popular recipes trực tiếp
+      const popularRecipes = await Feedback.aggregate([
+        {
+          $group: {
+            _id: "$recipe_id",
+            avgRating: { $avg: "$rating" },
+            totalRatings: { $sum: 1 }
+          }
+        },
+        {
+          $match: {
+            totalRatings: { $gte: 1 }
+          }
+        },
+        {
+          $lookup: {
+            from: "recipes",
+            localField: "_id",
+            foreignField: "_id",
+            as: "recipe"
+          }
+        },
+        {
+          $unwind: "$recipe"
+        },
+        {
+          $project: {
+            _id: "$recipe._id",
+            name: "$recipe.name",
+            description: "$recipe.description",
+            imageUrl: "$recipe.imageUrl",
+            category: "$recipe.category",
+            difficulty: "$recipe.difficulty",
+            cookingTime: "$recipe.cookingTime",
+            ingredients: "$recipe.ingredients",
+            instructions: "$recipe.instructions",
+            createdAt: "$recipe.createdAt",
+            avgRating: { $round: ["$avgRating", 1] },
+            totalRatings: 1,
+            popularityScore: {
+              $add: [
+                { $multiply: ["$avgRating", 0.7] },
+                { $multiply: [{ $ln: "$totalRatings" }, 0.3] }
+              ]
+            }
+          }
+        },
+        {
+          $sort: { popularityScore: -1 }
+        },
+        {
+          $limit: limit
+        }
+      ]);
+
+      return res.json({
+        success: true,
+        data: popularRecipes,
+        message: 'Bạn chưa có đủ dữ liệu để tạo gợi ý cá nhân hóa. Hãy yêu thích, xem và đánh giá một số công thức để nhận gợi ý phù hợp hơn!',
+        metadata: {
+          type: 'personalized_fallback',
+          algorithm: 'popular_recipes',
+          reason: 'insufficient_user_data',
+          userDataCount: totalUserData,
+          suggestion: 'Hãy tương tác với ít nhất 3-5 công thức (yêu thích, xem, đánh giá) để nhận gợi ý cá nhân hóa tốt hơn',
+          limit: limit
+        }
+      });
     }
 
     // Tính trọng số động dựa trên lượng dữ liệu
@@ -354,15 +506,38 @@ const getPersonalizedRecommendations = async (req, res) => {
       _id: { $in: topRecommendations.map(r => r.recipeId) }
     }).lean();
 
-    // Thêm scores và metadata
+    // Thêm scores và metadata với enhanced reasons
     const finalRecommendations = recommendedRecipes.map(recipe => {
       const scoreData = topRecommendations.find(r => r.recipeId.toString() === recipe._id.toString());
+      const matchPercentage = Math.round(scoreData.finalScore * 100);
+      
+      // Enhanced reasons với thông tin thêm
+      const enhancedReasons = [...(scoreData.reasons || [])];
+      
+      // 1. Add Match Score Badge (nếu > 70%)
+      if (matchPercentage >= 70) {
+        enhancedReasons.unshift(`💯 Phù hợp ${matchPercentage}% với sở thích của bạn`);
+      }
+      
+      // 2. Add Quick Info - Cooking Time
+      const cookingTimeMinutes = parseCookingTime(recipe.cookingTime);
+      if (cookingTimeMinutes > 0 && cookingTimeMinutes <= 30) {
+        enhancedReasons.push(`⚡ Nhanh - Chỉ ${cookingTimeMinutes} phút`);
+      }
+      
+      // 3. Add Rating if high
+      if (recipe.averageRating >= 4.5 && recipe.totalReviews > 0) {
+        enhancedReasons.push(`⭐ ${recipe.averageRating.toFixed(1)}/5 sao (${recipe.totalReviews} đánh giá)`);
+      }
+      
       return {
         ...recipe,
         recommendationScore: Math.round(scoreData.finalScore * 100) / 100,
         contentScore: Math.round(scoreData.contentScore * 100) / 100,
         collaborativeScore: Math.round(scoreData.collaborativeScore * 100) / 100,
-        reasons: scoreData.reasons || []
+        matchPercentage: matchPercentage,
+        matchBadge: matchPercentage >= 85 ? 'perfect' : matchPercentage >= 75 ? 'excellent' : matchPercentage >= 65 ? 'good' : 'fair',
+        reasons: enhancedReasons
       };
     });
 
@@ -444,7 +619,10 @@ const calculateDynamicWeights = (userFavorites, userViewHistory, userFeedback) =
 const calculateEnhancedContentBasedScores = async (userId, userFavorites, userViewHistory, userFeedback) => {
   try {
     // Lấy tất cả recipes (trừ những cái user đã favorite)
-    const favoriteRecipeIds = userFavorites.map(f => f.recipe_id._id);
+    // Filter out null/undefined recipe_id before mapping
+    const favoriteRecipeIds = userFavorites
+      .filter(f => f.recipe_id && f.recipe_id._id)
+      .map(f => f.recipe_id._id);
     const allRecipes = await Recipe.find({
       _id: { $nin: favoriteRecipeIds }
     }).lean();
@@ -457,29 +635,42 @@ const calculateEnhancedContentBasedScores = async (userId, userFavorites, userVi
       let score = 0;
       let reasons = [];
 
-      // 1. Category similarity (25%)
-      if (userPreferences.favoriteCategories[recipe.category]) {
-        const categoryScore = userPreferences.favoriteCategories[recipe.category] * 0.25;
-        score += categoryScore;
-        reasons.push(`Cùng loại món: ${recipe.category}`);
+      // 1. Ingredients similarity (40%) - Ưu tiên cao nhất
+      const ingredientSimilarity = calculateIngredientSimilarity(
+        recipe.ingredients,
+        recipe.category, // Pass current recipe category
+        userPreferences.favoriteIngredients,
+        userFavorites // Pass favorites to find most similar recipe
+      );
+      const ingredientScore = ingredientSimilarity.score * 0.40;
+      score += ingredientScore;
+      
+      // Show similarity with specific favorite recipe (only if truly similar)
+      if (ingredientSimilarity.commonIngredients.length >= 2 && ingredientSimilarity.mostSimilarRecipe) {
+        const commonIngs = ingredientSimilarity.commonIngredients.slice(0, 3).join(', ');
+        reasons.push(`🥘 Tương tự món ${ingredientSimilarity.mostSimilarRecipe} (${commonIngs})`);
+      } else if (ingredientSimilarity.commonIngredients.length > 0) {
+        const commonIngs = ingredientSimilarity.commonIngredients.slice(0, 3).join(', ');
+        reasons.push(`🥘 Có nguyên liệu bạn thích: ${commonIngs}`);
       }
 
-      // 2. Difficulty similarity (15%)
+      // 2. Category similarity (20%)
+      if (userPreferences.favoriteCategories[recipe.category]) {
+        const categoryScore = userPreferences.favoriteCategories[recipe.category] * 0.20;
+        score += categoryScore;
+        const categoryCount = userPreferences.favoriteCategories[recipe.category];
+        if (categoryCount >= 1) {
+          reasons.push(`📂 Bạn đã thích ${Math.round(categoryCount)} món ${recipe.category}`);
+        } else {
+          reasons.push(`📂 Bạn quan tâm đến ${recipe.category}`);
+        }
+      }
+
+      // 3. Difficulty similarity (15%)
       if (userPreferences.favoriteDifficulties[recipe.difficulty]) {
         const difficultyScore = userPreferences.favoriteDifficulties[recipe.difficulty] * 0.15;
         score += difficultyScore;
-        reasons.push(`Độ khó phù hợp: ${recipe.difficulty}`);
-      }
-
-      // 3. Ingredients similarity (35%)
-      const ingredientScore = calculateIngredientSimilarity(
-        recipe.ingredients, 
-        userPreferences.favoriteIngredients
-      ) * 0.35;
-      score += ingredientScore;
-      
-      if (ingredientScore > 0.1) {
-        reasons.push('Nguyên liệu tương tự món bạn yêu thích');
+        reasons.push(`⭐ Độ khó phù hợp với bạn: ${recipe.difficulty}`);
       }
 
       // 4. Cooking time similarity (15%)
@@ -518,7 +709,10 @@ const calculateEnhancedContentBasedScores = async (userId, userFavorites, userVi
 const calculateContentBasedScores = async (userId, userFavorites) => {
   try {
     // Lấy tất cả recipes (trừ những cái user đã favorite)
-    const favoriteRecipeIds = userFavorites.map(f => f.recipe_id._id);
+    // Filter out null/undefined recipe_id before mapping
+    const favoriteRecipeIds = userFavorites
+      .filter(f => f.recipe_id && f.recipe_id._id)
+      .map(f => f.recipe_id._id);
     const allRecipes = await Recipe.find({
       _id: { $nin: favoriteRecipeIds }
     }).lean();
@@ -531,36 +725,42 @@ const calculateContentBasedScores = async (userId, userFavorites) => {
       let score = 0;
       let reasons = [];
 
-      // 1. Category similarity (30%)
+      // 1. Ingredients similarity (45%) - Ưu tiên cao nhất
+      const ingredientSimilarity = calculateIngredientSimilarity(
+        recipe.ingredients,
+        recipe.category, // Pass category
+        userPreferences.favoriteIngredients,
+        userFavorites
+      );
+      const ingredientScore = ingredientSimilarity.score * 0.45;
+      score += ingredientScore;
+      
+      if (ingredientScore > 0.1 && ingredientSimilarity.commonIngredients.length >= 2 && ingredientSimilarity.mostSimilarRecipe) {
+        const commonIngs = ingredientSimilarity.commonIngredients.slice(0, 3).join(', ');
+        reasons.push(`🥘 Tương tự món ${ingredientSimilarity.mostSimilarRecipe} (${commonIngs})`);
+      } else if (ingredientScore > 0.1) {
+        reasons.push('🥘 Có nguyên liệu bạn thích');
+      }
+
+      // 2. Category similarity (20%)
       if (userPreferences.favoriteCategories[recipe.category]) {
-        const categoryScore = userPreferences.favoriteCategories[recipe.category] * 0.3;
+        const categoryScore = userPreferences.favoriteCategories[recipe.category] * 0.20;
         score += categoryScore;
         reasons.push(`Cùng loại món: ${recipe.category}`);
       }
 
-      // 2. Difficulty similarity (20%)
+      // 3. Difficulty similarity (20%)
       if (userPreferences.favoriteDifficulties[recipe.difficulty]) {
-        const difficultyScore = userPreferences.favoriteDifficulties[recipe.difficulty] * 0.2;
+        const difficultyScore = userPreferences.favoriteDifficulties[recipe.difficulty] * 0.20;
         score += difficultyScore;
         reasons.push(`Độ khó phù hợp: ${recipe.difficulty}`);
       }
 
-      // 3. Ingredients similarity (40%)
-      const ingredientScore = calculateIngredientSimilarity(
-        recipe.ingredients, 
-        userPreferences.favoriteIngredients
-      ) * 0.4;
-      score += ingredientScore;
-      
-      if (ingredientScore > 0.1) {
-        reasons.push('Nguyên liệu tương tự món bạn yêu thích');
-      }
-
-      // 4. Cooking time similarity (10%)
+      // 4. Cooking time similarity (15%)
       const timeScore = calculateCookingTimeSimilarity(
         recipe.cookingTime, 
         userPreferences.averageCookingTime
-      ) * 0.1;
+      ) * 0.15;
       score += timeScore;
 
       return {
@@ -584,51 +784,79 @@ const calculateContentBasedScores = async (userId, userFavorites) => {
  */
 const calculateEnhancedCollaborativeScores = async (userId, userFavorites, userFeedback) => {
   try {
-    // Lấy tất cả users khác và favorites + feedback của họ
+    // Lấy tất cả users khác và favorites + feedback của họ (populate user info)
     const [allUserFavorites, allUserFeedback] = await Promise.all([
-      Favorite.find({ user_id: { $ne: userId } }).lean(),
-      Feedback.find({ user_id: { $ne: userId } }).lean()
+      Favorite.find({ user_id: { $ne: userId } }).populate('user_id', 'name username').lean(),
+      Feedback.find({ user_id: { $ne: userId } }).populate('user_id', 'name username').lean()
     ]);
 
-    // Tạo user-recipe matrix với ratings
+    // Tạo user-recipe matrix với ratings và user info
     const userRecipeMatrix = {};
     const userRatingMatrix = {};
+    const userInfoMap = {}; // Store user info
     
     // Thêm favorites (rating = 5)
     allUserFavorites.forEach(fav => {
-      if (!userRecipeMatrix[fav.user_id]) {
-        userRecipeMatrix[fav.user_id] = new Set();
-        userRatingMatrix[fav.user_id] = {};
+      const userIdStr = fav.user_id?._id?.toString() || fav.user_id?.toString();
+      if (!userIdStr) return;
+      
+      if (!userRecipeMatrix[userIdStr]) {
+        userRecipeMatrix[userIdStr] = new Set();
+        userRatingMatrix[userIdStr] = {};
+        // Store user info
+        if (fav.user_id?.name || fav.user_id?.username) {
+          userInfoMap[userIdStr] = {
+            name: fav.user_id.name || fav.user_id.username || `User${userIdStr.slice(-4)}`
+          };
+        }
       }
-      userRecipeMatrix[fav.user_id].add(fav.recipe_id.toString());
-      userRatingMatrix[fav.user_id][fav.recipe_id.toString()] = 5;
+      userRecipeMatrix[userIdStr].add(fav.recipe_id.toString());
+      userRatingMatrix[userIdStr][fav.recipe_id.toString()] = 5;
     });
     
     // Thêm feedback ratings
     allUserFeedback.forEach(feedback => {
-      if (!userRecipeMatrix[feedback.user_id]) {
-        userRecipeMatrix[feedback.user_id] = new Set();
-        userRatingMatrix[feedback.user_id] = {};
+      const userIdStr = feedback.user_id?._id?.toString() || feedback.user_id?.toString();
+      if (!userIdStr) return;
+      
+      if (!userRecipeMatrix[userIdStr]) {
+        userRecipeMatrix[userIdStr] = new Set();
+        userRatingMatrix[userIdStr] = {};
+        // Store user info
+        if (feedback.user_id?.name || feedback.user_id?.username) {
+          userInfoMap[userIdStr] = {
+            name: feedback.user_id.name || feedback.user_id.username || `User${userIdStr.slice(-4)}`
+          };
+        }
       }
-      userRecipeMatrix[feedback.user_id].add(feedback.recipe_id.toString());
-      userRatingMatrix[feedback.user_id][feedback.recipe_id.toString()] = feedback.rating;
+      const recipeIdStr = feedback.recipe_id?.toString ? feedback.recipe_id.toString() : String(feedback.recipe_id);
+      if (recipeIdStr) {
+        userRecipeMatrix[userIdStr].add(recipeIdStr);
+        userRatingMatrix[userIdStr][recipeIdStr] = feedback.rating;
+      }
     });
 
     // Tạo current user profile
     const currentUserRecipes = new Set(
-      userFavorites.map(f => f.recipe_id._id.toString())
+      userFavorites
+        .filter(f => f.recipe_id && f.recipe_id._id)
+        .map(f => f.recipe_id._id.toString())
     );
     const currentUserRatings = {};
     
     // Thêm favorites của current user
     userFavorites.forEach(fav => {
-      currentUserRatings[fav.recipe_id._id.toString()] = 5;
+      if (fav.recipe_id && fav.recipe_id._id) {
+        currentUserRatings[fav.recipe_id._id.toString()] = 5;
+      }
     });
     
     // Thêm feedback của current user
     userFeedback.forEach(feedback => {
-      currentUserRecipes.add(feedback.recipe_id._id.toString());
-      currentUserRatings[feedback.recipe_id._id.toString()] = feedback.rating;
+      if (feedback.recipe_id && feedback.recipe_id._id) {
+        currentUserRecipes.add(feedback.recipe_id._id.toString());
+        currentUserRatings[feedback.recipe_id._id.toString()] = feedback.rating;
+      }
     });
 
     // Tính độ tương đồng với các users khác (sử dụng Pearson correlation)
@@ -654,16 +882,29 @@ const calculateEnhancedCollaborativeScores = async (userId, userFavorites, userF
 
     // Tạo recommendations từ similar users với weighted ratings
     const recipeScores = {};
+    const recipeSimilarUsers = {}; // Track which users recommended each recipe
+    
     userSimilarities.slice(0, 20).forEach(similarUser => {
       similarUser.recipes.forEach(recipeId => {
         if (!currentUserRecipes.has(recipeId)) {
           if (!recipeScores[recipeId]) {
             recipeScores[recipeId] = { totalScore: 0, count: 0 };
+            recipeSimilarUsers[recipeId] = [];
           }
           const rating = similarUser.ratings[recipeId] || 3;
           const weightedScore = similarUser.similarity * (rating / 5); // Normalize rating to 0-1
           recipeScores[recipeId].totalScore += weightedScore;
           recipeScores[recipeId].count += 1;
+          
+          // Track top similar users for this recipe with their names
+          if (recipeSimilarUsers[recipeId].length < 3) {
+            const userName = userInfoMap[similarUser.userId]?.name || `User${similarUser.userId.slice(-4)}`;
+            recipeSimilarUsers[recipeId].push({
+              userId: similarUser.userId,
+              userName: userName,
+              similarity: Math.round(similarUser.similarity * 100)
+            });
+          }
         }
       });
     });
@@ -671,11 +912,51 @@ const calculateEnhancedCollaborativeScores = async (userId, userFavorites, userF
     // Tính average weighted score và normalize
     const maxScore = Math.max(...Object.values(recipeScores).map(s => s.totalScore / s.count));
     const collaborativeScores = Object.entries(recipeScores)
-      .map(([recipeId, scoreData]) => ({
-        recipeId: recipeId,
-        collaborativeScore: maxScore > 0 ? (scoreData.totalScore / scoreData.count) / maxScore : 0,
-        reasons: ['Người dùng có sở thích tương tự đánh giá cao món này']
-      }))
+      .map(([recipeId, scoreData]) => {
+        const similarUsers = recipeSimilarUsers[recipeId] || [];
+        const userCount = scoreData.count;
+        const avgSimilarity = similarUsers.length > 0 
+          ? Math.round(similarUsers.reduce((sum, u) => sum + u.similarity, 0) / similarUsers.length)
+          : 0;
+        
+        // Create persuasive collaborative reason with actual user names
+        let collaborativeReason = '';
+        
+        if (similarUsers.length >= 2) {
+          // Show actual user names
+          const userNames = similarUsers.slice(0, 2).map(u => u.userName).join(', ');
+          const remainingCount = userCount - 2;
+          
+          if (remainingCount > 0) {
+            collaborativeReason = `👥 ${userNames} và ${remainingCount} người khác giống bạn đã thích món này`;
+          } else {
+            collaborativeReason = `👥 ${userNames} cùng gu với bạn đã thích món này`;
+          }
+        } else if (similarUsers.length === 1) {
+          const userName = similarUsers[0].userName;
+          const remainingCount = userCount - 1;
+          
+          if (remainingCount > 0) {
+            collaborativeReason = `👥 ${userName} và ${remainingCount} người khác đã thích món này`;
+          } else {
+            collaborativeReason = `👥 ${userName} cùng gu với bạn đã thích món này`;
+          }
+        } else if (userCount >= 10) {
+          collaborativeReason = `👥 ${userCount} người giống bạn (${avgSimilarity}% tương đồng) đã yêu thích món này`;
+        } else if (userCount >= 5) {
+          collaborativeReason = `👥 ${userCount} người cùng gu với bạn đã thích món này`;
+        } else if (userCount >= 2) {
+          collaborativeReason = `👥 ${userCount} người cùng gu với bạn đã thích món này`;
+        } else {
+          collaborativeReason = `👥 Được người dùng cùng gu yêu thích`;
+        }
+        
+        return {
+          recipeId: recipeId,
+          collaborativeScore: maxScore > 0 ? (scoreData.totalScore / scoreData.count) / maxScore : 0,
+          reasons: [collaborativeReason]
+        };
+      })
       .filter(item => item.collaborativeScore > 0.1);
 
     return collaborativeScores;
@@ -708,7 +989,9 @@ const calculateCollaborativeScores = async (userId, userFavorites) => {
 
     // Tạo set recipes user hiện tại đã thích
     const currentUserRecipes = new Set(
-      userFavorites.map(f => f.recipe_id._id.toString())
+      userFavorites
+        .filter(f => f.recipe_id && f.recipe_id._id)
+        .map(f => f.recipe_id._id.toString())
     );
 
     // Tính độ tương đồng với các users khác
@@ -789,11 +1072,26 @@ const combineRecommendationScores = (contentScores, collaborativeScores, content
     }
   });
 
-  // Tính final score
-  const finalScores = Array.from(combinedScores.values()).map(item => ({
-    ...item,
-    finalScore: (item.contentScore * contentWeight) + (item.collaborativeScore * collaborativeWeight)
-  }));
+  // Tính final score và sắp xếp reasons theo độ ưu tiên
+  const finalScores = Array.from(combinedScores.values()).map(item => {
+    // Sắp xếp reasons: Nguyên liệu (🥘) > Collaborative (👥) > Category (📂) > Difficulty (⭐)
+    const sortedReasons = item.reasons.sort((a, b) => {
+      const priorityOrder = { '🥘': 1, '👥': 2, '📂': 3, '⭐': 4 };
+      const getPriority = (reason) => {
+        for (const [emoji, priority] of Object.entries(priorityOrder)) {
+          if (reason.startsWith(emoji)) return priority;
+        }
+        return 99; // Other reasons at the end
+      };
+      return getPriority(a) - getPriority(b);
+    });
+
+    return {
+      ...item,
+      reasons: sortedReasons,
+      finalScore: (item.contentScore * contentWeight) + (item.collaborativeScore * collaborativeWeight)
+    };
+  });
 
   return finalScores;
 };
@@ -821,6 +1119,9 @@ const analyzeEnhancedUserPreferences = (userFavorites, userViewHistory, userFeed
   // Phân tích từ favorites (trọng số cao nhất)
   userFavorites.forEach(fav => {
     const recipe = fav.recipe_id;
+    
+    // Skip if recipe is null or undefined
+    if (!recipe) return;
     
     if (recipe.category) {
       preferences.favoriteCategories[recipe.category] = 
@@ -981,20 +1282,176 @@ const analyzeUserPreferences = (userFavorites) => {
   return preferences;
 };
 
-// Tính độ tương đồng ingredients sử dụng Jaccard similarity
-const calculateIngredientSimilarity = (recipeIngredients, userFavoriteIngredients) => {
-  if (!recipeIngredients || !Array.isArray(recipeIngredients)) return 0;
+/**
+ * ✅ OPTIMIZED: Enhanced Ingredient Similarity
+ * - Normalize ingredients (remove quantities, units)
+ * - Category matching (meat, vegetables, spices)
+ * - Synonym support
+ */
+
+// Ingredient categories for better matching
+const INGREDIENT_CATEGORIES = {
+  meat: ['thịt bò', 'thịt heo', 'thịt gà', 'thịt', 'bò', 'heo', 'gà', 'vịt', 'cá', 'tôm', 'mực', 'hải sản'],
+  vegetables: ['cà chua', 'hành', 'tỏi', 'gừng', 'ớt', 'rau', 'củ', 'cải', 'bắp cải', 'su hào', 'cà rốt'],
+  spices: ['muối', 'đường', 'tiêu', 'nước mắm', 'dầu', 'giấm', 'tương', 'gia vị', 'bột', 'hạt nêm'],
+  grains: ['gạo', 'bún', 'phở', 'mì', 'miến', 'bánh', 'bột'],
+  dairy: ['sữa', 'bơ', 'phô mai', 'cheese', 'cream']
+};
+
+// Synonyms for better matching
+const INGREDIENT_SYNONYMS = {
+  'cà chua': ['tomato', 'ca chua'],
+  'hành tây': ['onion', 'hanh tay'],
+  'tỏi': ['garlic', 'toi'],
+  'gừng': ['ginger', 'gung'],
+  'thịt bò': ['beef', 'bo'],
+  'thịt heo': ['pork', 'heo', 'lon'],
+  'thịt gà': ['chicken', 'ga']
+};
+
+// Normalize ingredient (remove quantities and units)
+const normalizeIngredient = (ingredient) => {
+  if (!ingredient) return '';
   
-  const recipeSet = new Set(
-    recipeIngredients.map(ing => ing.toLowerCase().trim())
-  );
+  let normalized = ingredient.toLowerCase().trim();
   
-  const favoriteSet = new Set(Object.keys(userFavoriteIngredients));
+  // Remove common quantities and units
+  normalized = normalized
+    .replace(/\d+\s*(g|kg|ml|l|gram|lít|thìa|muỗng|củ|quả|con|kg|gr)/gi, '')
+    .replace(/\d+/g, '')
+    .trim();
   
-  const intersection = new Set([...recipeSet].filter(x => favoriteSet.has(x)));
-  const union = new Set([...recipeSet, ...favoriteSet]);
+  // Remove extra spaces
+  normalized = normalized.replace(/\s+/g, ' ').trim();
   
-  return union.size > 0 ? intersection.size / union.size : 0;
+  return normalized;
+};
+
+// Get ingredient category
+const getIngredientCategory = (ingredient) => {
+  const normalized = normalizeIngredient(ingredient);
+  
+  for (const [category, keywords] of Object.entries(INGREDIENT_CATEGORIES)) {
+    if (keywords.some(keyword => normalized.includes(keyword))) {
+      return category;
+    }
+  }
+  
+  return 'other';
+};
+
+// Check if ingredients are synonyms
+const areSynonyms = (ing1, ing2) => {
+  for (const [base, synonyms] of Object.entries(INGREDIENT_SYNONYMS)) {
+    if ((ing1.includes(base) || synonyms.some(s => ing1.includes(s))) &&
+        (ing2.includes(base) || synonyms.some(s => ing2.includes(s)))) {
+      return true;
+    }
+  }
+  return false;
+};
+
+// Enhanced ingredient similarity calculation
+const calculateIngredientSimilarity = (recipeIngredients, recipeCategory, userFavoriteIngredients, userFavorites = []) => {
+  if (!recipeIngredients || !Array.isArray(recipeIngredients)) return { score: 0, commonIngredients: [], mostSimilarRecipe: null };
+  if (Object.keys(userFavoriteIngredients).length === 0) return { score: 0, commonIngredients: [], mostSimilarRecipe: null };
+  
+  // Normalize recipe ingredients
+  const normalizedRecipeIngs = recipeIngredients
+    .map(ing => normalizeIngredient(ing))
+    .filter(ing => ing.length > 0);
+  
+  // Normalize user favorite ingredients
+  const normalizedFavoriteIngs = Object.keys(userFavoriteIngredients)
+    .map(ing => normalizeIngredient(ing))
+    .filter(ing => ing.length > 0);
+  
+  if (normalizedRecipeIngs.length === 0 || normalizedFavoriteIngs.length === 0) return { score: 0, commonIngredients: [], mostSimilarRecipe: null };
+  
+  let matchScore = 0;
+  let totalWeight = 0;
+  const commonIngredients = [];
+  
+  // Calculate matches with different weights
+  normalizedRecipeIngs.forEach(recipeIng => {
+    normalizedFavoriteIngs.forEach(favIng => {
+      const favWeight = userFavoriteIngredients[favIng] || 1;
+      totalWeight += favWeight;
+      
+      // Exact match (highest score)
+      if (recipeIng === favIng) {
+        matchScore += favWeight * 1.0;
+        if (!commonIngredients.includes(recipeIng)) {
+          commonIngredients.push(recipeIng);
+        }
+      }
+      // Partial match (one contains the other)
+      else if (recipeIng.includes(favIng) || favIng.includes(recipeIng)) {
+        matchScore += favWeight * 0.7;
+        if (!commonIngredients.includes(recipeIng)) {
+          commonIngredients.push(recipeIng);
+        }
+      }
+      // Synonym match
+      else if (areSynonyms(recipeIng, favIng)) {
+        matchScore += favWeight * 0.8;
+        if (!commonIngredients.includes(recipeIng)) {
+          commonIngredients.push(recipeIng);
+        }
+      }
+      // Same category (lower score)
+      else if (getIngredientCategory(recipeIng) === getIngredientCategory(favIng) &&
+               getIngredientCategory(recipeIng) !== 'other') {
+        matchScore += favWeight * 0.3;
+      }
+    });
+  });
+  
+  // Normalize score
+  const maxPossibleScore = totalWeight * normalizedRecipeIngs.length;
+  const finalScore = maxPossibleScore > 0 ? matchScore / maxPossibleScore : 0;
+  
+  // Find most similar favorite recipe based on common ingredients
+  // IMPORTANT: Only compare recipes from SAME or RELATED categories
+  let mostSimilarRecipe = null;
+  let maxCommonCount = 0;
+  
+  // Define related categories (categories that can be compared)
+  const relatedCategories = {
+    'Món Chính': ['Món Chính', 'Món Phụ'],
+    'Món Phụ': ['Món Chính', 'Món Phụ'],
+    'Tráng Miệng': ['Tráng Miệng', 'Đồ Uống'],
+    'Đồ Uống': ['Tráng Miệng', 'Đồ Uống'],
+    'Món Ăn Vặt': ['Món Ăn Vặt', 'Tráng Miệng']
+  };
+  
+  if (userFavorites && userFavorites.length > 0 && commonIngredients.length > 0) {
+    userFavorites.forEach(fav => {
+      if (fav.recipe_id && fav.recipe_id.ingredients && fav.recipe_id.name && fav.recipe_id.category) {
+        // Check if categories are related
+        const currentCategoryRelated = relatedCategories[recipeCategory] || [recipeCategory];
+        const isCategoryRelated = currentCategoryRelated.includes(fav.recipe_id.category);
+        
+        // Only compare if categories are related
+        if (isCategoryRelated) {
+          const favIngs = fav.recipe_id.ingredients.map(ing => normalizeIngredient(ing));
+          const commonCount = commonIngredients.filter(ing => favIngs.includes(ing)).length;
+          
+          // Only consider if has at least 2 common ingredients (avoid false matches)
+          if (commonCount >= 2 && commonCount > maxCommonCount) {
+            maxCommonCount = commonCount;
+            mostSimilarRecipe = fav.recipe_id.name;
+          }
+        }
+      }
+    });
+  }
+  
+  return { 
+    score: finalScore, 
+    commonIngredients: commonIngredients.slice(0, 5), // Top 5 common ingredients
+    mostSimilarRecipe: mostSimilarRecipe
+  };
 };
 
 /**

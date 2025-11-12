@@ -7,6 +7,7 @@ const {
 } = require("../controllers/recommendationController.js");
 const { verifyToken } = require("../middleware/verifyToken.js");
 const optionalAuth = require("../middleware/optionalAuth.js");
+const { withCache, CACHE_TTL } = require("../utils/recommendationCache.js");
 
 const router = express.Router();
 
@@ -15,32 +16,36 @@ const router = express.Router();
  * @desc    Lấy danh sách công thức phổ biến dựa trên rating
  * @access  Public
  * @query   limit (optional) - Số lượng kết quả (default: 10)
+ * ✅ CACHED: 10 minutes
  */
-router.get("/popular", getPopularRecipes);
+router.get("/popular", withCache('POPULAR', CACHE_TTL.POPULAR), getPopularRecipes);
 
 /**
  * @route   GET /api/recommendations/favorites
  * @desc    Lấy danh sách công thức được yêu thích nhất
  * @access  Public
  * @query   limit (optional) - Số lượng kết quả (default: 10)
+ * ✅ CACHED: 10 minutes
  */
-router.get("/favorites", getMostFavoritedRecipes);
+router.get("/favorites", withCache('FAVORITES', CACHE_TTL.FAVORITES), getMostFavoritedRecipes);
 
 /**
  * @route   GET /api/recommendations/latest
  * @desc    Lấy danh sách công thức mới nhất
  * @access  Public
  * @query   limit (optional) - Số lượng kết quả (default: 10)
+ * ✅ CACHED: 2 minutes
  */
-router.get("/latest", getLatestRecipes);
+router.get("/latest", withCache('LATEST', CACHE_TTL.LATEST), getLatestRecipes);
 
 /**
  * @route   GET /api/recommendations/personalized
  * @desc    Lấy gợi ý cá nhân hóa cho user đã đăng nhập
  * @access  Private (requires JWT token)
  * @query   limit (optional) - Số lượng kết quả (default: 10)
+ * ✅ CACHED: 5 minutes per user
  */
-router.get("/personalized", verifyToken, getPersonalizedRecommendations);
+router.get("/personalized", verifyToken, withCache('PERSONALIZED', CACHE_TTL.PERSONALIZED), getPersonalizedRecommendations);
 
 /**
  * @route   GET /api/recommendations/all

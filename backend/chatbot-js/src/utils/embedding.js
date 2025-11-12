@@ -89,23 +89,56 @@ async function embedBatch(texts, batchSize = 100) {
 }
 
 /**
- * Generate response using Gemini
+ * Generate response using Gemini with optimized parameters and retry logic
  * @param {string} prompt - Prompt for generation
+ * @param {object} options - Generation options
  * @returns {Promise<string>} - Generated text
  */
-async function generateResponse(prompt) {
+async function generateResponse(prompt, options = {}) {
   if (!genAI) {
     throw new Error('Gemini API not initialized');
   }
   
-  try {
-    const model = genAI.getGenerativeModel({ model: generationModel });
-    const result = await model.generateContent(prompt);
-    const response = result.response;
-    return response.text();
-  } catch (error) {
-    console.error('Error generating response:', error.message);
-    throw error;
+  const maxRetries = options.maxRetries || 3;
+  const baseDelay = options.baseDelay || 2000; // 2 seconds
+  
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      // Optimized generation config for cooking chatbot
+      const generationConfig = {
+        temperature: options.temperature || 0.3,
+        topK: options.topK || 40,
+        topP: options.topP || 0.9,
+        maxOutputTokens: options.maxOutputTokens || 3072,
+        candidateCount: 1,
+      };
+      
+      const model = genAI.getGenerativeModel({ 
+        model: generationModel,
+        generationConfig
+      });
+      
+      const result = await model.generateContent(prompt);
+      const response = result.response;
+      return response.text();
+      
+    } catch (error) {
+      const isRateLimitError = error.message?.includes('429') || 
+                               error.message?.includes('Resource exhausted') ||
+                               error.message?.includes('Too Many Requests');
+      
+      // If it's a rate limit error and we have retries left
+      if (isRateLimitError && attempt < maxRetries) {
+        const delay = baseDelay * Math.pow(2, attempt); // Exponential backoff
+        console.warn(`Rate limit hit (attempt ${attempt + 1}/${maxRetries + 1}). Retrying in ${delay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        continue;
+      }
+      
+      // If it's the last attempt or non-rate-limit error, throw
+      console.error('Error generating response:', error.message);
+      throw error;
+    }
   }
 }
 

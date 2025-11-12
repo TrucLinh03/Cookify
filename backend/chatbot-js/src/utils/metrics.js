@@ -114,43 +114,43 @@ function logRequest(req, startTime) {
   const userAgent = req.headers['user-agent'] || 'Unknown';
   const origin = req.headers.origin || 'No origin';
   
-  console.log(`📨 [${timestamp}] ${req.method} ${req.url}`);
-  console.log(`   Origin: ${origin}`);
-  console.log(`   User-Agent: ${userAgent.substring(0, 100)}...`);
-  console.log(`   Body size: ${JSON.stringify(req.body).length} bytes`);
+  console.log(`[${timestamp}] ${req.method} ${req.url}`);
+  console.log(`Origin: ${origin}`);
+  console.log(`User-Agent: ${userAgent.substring(0, 100)}...`);
+  console.log(`Body size: ${JSON.stringify(req.body).length} bytes`);
 }
 
 function logResponse(responseTime, confidence, cached, sources) {
   const timestamp = new Date().toISOString();
-  console.log(`📤 [${timestamp}] Response sent`);
-  console.log(`   Processing time: ${responseTime}ms`);
-  console.log(`   Confidence: ${Math.round(confidence * 100)}%`);
-  console.log(`   Cached: ${cached ? 'Yes' : 'No'}`);
-  console.log(`   Sources: ${sources} documents`);
+  console.log(`[${timestamp}] Response sent`);
+  console.log(`Processing time: ${responseTime}ms`);
+  console.log(`Confidence: ${Math.round(confidence * 100)}%`);
+  console.log(`Cached: ${cached ? 'Yes' : 'No'}`);
+  console.log(`Sources: ${sources} documents`);
 }
 
 function logError(error, context = '') {
   const timestamp = new Date().toISOString();
-  console.error(`❌ [${timestamp}] Error ${context}`);
-  console.error(`   Message: ${error.message}`);
-  console.error(`   Stack: ${error.stack?.split('\n')[0]}`);
+  console.error(`[${timestamp}] Error ${context}`);
+  console.error(`Message: ${error.message}`);
+  console.error(`Stack: ${error.stack?.split('\n')[0]}`);
 }
 
 function logEmbedding(text, cached, processingTime) {
   const timestamp = new Date().toISOString();
-  console.log(`🔤 [${timestamp}] Embedding ${cached ? '(cached)' : '(new)'}`);
-  console.log(`   Text length: ${text.length} chars`);
+  console.log(`[${timestamp}] Embedding ${cached ? '(cached)' : '(new)'}`);
+  console.log(`Text length: ${text.length} chars`);
   if (!cached) {
-    console.log(`   Processing time: ${processingTime}ms`);
+    console.log(`Processing time: ${processingTime}ms`);
   }
 }
 
 function logVectorSearch(queryLength, resultsCount, processingTime) {
   const timestamp = new Date().toISOString();
-  console.log(`🔍 [${timestamp}] Vector search`);
-  console.log(`   Query vector: ${queryLength}D`);
-  console.log(`   Results: ${resultsCount} documents`);
-  console.log(`   Processing time: ${processingTime}ms`);
+  console.log(`[${timestamp}] Vector search`);
+  console.log(`Query vector: ${queryLength}D`);
+  console.log(`Results: ${resultsCount} documents`);
+  console.log(`Processing time: ${processingTime}ms`);
 }
 
 // Create global metrics instance

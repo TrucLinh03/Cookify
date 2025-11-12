@@ -52,10 +52,10 @@ class LRUCache {
   }
 }
 
-// Create cache instances
-const responseCache = new LRUCache(50); // Cache for chat responses
-const embeddingCache = new LRUCache(200); // Cache for embeddings
-const searchCache = new LRUCache(100); // Cache for search results
+// Create cache instances with optimized sizes
+const responseCache = new LRUCache(100); // Cache for chat responses (increased from 50)
+const embeddingCache = new LRUCache(500); // Cache for embeddings (increased from 200)
+const searchCache = new LRUCache(150); // Cache for search results (increased from 100)
 
 // Helper functions
 function getCacheKey(query, context = '') {

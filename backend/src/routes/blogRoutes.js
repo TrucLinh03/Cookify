@@ -14,7 +14,9 @@ router.get('/', async (req, res) => {
       category = '', 
       search = '', 
       sort = 'newest',
-      featured = false 
+      featured = false,
+      startDate = '',
+      endDate = ''
     } = req.query;
 
     const skip = (page - 1) * limit;
@@ -32,6 +34,20 @@ router.get('/', async (req, res) => {
     
     if (search) {
       query.$text = { $search: search };
+    }
+
+    // Date range filter
+    if (startDate || endDate) {
+      query.createdAt = {};
+      if (startDate) {
+        query.createdAt.$gte = new Date(startDate);
+      }
+      if (endDate) {
+        // Set to end of day
+        const endDateTime = new Date(endDate);
+        endDateTime.setHours(23, 59, 59, 999);
+        query.createdAt.$lte = endDateTime;
+      }
     }
 
     // Build sort
@@ -59,12 +75,38 @@ router.get('/', async (req, res) => {
         { $match: query },
         {
           $addFields: {
-            likeCount: { $size: '$likes' },
-            commentCount: { $size: '$comments' },
+            likeCount: {
+              $cond: {
+                if: { $isArray: '$likes' },
+                then: { $size: '$likes' },
+                else: 0
+              }
+            },
+            commentCount: {
+              $cond: {
+                if: { $isArray: '$comments' },
+                then: { $size: '$comments' },
+                else: 0
+              }
+            },
             popularityScore: {
               $add: [
-                { $multiply: [{ $size: '$likes' }, 2] },
-                { $size: '$comments' },
+                { $multiply: [
+                  {
+                    $cond: {
+                      if: { $isArray: '$likes' },
+                      then: { $size: '$likes' },
+                      else: 0
+                    }
+                  }, 2
+                ] },
+                {
+                  $cond: {
+                    if: { $isArray: '$comments' },
+                    then: { $size: '$comments' },
+                    else: 0
+                  }
+                },
                 { $divide: ['$views', 10] }
               ]
             }
@@ -610,7 +652,9 @@ router.get('/admin/all', verifyToken, verifyAdmin, async (req, res) => {
       search = '', 
       status = '', 
       category = '',
-      sort = 'newest'
+      sort = 'newest',
+      startDate = '',
+      endDate = ''
     } = req.query;
 
     const skip = (page - 1) * limit;
@@ -632,6 +676,20 @@ router.get('/admin/all', verifyToken, verifyAdmin, async (req, res) => {
         { content: { $regex: search, $options: 'i' } },
         { tags: { $in: [new RegExp(search, 'i')] } }
       ];
+    }
+
+    // Date range filter
+    if (startDate || endDate) {
+      query.createdAt = {};
+      if (startDate) {
+        query.createdAt.$gte = new Date(startDate);
+      }
+      if (endDate) {
+        // Set to end of day
+        const endDateTime = new Date(endDate);
+        endDateTime.setHours(23, 59, 59, 999);
+        query.createdAt.$lte = endDateTime;
+      }
     }
 
     // Build sort
@@ -659,8 +717,20 @@ router.get('/admin/all', verifyToken, verifyAdmin, async (req, res) => {
         { $match: query },
         {
           $addFields: {
-            likeCount: { $size: '$likes' },
-            commentCount: { $size: '$comments' }
+            likeCount: {
+              $cond: {
+                if: { $isArray: '$likes' },
+                then: { $size: '$likes' },
+                else: 0
+              }
+            },
+            commentCount: {
+              $cond: {
+                if: { $isArray: '$comments' },
+                then: { $size: '$comments' },
+                else: 0
+              }
+            }
           }
         },
         { $sort: { likeCount: -1, createdAt: -1 } },

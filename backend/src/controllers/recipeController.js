@@ -66,24 +66,23 @@ const getRecipes = async (req, res) => {
           });
           
         } else {
-          // Single ingredient search
+          // Single ingredient search - CHỈ tìm trong name và ingredients
           const regex = new RegExp(searchQuery, 'i');
           recipes = await Recipe.find({
             $or: [
               { name: regex },
-              { description: regex },
               { ingredients: { $elemMatch: { $regex: regex } } },
               { ingredients: regex }
             ]
           }).sort({ createdAt: -1 });
         }
       } else {
-        // Regular search (name, description, or ingredients)
+        // Regular search - CHỈ tìm trong name và ingredients (KHÔNG tìm description)
+        // Tránh trường hợp: tìm "thơm" (dứa) nhưng trả về món có description "thơm ngon"
         const regex = new RegExp(searchQuery, 'i');
         recipes = await Recipe.find({
           $or: [
             { name: regex },
-            { description: regex },
             { ingredients: { $elemMatch: { $regex: regex } } },
             { ingredients: regex }
           ]

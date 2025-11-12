@@ -7,8 +7,8 @@ const historyChatSchema = {
     // ObjectId reference to User collection
     type: 'ObjectId',
     ref: 'User',
-    required: true,
-    description: 'ID người dùng'
+    required: false,
+    description: 'ID người dùng (có thể null nếu khách ẩn danh)'
   },
   conversation_id: {
     type: 'string',
@@ -45,6 +45,11 @@ const historyChatSchema = {
     min: 0,
     max: 1,
     description: 'Độ tin cậy của câu trả lời (0-1)'
+  },
+  confidence_level: {
+    type: 'string',
+    enum: ['high', 'medium', 'low'],
+    description: 'Phân loại mức độ tin cậy của câu trả lời'
   },
   metadata: {
     model_generation: 'string',
