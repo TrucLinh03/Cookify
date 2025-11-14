@@ -1,26 +1,39 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { getRagChatBotResponse, getRandomWelcomeMessage, getRagApiStatus } from './ragChatBotResponses';
+import { saveChatHistory, loadChatHistory, saveConversationId, loadConversationId, hasUserChanged, clearAllChatData } from '../../utils/chatHistory';
 import chefHatIcon from '../../assets/chef-hat.svg';
 import ClockIcon from '../../assets/clock.svg';
 import UsersIcon from '../../assets/users-three.svg';
 import LightbulbIcon from '../../assets/lightbulb-filament.svg';
 import MagnifyingGlassIcon from '../../assets/magnifying-glass.svg';
 import ChatDotsIcon from '../../assets/chat-circle-dots.svg';
+import SpinnerBallIcon from '../../assets/spinner-ball.svg';
 
 const ChatWindow = ({ onClose }) => {
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      type: 'bot',
-      content: getRandomWelcomeMessage(),
-      timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
-      source: 'welcome'
+  // Initialize messages from localStorage or default welcome message
+  const getInitialMessages = () => {
+    const savedMessages = loadChatHistory();
+    if (savedMessages && Array.isArray(savedMessages) && savedMessages.length > 0) {
+      return savedMessages;
     }
-  ]);
+    return [
+      {
+        id: 1,
+        type: 'bot',
+        content: getRandomWelcomeMessage(),
+        timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
+        source: 'welcome'
+      }
+    ];
+  };
+
+  const [messages, setMessages] = useState(getInitialMessages());
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [conversationId, setConversationId] = useState(() => loadConversationId());
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [offlineQueue, setOfflineQueue] = useState([]);
   const [ragStatus, setRagStatus] = useState({ healthy: false, checking: true });
-  const [conversationId, setConversationId] = useState(null); // Track conversation ID
   const [isSending, setIsSending] = useState(false); // Prevent multiple sends
   
   // Resize states
@@ -95,11 +108,72 @@ const ChatWindow = ({ onClose }) => {
     checkRagStatus();
   }, []);
 
+  // Save messages to localStorage whenever messages change
+  useEffect(() => {
+    if (messages.length > 0) {
+      saveChatHistory(messages);
+    }
+  }, [messages]);
+
+  // Save conversation ID to localStorage whenever it changes
+  useEffect(() => {
+    if (conversationId) {
+      saveConversationId(conversationId);
+    }
+  }, [conversationId]);
+
+  // Offline/Online detection
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOnline(true);
+      // Process offline queue when back online
+      if (offlineQueue.length > 0) {
+        offlineQueue.forEach(message => {
+          handleSendMessage(message);
+        });
+        setOfflineQueue([]);
+      }
+    };
+
+    const handleOffline = () => {
+      setIsOnline(false);
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, [offlineQueue]);
+
   const handleSendMessage = async (message = inputMessage) => {
     if (!message.trim()) return;
     
     // Prevent sending if already processing a request
     if (isSending) {
+      return;
+    }
+
+    // Handle offline mode
+    if (!isOnline) {
+      setOfflineQueue(prev => [...prev, message]);
+      const offlineMessage = {
+        id: Date.now() + 1,
+        type: 'bot',
+        content: '📡 Bạn đang offline. Tin nhắn sẽ được gửi khi có kết nối mạng.',
+        timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
+        source: 'offline',
+        showSuggestions: false
+      };
+      setMessages(prev => [...prev, {
+        id: Date.now(),
+        type: 'user',
+        content: message,
+        timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
+      }, offlineMessage]);
+      setInputMessage('');
       return;
     }
 
@@ -136,7 +210,8 @@ const ChatWindow = ({ onClose }) => {
           ragResponse: response.ragResponse,
           confidence: response.confidence, // Add confidence info
           sourceBreakdown: response.sourceBreakdown, // Add source breakdown
-          answerSourceType: response.answerSourceType || null
+          answerSourceType: response.answerSourceType || null,
+          showSuggestions: response.showSuggestions // Add showSuggestions flag
         };
         setMessages(prev => [...prev, botResponse]);
         setIsTyping(false);
@@ -148,8 +223,9 @@ const ChatWindow = ({ onClose }) => {
           type: 'bot',
           content: 'Xin lỗi, tôi gặp sự cố khi xử lý câu hỏi của bạn. Vui lòng thử lại! 😅',
           timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
-          suggestions: ['Thử lại', 'Hỏi câu khác'],
-          source: 'error'
+          suggestions: [],
+          source: 'error',
+          showSuggestions: false
         };
         setMessages(prev => [...prev, errorResponse]);
         setIsTyping(false);
@@ -160,6 +236,9 @@ const ChatWindow = ({ onClose }) => {
 
   // Helper function to get status indicator
   const getStatusIndicator = () => {
+    if (!isOnline) {
+      return { text: 'Offline - Không có mạng', color: 'text-red-600', icon: ChatDotsIcon };
+    }
     if (ragStatus.checking) {
       return { text: 'Đang kiểm tra...', color: 'text-peachDark', icon: MagnifyingGlassIcon };
     }
@@ -171,6 +250,20 @@ const ChatWindow = ({ onClose }) => {
 
   const handleSuggestionClick = (suggestion) => {
     handleSendMessage(suggestion.text);
+  };
+
+  // Clear chat history (for testing)
+  const clearChatHistory = () => {
+    setMessages([{
+      id: 1,
+      type: 'bot',
+      content: getRandomWelcomeMessage(),
+      timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
+      source: 'welcome'
+    }]);
+    setConversationId(null);
+    // Use SecureStorage utility to clear chat data
+    clearAllChatData();
   };
 
   const handleKeyPress = (e) => {
@@ -329,14 +422,28 @@ const ChatWindow = ({ onClose }) => {
             </p>
           </div>
         </div>
-        <button
-          onClick={onClose}
-          className="text-peachDark hover:text-peachDark transition-colors"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+        <div className="flex items-center space-x-2">
+          {/* Clear cache button for debugging */}
+          <button
+            onClick={clearChatHistory}
+            className="text-peachDark hover:text-red-600 transition-colors p-1 rounded hover:bg-red-50"
+            title="Clear cache & restart chat"
+          >
+            <img 
+              src={SpinnerBallIcon} 
+              alt="Clear cache" 
+              className="w-4 h-4 opacity-70 hover:opacity-100 transition-opacity"
+            />
+          </button>
+          <button
+            onClick={onClose}
+            className="text-peachDark hover:text-peachDark transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       {/* Quick Suggestions */}
@@ -413,7 +520,7 @@ const ChatWindow = ({ onClose }) => {
                         }`}
                         title={message.confidence.description}
                       >
-                        {message.confidence.percentage}% tin cậy
+                        {/* {message.confidence.percentage}% tin cậy */}
                       </span>
                     </div>
                   )}
@@ -421,8 +528,17 @@ const ChatWindow = ({ onClose }) => {
               </div>
             </div>
 
-            {/* Hiển thị suggestions nếu có */}
-            {message.type === 'bot' && message.suggestions && message.suggestions.length > 0 && (
+            {/* Hiển thị suggestions nếu có và được phép hiển thị */}
+            {message.type === 'bot' && 
+             message.showSuggestions === true && 
+             message.suggestions && 
+             Array.isArray(message.suggestions) &&
+             message.suggestions.length > 0 && 
+             message.source !== 'fallback_non_food' &&
+             message.source !== 'error' &&
+             !message.content?.includes('Xin lỗi, mình chỉ có thể tư vấn về nấu ăn') &&
+             !message.content?.includes('không liên quan đến nấu ăn') &&
+             message.confidence?.level !== 'low' && (
               <div className="flex justify-start mt-2">
                 <div className="flex flex-wrap gap-1 max-w-[80%]">
                   {message.suggestions.map((suggestion, index) => (

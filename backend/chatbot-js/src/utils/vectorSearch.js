@@ -67,7 +67,7 @@ async function multiCollectionSearch(db, queryVector, options = {}) {
   const {
     limit = 10,
     numCandidates = 200,
-    threshold = 0.3
+    threshold = 0.25 
   } = options;
   
   // Define collections and their vector search indexes
@@ -77,7 +77,7 @@ async function multiCollectionSearch(db, queryVector, options = {}) {
       collection: db.collection('recipes'),
       indexName: 'vector_recipes',
       sourceType: 'recipe',
-      weight: 1.5 // Recipes are more important
+      weight: 1.5 
     },
     {
       collection: db.collection('blogs'),

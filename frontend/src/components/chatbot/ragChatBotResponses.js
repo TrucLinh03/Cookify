@@ -133,32 +133,89 @@ const isGreeting = (message) => {
   return greetingKeywords.some(keyword => lowerMessage.includes(keyword));
 };
 
+// Check if message is food-related
+const isFoodRelated = (message) => {
+  const lowerMessage = message.toLowerCase();
+  
+  // Strong food indicators - if these exist, it's definitely food-related
+  const strongFoodKeywords = [
+    'gỏi', 'phở', 'bún', 'bánh', 'nem', 'chả', 'canh', 'soup', 'nấu', 'nướng', 'xào', 'luộc', 'chiên',
+    'ngó sen', 'su hào', 'măng', 'recipe', 'cook', 'food', 'dish', 'công thức', 'nguyên liệu'
+  ];
+  
+  // If strong food keywords exist, return true immediately
+  if (strongFoodKeywords.some(keyword => lowerMessage.includes(keyword))) {
+    return true;
+  }
+  
+  // Non-food keywords that should be excluded (only if no strong food keywords)
+  const nonFoodKeywords = [
+    'thủ đô', 'thành phố', 'quốc gia', 'địa lý', 'lịch sử', 'chính trị', 'kinh tế',
+    'thời tiết', 'nhiệt độ', 'mưa', 'nắng', 'gió', 'code', 'lập trình', 'programming',
+    'máy tính', 'computer', 'internet', 'website', 'app', 'phần mềm', 'software',
+    'toán học', 'vật lý', 'hóa học', 'sinh học', 'y học', 'giáo dục', 'học tập',
+    'âm nhạc', 'phim', 'game', 'thể thao', 'bóng đá', 'du lịch', 'xe cộ'
+  ];
+  
+  // Check for non-food keywords
+  if (nonFoodKeywords.some(keyword => lowerMessage.includes(keyword))) {
+    return false;
+  }
+  
+  const foodKeywords = [
+    'nấu', 'ăn', 'món', 'công thức', 'nguyên liệu', 'chế biến', 'nướng', 'xào', 'luộc', 'chiên',
+    'phở', 'bún', 'cơm', 'bánh', 'canh', 'soup', 'salad', 'thịt', 'cá', 'tôm', 'rau', 'củ',
+    'gia vị', 'muối', 'đường', 'tiêu', 'tỏi', 'hành', 'gừng', 'sả', 'lá', 'recipe', 'cook',
+    'food', 'dish', 'ingredient', 'kitchen', 'chef', 'bếp', 'nhà bếp', 'mẹo nấu ăn',
+    'dinh dưỡng', 'vitamin', 'protein', 'carb', 'calo', 'healthy', 'sức khỏe', 'ăn kiêng',
+    'làm sao', 'cách làm', 'hướng dẫn', 'bí quyết', 'mẹo vặt',
+    // Thêm các món ăn cụ thể
+    'gỏi', 'nem', 'chả', 'bánh mì', 'bánh xèo', 'bánh cuốn', 'bún bò', 'bún chả', 'mì quảng',
+    'cao lầu', 'hủ tiếu', 'bánh tráng', 'chè', 'bánh flan', 'bánh kem', 'bánh bông lan',
+    'ngó sen', 'su hào', 'măng', 'đậu phụ', 'tàu hũ', 'chả cá', 'nem nướng', 'bánh tét'
+  ];
+  
+  return foodKeywords.some(keyword => lowerMessage.includes(keyword));
+};
+
 // Generate fallback response based on message content
 const generateFallbackResponse = (userMessage) => {
   const lowerMessage = userMessage.toLowerCase();
+  const isFood = isFoodRelated(userMessage);
   
   if (isGreeting(lowerMessage)) {
     return {
       text: cleanResponseText(getRandomResponse(fallbackResponses.greeting)),
       suggestions: ['Món nhanh 30 phút', 'Món cho gia đình', 'Mẹo nấu ăn', 'Tư vấn nguyên liệu'],
-      source: 'fallback_greeting'
+      source: 'fallback_greeting',
+      showSuggestions: true
     };
   }
-  
   
   if (lowerMessage.includes('nhanh') || lowerMessage.includes('30 phút')) {
     return {
       text: cleanResponseText('Tôi gợi ý một số món nhanh: 1. Mì xào giòn (20 phút). 2. Cơm chiên dương châu (15 phút). 3. Bún thịt nướng (25 phút). Bạn chọn món nào? ⚡'),
-      suggestions: ['Mì xào giòn', 'Cơm chiên dương châu', 'Bún thịt nướng'],
-      source: 'fallback_quick'
+      suggestions: isFood ? ['Mì xào giòn', 'Cơm chiên dương châu', 'Bún thịt nướng'] : [],
+      source: 'fallback_quick',
+      showSuggestions: isFood
     };
   }
 
+  // For non-food related questions, don't show suggestions
+  if (!isFood) {
+    return {
+      text: cleanResponseText('Xin lỗi, mình chỉ có thể tư vấn về nấu ăn và ẩm thực thôi ạ. 😊\n\nBạn có câu hỏi nào về:\n• Công thức nấu ăn\n• Mẹo vặt nhà bếp\n• Nguyên liệu và cách chế biến\n• Dinh dưỡng trong ẩm thực\n\nHãy hỏi mình nhé! 👨‍🍳'),
+      suggestions: [],
+      source: 'fallback_non_food',
+      showSuggestions: false
+    };
+  }
   
   return {
     text: cleanResponseText(getRandomResponse(fallbackResponses.default)),
     suggestions: ['Món nhanh', 'Món chính', 'Tráng miệng', 'Đồ uống'],
-    source: 'fallback_default'
+    source: 'fallback_default',
+    showSuggestions: true
   };
 };
 
@@ -228,7 +285,7 @@ export const getRagChatBotResponse = async (userMessage, conversationId = null) 
     // Format response for frontend
     return {
       text: cleanResponseText(ragResponse.response),
-      suggestions: suggestions,
+      suggestions: ragResponse.show_suggestions ? suggestions : [], // Only show suggestions if backend allows
       source: 'node_chatbot',
       score: ragResponse.confidence?.score || 0,
       confidence: ragResponse.confidence, // Full confidence object with level, percentage, description
@@ -236,7 +293,8 @@ export const getRagChatBotResponse = async (userMessage, conversationId = null) 
       answerSourceType: ragResponse.answer_source_type || null,
       retrievedDocs: ragResponse.sources || [],
       conversationId: ragResponse.conversation_id,
-      ragResponse: true
+      ragResponse: true,
+      showSuggestions: ragResponse.show_suggestions || false // Pass through the flag
     };
     
   } catch (error) {
@@ -250,10 +308,12 @@ export const getRagChatBotResponse = async (userMessage, conversationId = null) 
     }
     
     if (error.response?.status === 400) {
+      const isFood = isFoodRelated(userMessage);
       return {
         text: cleanResponseText('Xin lỗi, câu hỏi của bạn không hợp lệ. Vui lòng thử lại với câu hỏi khác! 😅'),
-        suggestions: ['Thử câu hỏi khác', 'Món ăn phổ biến', 'Mẹo nấu ăn'],
-        source: 'error_validation'
+        suggestions: isFood ? ['Thử câu hỏi khác', 'Món ăn phổ biến', 'Mẹo nấu ăn'] : [],
+        source: 'error_validation',
+        showSuggestions: isFood
       };
     }
     
@@ -264,10 +324,12 @@ export const getRagChatBotResponse = async (userMessage, conversationId = null) 
     }
     
     if (error.response?.status >= 500) {
+      const isFood = isFoodRelated(userMessage);
       return {
         text: cleanResponseText(getRandomResponse(fallbackResponses.error)),
-        suggestions: ['Thử lại', 'Hỏi câu khác', 'Liên hệ hỗ trợ'],
-        source: 'error_server'
+        suggestions: isFood ? ['Thử lại', 'Hỏi câu khác', 'Liên hệ hỗ trợ'] : [],
+        source: 'error_server',
+        showSuggestions: isFood
       };
     }
     

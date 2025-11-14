@@ -987,6 +987,7 @@ Hãy hỏi mình nhé! 👨‍🍳`;
           : 'Độ tin cậy thấp - Câu hỏi không liên quan đến nấu ăn'
       },
       answer_source_type: primarySourceType || null,
+      show_suggestions: shouldShowSources, // Add flag to control suggestion display
       sourceBreakdown: shouldShowSources ? {
         total: searchResults.length,
         byType: sourceBreakdown,
