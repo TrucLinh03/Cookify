@@ -123,7 +123,7 @@ const DesktopNav = ({ menuItems, logo }) => {
                     onClick={handleLogout}
                     className="w-full text-left px-5 py-3 text-red-600 hover:bg-red-50 transition-colors duration-200 font-medium"
                   >
-                    Logout
+                    Đăng xuất
                   </button>
                 </li>
               </ul>

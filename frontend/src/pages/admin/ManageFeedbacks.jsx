@@ -358,6 +358,9 @@ const ManageFeedbacks = () => {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  STT
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Người dùng
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -383,7 +386,7 @@ const ManageFeedbacks = () => {
             <tbody className="bg-white divide-y divide-gray-200">
               {feedbacks.length === 0 ? (
                 <tr>
-                  <td colSpan="7" className="px-6 py-12 text-center text-gray-500">
+                  <td colSpan="8" className="px-6 py-12 text-center text-gray-500">
                     <div className="flex flex-col items-center">
                       <svg className="w-12 h-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10m0 0V6a2 2 0 00-2-2H9a2 2 0 00-2 2v2m10 0v10a2 2 0 01-2 2H9a2 2 0 01-2-2V8m10 0H7" />
@@ -394,8 +397,11 @@ const ManageFeedbacks = () => {
                   </td>
                 </tr>
               ) : (
-                feedbacks.map((feedback) => (
+                feedbacks.map((feedback, index) => (
                   <tr key={feedback._id} className="hover:bg-gray-50">
+                    <td className="px-4 py-3 whitespace-nowrap text-xs text-gray-500">
+                      {index + 1 + (currentPage - 1) * 100}
+                    </td>
                     <td className="px-4 py-3 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="w-6 h-6 bg-tomato rounded-full flex items-center justify-center text-white text-xs font-medium">

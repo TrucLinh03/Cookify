@@ -414,6 +414,9 @@ const ManageBlogs = () => {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  STT
+                </th>
+                <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Bài viết
                 </th>
                 <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -440,6 +443,9 @@ const ManageBlogs = () => {
               {loading ? (
                 [...Array(5)].map((_, index) => (
                   <tr key={index}>
+                    <td className="px-3 py-2 whitespace-nowrap">
+                      <div className="h-3 bg-gray-200 rounded w-6 animate-pulse"></div>
+                    </td>
                     <td className="px-3 py-2">
                       <div className="animate-pulse">
                         <div className="h-3 bg-gray-200 rounded w-3/4 mb-1"></div>
@@ -467,8 +473,11 @@ const ManageBlogs = () => {
                   </tr>
                 ))
               ) : blogs.length > 0 ? (
-                blogs.map((blog) => (
+                blogs.map((blog, index) => (
                   <tr key={blog._id} className="hover:bg-gray-50">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                      {index + 1 + (currentPage - 1) * 10}
+                    </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center">
                         <div className="flex-shrink-0 h-16 w-16">
@@ -552,7 +561,7 @@ const ManageBlogs = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="7" className="px-6 py-12 text-center">
+                  <td colSpan="8" className="px-6 py-12 text-center">
                     <div className="text-gray-500">
                       <img src={PencilIcon} alt="Empty" className="w-12 h-12 mb-4 opacity-80 mx-auto" />
                       <p className="text-lg font-medium mb-2">

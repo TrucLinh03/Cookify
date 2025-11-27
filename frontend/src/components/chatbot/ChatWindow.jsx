@@ -252,8 +252,10 @@ const ChatWindow = ({ onClose }) => {
     handleSendMessage(suggestion.text);
   };
 
-  // Clear chat history (for testing)
+  // Clear chat history and start a brand-new conversation
   const clearChatHistory = () => {
+    const newConversationId = `web_${Date.now()}`;
+
     setMessages([{
       id: 1,
       type: 'bot',
@@ -261,9 +263,14 @@ const ChatWindow = ({ onClose }) => {
       timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
       source: 'welcome'
     }]);
-    setConversationId(null);
-    // Use SecureStorage utility to clear chat data
+
+    // Explicitly start a new conversation session
+    setConversationId(newConversationId);
+
+    // Clear all stored chat data for the previous session
     clearAllChatData();
+    // Persist the new conversation id so it survives reloads
+    saveConversationId(newConversationId);
   };
 
   const handleKeyPress = (e) => {
@@ -411,7 +418,7 @@ const ChatWindow = ({ onClose }) => {
           </div>
           <div>
             <h3 className="text-orange-600 font-semibold flex items-center">
-              Chef AI Assistant
+              Phụ Bếp Cookify AI
               <svg className="w-4 h-4 ml-2 text-peachDark opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
               </svg>

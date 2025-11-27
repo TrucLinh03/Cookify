@@ -350,10 +350,11 @@ export const getChatBotResponse = async (userMessage) => {
 // Get random welcome message
 export const getRandomWelcomeMessage = () => {
   const welcomeMessages = [
-    'Xin chào! Tôi là Chef AI Assistant với công nghệ RAG mới. Hôm nay bạn muốn nấu món gì nhỉ? 👨‍🍳',
-    'Chào bạn! Tôi đã được nâng cấp với AI thông minh hơn. Tôi có thể tư vấn món ăn và mẹo nấu ăn cho bạn! 🍳',
-    'Hello! Tôi là Chef AI Assistant phiên bản mới với khả năng hiểu và tư vấn tốt hơn. Bắt đầu nấu ăn thôi! 👩‍🍳',
-    'Chào mừng đến với Cookify! Tôi đã được nâng cấp AI để hỗ trợ bạn nấu ăn tốt hơn. Hãy hỏi tôi bất cứ điều gì! 🔥'
+    'Xin chào! Tôi là phụ bếp siêu vụng về đây… đừng lo, tôi chỉ làm cháy bếp *thỉnh thoảng* thôi 😂🔥',
+    'Xin chào! Tôi là Chef AI của Cookify, luôn sẵn sàng hỗ trợ bạn lựa chọn và thực hiện món ăn một cách chính xác và chu đáo. 👨‍🍳✨',
+    'Hello! Tôi là phụ bếp nhỏ của bạn. Bạn chọn món đi, còn lại để tôi… run run hướng dẫn cho nhé! 👩‍🍳💦',
+    'Chào mừng đến với Cookify! Cứ hỏi tôi bất cứ món nào, tôi hứa sẽ giúp bạn nấu món ngon miệng nhất! 🥗',
+    'Chào bạn! Tôi luôn sẵn sàng hỗ trợ bạn từ khâu chọn nguyên liệu đến cách nấu chuẩn vị. Hãy bắt đầu món ăn hôm nay cùng tôi nhé! 🍽️🌿'
   ];
   
   return welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
