@@ -10,17 +10,7 @@
 function buildRecipeSearchText(recipe) {
   const parts = [];
   
-  // Name
-  if (recipe.name) {
-    parts.push(`Tên món: ${recipe.name}`);
-  }
-  
-  // Description
-  if (recipe.description) {
-    parts.push(`Mô tả: ${recipe.description}`);
-  }
-  
-  // Category mapping
+  // Category mapping - ĐƯA LÊN ĐẦU TIÊN
   if (recipe.category) {
     const categoryMap = {
       'tatca': 'tất cả',
@@ -32,6 +22,16 @@ function buildRecipeSearchText(recipe) {
     };
     const categoryName = categoryMap[recipe.category] || recipe.category;
     parts.push(`Danh mục: ${categoryName}`);
+  }
+  
+  // Name
+  if (recipe.name) {
+    parts.push(`Món: ${recipe.name}`);
+  }
+  
+  // Description
+  if (recipe.description) {
+    parts.push(`Mô tả: ${recipe.description}`);
   }
   
   // Ingredients (array of strings)
@@ -71,18 +71,7 @@ function buildRecipeSearchText(recipe) {
 function buildBlogSearchText(blog) {
   const parts = [];
   
-  // Title
-  if (blog.title) {
-    parts.push(`Tiêu đề: ${blog.title}`);
-  }
-  
-  // Excerpt or content preview
-  const contentPreview = blog.excerpt || (blog.content ? blog.content.substring(0, 300) : '');
-  if (contentPreview) {
-    parts.push(`Nội dung: ${contentPreview}`);
-  }
-  
-  // Category
+  // Category - ĐƯA LÊN ĐẦU TIÊN
   if (blog.category) {
     const categoryMap = {
       'recipe_share': 'chia sẻ công thức',
@@ -94,6 +83,17 @@ function buildBlogSearchText(blog) {
     };
     const categoryName = categoryMap[blog.category] || blog.category;
     parts.push(`Danh mục: ${categoryName}`);
+  }
+  
+  // Title
+  if (blog.title) {
+    parts.push(`Tiêu đề: ${blog.title}`);
+  }
+  
+  // Excerpt or content preview
+  const contentPreview = blog.excerpt || (blog.content ? blog.content.substring(0, 300) : '');
+  if (contentPreview) {
+    parts.push(`Nội dung: ${contentPreview}`);
   }
   
   // Tags
@@ -157,12 +157,8 @@ function buildFavouriteSearchText(favourite) {
   // If recipe is populated
   if (favourite.recipe_id && typeof favourite.recipe_id === 'object') {
     const recipe = favourite.recipe_id;
-    if (recipe.name) {
-      parts.push(`Món yêu thích: ${recipe.name}`);
-    }
-    if (recipe.description) {
-      parts.push(`Mô tả: ${recipe.description}`);
-    }
+    
+    // Category - ĐƯA LÊN ĐẦU TIÊN
     if (recipe.category) {
       const categoryMap = {
         'tatca': 'tất cả',
@@ -173,6 +169,13 @@ function buildFavouriteSearchText(favourite) {
         'anvat': 'ăn vặt'
       };
       parts.push(`Danh mục: ${categoryMap[recipe.category] || recipe.category}`);
+    }
+    
+    if (recipe.name) {
+      parts.push(`Món yêu thích: ${recipe.name}`);
+    }
+    if (recipe.description) {
+      parts.push(`Mô tả: ${recipe.description}`);
     }
   }
   

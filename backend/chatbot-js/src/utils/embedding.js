@@ -106,10 +106,10 @@ async function generateResponse(prompt, options = {}) {
     try {
       // Optimized generation config for cooking chatbot
       const generationConfig = {
-        temperature: options.temperature || 0.3,
-        topK: options.topK || 40,
-        topP: options.topP || 0.9,
-        maxOutputTokens: options.maxOutputTokens || 3072,
+        temperature: options.temperature || 0.15,
+        topK: options.topK || 20,
+        topP: options.topP || 0.75,
+        maxOutputTokens: options.maxOutputTokens || 2048,
         candidateCount: 1,
       };
       

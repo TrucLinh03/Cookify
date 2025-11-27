@@ -2,11 +2,42 @@
  * Cookify Chatbot Service - Node.js with MongoDB Atlas Vector Search
  */
 require('dotenv').config();
+
+/**
+ * Clean response text to remove markdown formatting and make it more readable
+ * @param {string} text - Raw response text from AI
+ * @returns {string} - Cleaned text
+ */
+function cleanResponseText(text) {
+  if (!text || typeof text !== 'string') return text;
+  
+  return text
+    // Remove code blocks (```text```) first
+    .replace(/```[\s\S]*?```/g, (match) => {
+      // Remove ``` and language indicator if present
+      return match.replace(/```(\w+)?\n?/, '').replace(/```$/, '').trim();
+    })
+    // Remove bold markdown (**text**)
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    // Remove italic markdown (*text*)
+    .replace(/\*(.*?)\*/g, '$1')
+    // Remove headers (# ## ###)
+    .replace(/^#{1,6}\s+/gm, '')
+    // Remove inline code (`text`)
+    .replace(/`(.*?)`/g, '$1')
+    // Remove extra asterisks that might remain
+    .replace(/\*/g, '')
+    // Chuẩn hóa khoảng trắng TRONG TỪNG DÒNG nhưng giữ nguyên xuống dòng
+    .split(/\r?\n/)
+    .map(line => line.replace(/\s+/g, ' ').trim())
+    .filter(line => line.length > 0)
+    .join('\n');
+}
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ObjectId } = require('mongodb');
 const { initializeGemini, embedText, embedBatch, generateResponse } = require('./utils/embedding');
-const { multiCollectionSearch, getPopularRecipes } = require('./utils/vectorSearch');
+const { multiCollectionSearch, hybridSearch, getPopularRecipes } = require('./utils/vectorSearch');
 const { buildSearchableText } = require('./utils/buildSearchText');
 const { responseCache, searchCache, getCacheKey } = require('./utils/cache');
 const { metricsCollector, logRequest, logResponse, logError } = require('./utils/metrics');
@@ -273,142 +304,75 @@ Cảm xúc: ${doc.sentiment || 'Không rõ'}
   const totalSources = Object.values(sourceTypeCounts).reduce((a, b) => a + b, 0);
   
   // Build the complete prompt with conversation context
-  let prompt = `BẠN LÀ Chef AI Assistant của Cookify - chuyên gia ẩm thực AI thông minh, nhiệt tình và chuyên nghiệp.
+let prompt = `Bạn là Chef AI Assistant của Cookify – chuyên gia ẩm thực AI có trách nhiệm và chính xác.
 
-NHIỆM VỤ CỦA BẠN:
-- Tư vấn công thức nấu ăn CHI TIẾT, CHÍNH XÁC từ database
-- Chia sẻ mẹo vặt, kỹ thuật nấu nướng thực tế
-- Giải đáp thắc mắc về nguyên liệu, cách chế biến
-- Gợi ý thay thế nguyên liệu phù hợp
-- Tư vấn dinh dưỡng và sức khỏe trong ẩm thực
-- TƯ VẤN THEO NGÂN SÁCH: Gợi ý món ăn phù hợp với số tiền người dùng có
-- TƯ VẤN THEO THỜI GIAN: Gợi ý món nhanh phù hợp với thời gian người dùng có
+NHIỆM VỤ:
+• Trả lời mọi câu hỏi liên quan đến nấu ăn, nguyên liệu, kỹ thuật chế biến.
+• Sử dụng thông tin từ database (RAG) và không được bịa đặt.
+• Trình bày câu trả lời rõ ràng, thân thiện, có emoji phù hợp.
+• Hỗ trợ theo ngân sách và thời gian khi người dùng đề cập.
 
-QUAN TRỌNG: BẠN CHỈ TRẢ LỜI CÂU HỎI VỀ NẤU ĂN VÀ ẨM THỰC!
-- NẾU câu hỏi KHÔNG liên quan đến nấu ăn (VD: thời trang, động vật, màu sắc, giáo dục, bài hát, phim, thể thao, chính trị...) 
-  → Từ chối lịch sự: "Xin lỗi, mình chỉ có thể tư vấn về nấu ăn và ẩm thực thôi ạ. Bạn có câu hỏi nào về món ăn không?"
-- KHÔNG cố gắng trả lời câu hỏi ngoài phạm vi ẩm thực
+GIỚI HẠN:
+• Nếu câu hỏi không liên quan đến ẩm thực → từ chối lịch sự:
+  "Xin lỗi, mình chỉ hỗ trợ về nấu ăn và ẩm thực thôi ạ. Bạn muốn hỏi món nào không?"
 
-ĐẶC BIỆT - TƯ VẤN THEO NGÂN SÁCH VÀ THỜI GIAN:
+HỖ TRỢ THEO NGÂN SÁCH:
+• Nhận diện số tiền: "50k", "100.000 VND", "70 nghìn"...
+• Phân loại:
+  - 20k–50k: món đơn giản (trứng, cơm chiên, mì)
+  - 50k–100k: món trung bình (cá kho, canh chua)
+  - 100k–200k: món phong phú (gà nướng, bò xào)
+  - >200k: món cao cấp (hải sản, beefsteak)
+• Cách trả lời:
+  - Gợi ý 2–3 món phù hợp
+  - Ước tính giá từng nguyên liệu
+  - Giải thích vì sao phù hợp ngân sách
+  - Gợi ý nơi mua tiết kiệm
 
-A. KHI NGƯỜI DÙNG NÓI VỀ SỐ TIỀN (VD: "50.000 VND", "100k", "50 nghìn"):
-   1. PHÂN TÍCH ngân sách:
-      • 20.000-50.000 VND: Món đơn giản, ít nguyên liệu (VD: trứng chiên, cơm chiên, mì xào)
-      • 50.000-100.000 VND: Món trung bình (VD: thịt kho, cá kho, canh chua)
-      • 100.000-200.000 VND: Món phong phú (VD: lẩu, gà nướng, bò xào)
-      • >200.000 VND: Món cao cấp (VD: hải sản, thịt bò Úc, món Tây)
-   
-   2. GỢI Ý CỤ THỂ:
-      • Liệt kê 2-3 món phù hợp với ngân sách
-      • Ước tính giá nguyên liệu từng món
-      • Giải thích tại sao món đó phù hợp với số tiền
-      • Gợi ý mua nguyên liệu ở đâu tiết kiệm
-   
-   3. VÍ DỤ TRẢ LỜI:
-      "Với 50.000 VND, bạn có thể nấu:
-      
-      1. **Cơm chiên trứng** (≈45.000 VND)
-         - Cơm nguội: 10.000
-         - Trứng 2 quả: 8.000
-         - Rau củ: 15.000
-         - Gia vị: 12.000
-      
-      2. **Mì xào giòn** (≈48.000 VND)
-         - Mì gói: 8.000
-         - Rau cải: 10.000
-         - Thịt băm: 20.000
-         - Gia vị: 10.000"
+HỖ TRỢ THEO THỜI GIAN:
+• Nhận diện thời gian: “10 phút”, “30p”, “gấp”, “nhanh”.
+• Phân loại:
+  - <15 phút: món siêu nhanh
+  - 15–30 phút: món nhanh
+  - 30–60 phút: món trung bình
+  - >60 phút: món lâu
+• Cách trả lời:
+  - Gợi ý món phù hợp thời gian
+  - Nêu thời gian từng bước
+  - Gợi ý mẹo rút ngắn thời gian
 
-B. KHI NGƯỜI DÙNG NÓI VỀ THỜI GIAN (VD: "30 phút", "nhanh", "gấp"):
-   1. PHÂN LOẠI theo thời gian:
-      • <15 phút: Món siêu nhanh (VD: trứng ốp la, mì xào, cơm chiên)
-      • 15-30 phút: Món nhanh (VD: canh chua, thịt xào, cá chiên)
-      • 30-60 phút: Món trung bình (VD: thịt kho, gà nướng, bún bò)
-      • >60 phút: Món cần thời gian (VD: phở, lẩu, thịt hầm)
-   
-   2. GỢI Ý CỤ THỂ:
-      • Ưu tiên món có sẵn trong database phù hợp thời gian
-      • Liệt kê các bước nấu với thời gian từng bước
-      • Gợi ý mẹo để nấu nhanh hơn
-      • Cảnh báo nếu món cần thời gian chuẩn bị trước
-   
-   3. VÍ DỤ TRẢ LỜI:
-      "Với 30 phút, bạn có thể nấu:
-      
-      1. **Mì xào giòn** (25 phút)
-         - Luộc mì: 5 phút
-         - Xào rau thịt: 10 phút
-         - Chiên mì: 10 phút
-      
-      2. **Cơm chiên trứng** (20 phút)
-         - Chuẩn bị: 5 phút
-         - Chiên: 15 phút
-      
-      Mẹo: Dùng cơm nguội sẵn để tiết kiệm thời gian!"`;
+SỬ DỤNG LỊCH SỬ HỘI THOẠI:
+• Hiểu mạch trò chuyện.
+• Đại từ như “nó”, “món đó”, “cái này” → liên hệ câu trước.
+• Câu như “còn cách khác?”, “nếu không có X thì sao?” → dựa trên câu trả lời trước.
 
-  // Add conversation context if available
-  if (conversationContext.trim()) {
-    prompt += `
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-LỊCH SỬ HỘI THOẠI TRƯỚC ĐÓ (QUAN TRỌNG - ĐỌC KỸ):
-${conversationContext}
+SỬ DỤNG NGUỒN THAM KHẢO (RAG):
+• Bắt buộc dùng thông tin từ nguồn database phía dưới.
+• Không bịa công thức, nguyên liệu, thời gian hay mẹo không có trong nguồn.
+• Nếu không tìm thấy:
+  "Mình không tìm thấy thông tin chính xác. Bạn có thể thử tìm món gần giống như..."
 
-LƯU Ý: Câu hỏi hiện tại có thể liên quan đến cuộc hội thoại trước đó. 
-Hãy phân tích ngữ cảnh để hiểu đúng ý định của người dùng.
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-`;
-  }
+QUY ĐỊNH TRÌNH BÀY:
+• Không dùng markdown (*, **, #).
+• Plain text + emoji.
+• Nguyên liệu: mỗi dòng 1 mục, format:
+  • Tên nguyên liệu số lượng (nếu có giá → để cùng dòng)
+• Các bước nấu được đánh số 1, 2, 3.
+• Văn phong thân thiện, ấm áp như bạn bè.
+• Công thức phải gồm: nguyên liệu, định lượng, cách nấu, thời gian, độ khó, mẹo.
 
-  prompt += `
-NGUỒN THÔNG TIN THAM KHẢO (${totalSources} nguồn: ${Object.entries(sourceTypeCounts).filter(([k,v]) => v > 0).map(([k,v]) => `${v} ${k}`).join(', ')}):
+━━━━━━━━━━━━━━━━━━━━━━━
+THÔNG TIN THAM KHẢO:
 ${context}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+LỊCH SỬ HỘI THOẠI:
+${conversationContext}
 
-CÂU HỎI HIỆN TẠI: ${query}
+CÂU HỎI HIỆN TẠI:
+${query}
+━━━━━━━━━━━━━━━━━━━━━━━
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-NGUYÊN TẮC TRẢ LỜI (BẮT BUỘC TUÂN THỦ):
-
-1. SỬ DỤNG THÔNG TIN TỪ DATABASE:
-   ✓ BẮT BUỘC sử dụng TOÀN BỘ thông tin từ "NGUỒN THÔNG TIN THAM KHẢO" bên dưới
-   ✓ Trích dẫn CHI TIẾT: tên món, nguyên liệu, cách làm, thời gian, độ khó
-   ✓ Kết hợp NHIỀU nguồn: recipes + blogs + feedbacks để trả lời ĐẦY ĐỦ
-   ✓ KHÔNG được bỏ qua bất kỳ thông tin quan trọng nào từ database
-   ✓ KHÔNG được bịa đặt thông tin không có trong nguồn tham khảo
-
-2. NGỮ CẢNH HỘI THOẠI (CỰC KỲ QUAN TRỌNG):
-   ✓ NẾU có "LỊCH SỬ HỘI THOẠI" → BẮT BUỘC đọc và hiểu ngữ cảnh
-   ✓ Câu hỏi tiếp theo THƯỜNG liên quan câu trước:
-     • "còn cách khác?" → Tìm phương án thay thế cho câu trả lời trước
-     • "nếu không có X?" → Gợi ý thay thế nguyên liệu X đã đề cập
-     • "thế còn...", "vậy thì..." → Hỏi về khía cạnh khác của chủ đề
-     • Đại từ "nó", "món đó", "cái này" → Chỉ món ăn/nguyên liệu đã nói trong lịch sử
-   ✓ Liên kết mạch trò chuyện tự nhiên, KHÔNG lặp lại thông tin đã nói
-
-3. TRÌNH BÀY CÔNG THỨC (CHI TIẾT):
-   ✓ Tên món ăn rõ ràng
-   ✓ Nguyên liệu: Liệt kê ĐẦY ĐỦ với định lượng cụ thể
-   ✓ Cách làm: Các bước được đánh số, chi tiết, dễ theo dõi
-   ✓ Thông tin bổ sung: Thời gian nấu, độ khó, số người ăn
-   ✓ Mẹo nhỏ: Tips để món ăn ngon hơn (nếu có trong database)
-
-4. PHONG CÁCH:
-   ✓ Tiếng Việt chuẩn, thân thiện như người bạn
-   ✓ Độ dài: 200-400 từ cho công thức, ngắn gọn cho câu hỏi đơn giản
-   ✓ Sử dụng emoji phù hợp: 🍳 👨‍🍳 🥘 ✨ 💡
-   ✓ Format: Bullet points (•), số thứ tự (1. 2. 3.)
-
-5. KHI KHÔNG TÌM THẤY:
-   ✓ Nói thẳng: "Mình không tìm thấy thông tin chính xác về [món ăn] trong database"
-   ✓ Gợi ý: "Bạn có thể thử tìm: [từ khóa tương tự]"
-   ✓ KHÔNG bịa đặt công thức không có trong database
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-HÃY TRẢ LỜI NGAY BÂY GIỜ:
-`.trim();
+Hãy trả lời ngay.`.trim();
   
   return prompt;
 }
@@ -481,6 +445,39 @@ async function getRecentConversationContext(userId, conversationId, limit = 7) {
   }
 }
 
+async function resolveConversationId(userId, conversationId) {
+  try {
+    if (conversationId && typeof conversationId === 'string' && conversationId.trim().length > 0) {
+      return conversationId.trim();
+    }
+
+    if (!userId) {
+      return `chat_${Date.now()}`;
+    }
+
+    if (!db) {
+      return `chat_${Date.now()}`;
+    }
+
+    const historyChatsCollection = db.collection('history_chats');
+
+    const lastChat = await historyChatsCollection
+      .find({ user_id: new ObjectId(userId) })
+      .sort({ created_at: -1 })
+      .limit(1)
+      .toArray();
+
+    if (lastChat.length > 0 && lastChat[0].conversation_id) {
+      return lastChat[0].conversation_id;
+    }
+
+    return `chat_${Date.now()}`;
+  } catch (error) {
+    console.error('Error resolving conversation ID:', error.message);
+    return `chat_${Date.now()}`;
+  }
+}
+
 /**
  * Save chat history to database
  */
@@ -548,9 +545,14 @@ app.post('/ask', async (req, res) => {
       metricsCollector.recordError();
       return res.status(400).json({ error: 'Message is required' });
     }
+
+    const resolvedConversationId = await resolveConversationId(user_id, conversation_id);
     
-    // Check cache first
-    const cacheKey = getCacheKey(message, user_id || '');
+    // Check cache first (scoped by user + conversation)
+    const cacheKey = getCacheKey(
+      message,
+      `${user_id || ''}_${resolvedConversationId || ''}`
+    );
     const cachedResponse = responseCache.get(cacheKey);
     if (cachedResponse) {
       const processingTime = Date.now() - startTime;
@@ -569,7 +571,7 @@ app.post('/ask', async (req, res) => {
       embedText(message),
       getRecentConversationContext(
         user_id, 
-        conversation_id,
+        resolvedConversationId,
         7 // Get last 7 conversation pairs for better context understanding
       )
     ]);
@@ -621,18 +623,27 @@ app.post('/ask', async (req, res) => {
     const hasConversationContext = conversationContext && conversationContext.trim().length > 0;
 
     // Small-talk patterns (thanks/ack/bye) -> polite short response, no retrieval
+// Small-talk patterns (Updated: Dùng Regex để tránh bắt nhầm từ con)
     const smallTalkPatterns = [
-      // Acknowledgements
-      'cảm ơn', 'cám ơn', 'thanks', 'thank you', 'cảm ơn nhiều',
-      // Affirmations/closures
-      'ok', 'okay', 'oke', 'được rồi', 'ổn rồi', 'tốt lắm', 'hay quá',
-      // Greetings
+      'ok', 'okay', 'oke', 'được rồi', 'ổn rồi',
       'xin chào', 'chào', 'chào bạn', 'hello', 'hi', 'helo', 'hê lô',
-      // Farewells
       'bye', 'tạm biệt'
     ];
-    const isSmallTalk = smallTalkPatterns.some(pattern => lowerQuery.includes(pattern));
     
+    // SỬA LỖI: Dùng Regex \b để bắt nguyên từ (VD: "hi" không khớp với "chiên")
+    const isSmallTalk = smallTalkPatterns.some(pattern => {
+      const regex = new RegExp(`\\b${pattern}\\b`, 'i');
+      return regex.test(lowerQuery);
+    });
+
+    const thanksPatterns = [
+      'cảm ơn', 'cám ơn', 'cảm ơn nhé', 'cảm ơn nhiều',
+      'thanks', 'thank you'
+    ];
+    const isThanksMessage = thanksPatterns.some(pattern => {
+      const regex = new RegExp(pattern, 'i');
+      return regex.test(lowerQuery);
+    });   
     // Off-topic patterns (geography/general knowledge/others)
     const offTopicPatterns = [
       'thủ đô', 'capital', 'quốc gia', 'tỉnh', 'thành phố', 'địa lý', 'lịch sử',
@@ -665,11 +676,30 @@ app.post('/ask', async (req, res) => {
     else if (isTipIntent) primarySourceType = 'blog';
     else if (isFeedbackIntent) primarySourceType = 'feedback';
 
-    // 3. Vector search across collections (skip for small-talk)
-    let searchResults = isSmallTalk ? [] : await multiCollectionSearch(db, queryVector, {
-      limit: parseInt(process.env.VECTOR_SEARCH_LIMIT) || 12, // Increased to 12 for more comprehensive results
-      numCandidates: parseInt(process.env.VECTOR_SEARCH_NUM_CANDIDATES) || 200, // Back to 200 for better recall
-      threshold: parseFloat(process.env.CONFIDENCE_THRESHOLD) || 0.25 // Lowered to 0.25 to get more relevant docs
+    // CATEGORY INTENT DETECTION - Nhận diện Intent Danh mục
+    const categoryKeywords = {
+      'Món phụ': ['món phụ', 'gỏi', 'rau luộc', 'khoai tây nghiền', 'đồ ngâm', 'kim chi', 'dưa chua', 'salad', 'rau trộn', 'nộm', 'đồ chua', 'rau muối'],
+      'Tráng miệng': ['tráng miệng', 'chè', 'bánh ngọt', 'kem', 'flan', 'rau câu', 'pudding', 'ngọt', 'dessert'],
+      'Đồ uống': ['uống', 'nước', 'trà', 'cà phê', 'sinh tố', 'đá xay', 'giải khát', 'latte', 'drink', 'sữa'],
+      'Món chính': ['món chính', 'cơm', 'mặn', 'thịt kho', 'cá kho', 'canh', 'ăn cơm', 'bún', 'phở', 'mì'],
+      'Ăn vặt': ['ăn vặt', 'snack', 'khai vị', 'chiên', 'rán', 'nhâm nhi', 'khoai tây']
+    };
+
+    let targetCategory = null;
+    for (const [category, keywords] of Object.entries(categoryKeywords)) {
+      if (keywords.some(keyword => lowerQuery.includes(keyword))) {
+        targetCategory = category;
+        break;
+      }
+    }
+
+    // 3. Hybrid search across collections (skip for small-talk)
+    let searchResults = isSmallTalk ? [] : await hybridSearch(db, message, queryVector, {
+      limit: parseInt(process.env.VECTOR_SEARCH_LIMIT) || 8, // Reduced to 8 for higher quality
+      numCandidates: parseInt(process.env.VECTOR_SEARCH_NUM_CANDIDATES) || 500, // Increased for better recall
+      threshold: parseFloat(process.env.CONFIDENCE_THRESHOLD) || 0.5, // Increased to 0.5 to filter low-quality results
+      intent: primarySourceType, // Pass detected intent for dynamic weighting
+      targetCategory: targetCategory // Pass target category for re-ranking
     });
     
     // Check relevance: stricter rules (remove vector topScore as a relevance signal)
@@ -811,7 +841,16 @@ app.post('/ask', async (req, res) => {
     let responseText;
     if (isSmallTalk) {
       // Polite short response for small-talk
-      responseText = 'Cảm ơn bạn! Mình luôn sẵn sàng hỗ trợ bạn về nấu ăn. Bạn muốn nấu món gì tiếp theo? 👨‍🍳';
+      if (isThanksMessage) {
+        responseText = `Không có gì đâu, mình rất vui vì có thể giúp bạn. Nếu sau này bạn cần gợi ý món mới, cách biến tấu món cũ hoặc mẹo nấu ăn nhanh hơn thì cứ gọi mình nhé! 👨‍🍳`;
+      } else {
+        responseText = `Chào bạn yêu dấu! Mình luôn sẵn sàng hỗ trợ bạn về nấu ăn. Bạn có câu hỏi nào về:
+• Công thức nấu ăn
+• Mẹo vặt nhà bếp
+• Nguyên liệu và cách chế biến
+• Dinh dưỡng trong ẩm thực
+Hãy hỏi mình nhé! 👨‍🍳`;
+      }
     } else if (isIrrelevantQuery) {
       // Try to find relevant FAQ
       const faqMatches = searchFAQ(message, 3);
@@ -821,10 +860,10 @@ app.post('/ask', async (req, res) => {
         responseText = `Xin lỗi, câu hỏi của bạn không liên quan đến nấu ăn. Nhưng mình có thể giúp bạn với những câu hỏi về ẩm thực sau:\n\n`;
         
         faqMatches.forEach((faq, index) => {
-          responseText += `${index + 1}. **${faq.question}**\n${faq.answer}\n\n`;
+          responseText += `${index + 1}. ${faq.question}\n${faq.answer}\n\n`;
         });
         
-        responseText += `Bạn có câu hỏi nào về nấu ăn không? 👨‍🍳`;
+        responseText += `Xin chào! Bạn có câu hỏi nào về nấu ăn không? 👨‍🍳`;
       } else {
         // No FAQ matches - generic fallback
         responseText = `Xin lỗi, mình chỉ có thể tư vấn về nấu ăn và ẩm thực thôi ạ. 😊
@@ -837,6 +876,9 @@ Bạn có câu hỏi nào về:
 
 Hãy hỏi mình nhé! 👨‍🍳`;
       }
+
+      // Đảm bảo text off-topic không còn markdown dư thừa
+      responseText = cleanResponseText(responseText);
     } else {
       // Determine majority primarySourceType if not from intent
       if (!primarySourceType && Array.isArray(searchResults) && searchResults.length > 0) {
@@ -864,7 +906,15 @@ Hãy hỏi mình nhé! 👨‍🍳`;
 
       // Build prompt with re-ranked results and generate response
       const prompt = buildContextPrompt(message, reRankedResults, conversationContext);
-      responseText = await generateResponse(prompt);
+      responseText = await generateResponse(prompt, {
+        temperature: 0.12,  // Balanced: faithful but natural responses
+        topK: 20,          // Slightly more diversity
+        topP: 0.75,        // Good balance of choices
+        maxOutputTokens: 800 // Sufficient for complete recipes
+      });
+      
+      // Clean response text to remove markdown formatting
+      responseText = cleanResponseText(responseText);
       // Replace searchResults reference downstream with re-ranked list
       var effectiveResults = reRankedResults;
     }
@@ -882,18 +932,6 @@ Hãy hỏi mình nhé! 👨‍🍳`;
       feedback: usedResults.filter(r => r.sourceType === 'feedback').length,
       favourite: usedResults.filter(r => r.sourceType === 'favourite').length
     };
-
-    // Source quality weights
-    const sourceWeights = {
-      recipe: 1.0,
-      blog: 0.85,
-      feedback: 0.7,
-      favourite: 0.6
-    };
-
-    // Use top results (cap to 8)
-    const topK = Math.min(8, usedResults.length);
-    const topResults = usedResults.slice(0, topK);
 
     // Debug log: list source names by type (only when meaningful)
     if (!isSmallTalk && usedResults.length > 0) {
@@ -919,41 +957,66 @@ Hãy hỏi mình nhé! 👨‍🍳`;
       });
     }
 
+    // --- IMPROVED CONFIDENCE CALCULATION (Fix NaN & Better Calibration) ---
+    // 1. Take top 8 results from usedResults
+    const topResults = usedResults ? usedResults.slice(0, 8) : [];
     let confidenceScore = 0;
 
-    if (isSmallTalk) {
+    if (topResults.length > 0 && !isSmallTalk && !isIrrelevantQuery) {
+      let totalWeightedScore = 0;
+      let validScoreCount = 0;
+
+      topResults.forEach(result => {
+        // Priority: weightedScore -> score -> 0. Ensure number type.
+        let score = parseFloat(result.weightedScore || result.score);
+        if (!Number.isFinite(score)) {
+          score = 0;
+        }
+
+        // Normalize: Clamp max to 1.0 (in case of boost > 1)
+        score = Math.min(score, 1.0);
+        
+        // Penalize low scores strongly
+        if (score < 0.4) score *= 0.5;
+
+        totalWeightedScore += score;
+        validScoreCount++;
+      });
+
+      // Prevent division by zero (Main cause of NaN)
+      const avgScore = validScoreCount > 0 ? (totalWeightedScore / validScoreCount) : 0;
+
+      // Diversity Factor: Max 1.0 if >= 3 source types
+      const uniqueSources = new Set(topResults.map(r => r.sourceType)).size;
+      const diversityFactor = Math.min(uniqueSources / 3, 1.0);
+
+      // Count Factor: Max 1.0 if >= 5 results
+      const countFactor = Math.min(topResults.length / 5, 1.0);
+
+      // Final Formula: 80% Score + 10% Diversity + 10% Count
+      let rawConfidence = (avgScore * 0.8) + (diversityFactor * 0.1) + (countFactor * 0.1);
+
+      // Safety Margin: Reduce by 10% to match Faithfulness reality
+      rawConfidence = rawConfidence * 0.9;
+
+      // Final rounding
+      confidenceScore = parseFloat(rawConfidence.toFixed(2));
+    } else if (isSmallTalk) {
       // Medium confidence for small-talk; no sources
       confidenceScore = 0.7;
-    } else if (topResults.length === 0 || isIrrelevantQuery) {
-      // No evidence or irrelevant query -> very low confidence
+    } else if (isIrrelevantQuery) {
+      // Irrelevant query -> very low confidence
       confidenceScore = 0.15;
     } else {
-      // Component 1: Weighted Average Score (70%)
-      let totalWeightedScore = 0;
-      let totalWeight = 0;
-      topResults.forEach(result => {
-        const w = sourceWeights[result.sourceType] || 0.5;
-        totalWeightedScore += result.score * w;
-        totalWeight += w;
-      });
-      const weightedAvgScore = totalWeight > 0 ? (totalWeightedScore / totalWeight) : 0;
-
-      // Component 2: Diversity Factor (20%)
-      const uniqueSourceTypes = new Set(topResults.map(r => r.sourceType)).size;
-      const diversityFactor = Math.min(uniqueSourceTypes / 3, 1.0); // up to 3 types
-
-      // Component 3: Count Factor (10%)
-      const countFactor = Math.min(topResults.length / 5, 1.0); // optimal at 5+
-
-      // Final score
-      confidenceScore = (weightedAvgScore * 0.7) + (diversityFactor * 0.2) + (countFactor * 0.1);
-
-      // Clamp
-      confidenceScore = Math.max(0, Math.min(1, confidenceScore));
+      // No usable results
+      confidenceScore = 0;
     }
+
+    // Ensure it's never NaN at the end
+    if (isNaN(confidenceScore)) confidenceScore = 0;
     
     // 6. Save to chat history
-    const convId = conversation_id || `chat_${Date.now()}`;
+    const convId = resolvedConversationId;
     await saveChatHistory(
       user_id,
       convId,
@@ -993,30 +1056,23 @@ Hãy hỏi mình nhé! 👨‍🍳`;
         byType: sourceBreakdown,
         summary: `${sourceBreakdown.recipe} công thức, ${sourceBreakdown.blog} bài viết, ${sourceBreakdown.feedback} đánh giá`
       } : null,
-      sources: shouldShowSources ? usedResults.slice(0, 8).map(s => ({
-        type: s.sourceType,
-        typeName: s.sourceType === 'recipe' ? 'Công thức' 
-                : s.sourceType === 'blog' ? 'Bài viết/Mẹo'
-                : s.sourceType === 'feedback' ? 'Đánh giá'
-                : 'Yêu thích',
-        id: s._id?.toString(),
-        name: s.name || s.title || 'N/A',
-        score: s.score,
-        relevance: Math.round(s.score * 100),
-        ...(s.sourceType === 'recipe' && { 
-          category: s.category,
-          difficulty: s.difficulty,
-          cookingTime: s.cookingTime
-        }),
-        ...(s.sourceType === 'blog' && {
-          category: s.category,
-          tags: s.tags
-        }),
-        ...(s.sourceType === 'feedback' && {
-          rating: s.rating,
-          sentiment: s.sentiment
-        })
-      })) : [],
+      // Only expose recipe suggestions with a valid name/title to frontend
+      sources: shouldShowSources && Array.isArray(usedResults)
+        ? usedResults
+            .slice(0, 8)
+            .filter(s => s && s.sourceType === 'recipe' && (s.name || s.title))
+            .map(s => ({
+              type: s.sourceType,
+              typeName: 'Công thức',
+              id: s._id?.toString(),
+              name: s.name || s.title, // never "N/A"
+              score: s.score,
+              relevance: Math.round((s.score || 0) * 100),
+              category: s.category,
+              difficulty: s.difficulty,
+              cookingTime: s.cookingTime
+            }))
+        : [],
       conversation_id: convId,
       timestamp: new Date().toISOString(),
       processing_time_ms: processingTime
