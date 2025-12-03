@@ -693,6 +693,14 @@ app.post('/ask', async (req, res) => {
       }
     }
 
+    const normalizeVietnamese = (str = '') => str
+      .toString()
+      .normalize('NFD')
+      .replace(/\p{Diacritic}+/gu, '')
+      .replace(/đ/g, 'd')
+      .replace(/Đ/g, 'D')
+      .toLowerCase();
+
     // 3. Hybrid search across collections (skip for small-talk)
     let searchResults = isSmallTalk ? [] : await hybridSearch(db, message, queryVector, {
       limit: parseInt(process.env.VECTOR_SEARCH_LIMIT) || 8, // Reduced to 8 for higher quality
@@ -707,20 +715,16 @@ app.post('/ask', async (req, res) => {
     const isCookingIntent = hasCookingKeyword || isBudgetOrTimeQuery || (isFollowUpQuestion && hasConversationContext);
     let isIrrelevantQuery = (!isCookingIntent || hasOffTopicPattern) && !isSmallTalk;
 
-    // Fallback: If vector search returned no results but the query is cooking-related,
-    // try a lightweight text search on recipe/blog titles to recover exact-name matches (e.g., "Gỏi Bưởi").
-    if (!isSmallTalk && !isIrrelevantQuery && Array.isArray(searchResults) && searchResults.length === 0) {
+    // Fallback: If vector search missed the exact recipe name (or returned nothing),
+    // run a lightweight regex search to recover dishes such as "Bún Hải Sản" regardless of casing/diacritics.
+    if (!isSmallTalk && !isIrrelevantQuery) {
       try {
-        const removeVietnameseDiacritics = (str) => str
-          .normalize('NFD')
-          .replace(/\p{Diacritic}+/gu, '')
-          .replace(/đ/g, 'd')
-          .replace(/Đ/g, 'D');
-
         const stopwords = [
-          'công', 'thức', 'cách', 'làm', 'món', 'món ăn', 'món ăn', 'nấu', 'nấu ăn',
+          'công', 'thức', 'cách', 'làm', 'làm sao', 'thì', 'thế', 'thế nào',
+          'mình', 'bạn', 'tôi', 'toi', 'mình', 'muốn', 'xin', 'hãy', 'giúp',
+          'món', 'món ăn', 'nấu', 'nấu ăn', 'mẹo', 'về', 'cho', 'cần', 'có', 'được',
           'recipe', 'công thức món', 'công thức nấu', 'công thức nấu ăn',
-          'món', 'món', 'mẹo', 'về', 'cho', 'xin', 'hãy', 'giúp', 'tôi'
+          'ăn', 'gợi', 'gợi ý', 'hãy', 'làm ơn', 'please', 'cho mình hỏi'
         ];
 
         // Build token list by removing common intent words
@@ -730,8 +734,17 @@ app.post('/ask', async (req, res) => {
           .filter(t => t && t.length > 1);
 
         const tokens = rawTokens.filter(t => !stopwords.includes(t));
+        const normalizedTokens = tokens.map(t => normalizeVietnamese(t));
 
-        if (tokens.length > 0) {
+        const hasExactRecipeInResults = normalizedTokens.length > 0 && Array.isArray(searchResults) && searchResults.some(r => {
+          if (r.sourceType !== 'recipe' || !r.name) return false;
+          const normalizedName = normalizeVietnamese(r.name);
+          return normalizedTokens.every(token => normalizedName.includes(token));
+        });
+
+        const shouldRunFallback = normalizedTokens.length > 0 && (!Array.isArray(searchResults) || searchResults.length === 0 || !hasExactRecipeInResults);
+
+        if (shouldRunFallback) {
           const pattern = tokens.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('.*');
           const nameRegex = new RegExp(pattern, 'i');
 
@@ -766,7 +779,15 @@ app.post('/ask', async (req, res) => {
           ];
 
           if (mapped.length > 0) {
-            searchResults = mapped;
+            const existing = Array.isArray(searchResults) ? searchResults : [];
+            const combined = [...mapped, ...existing];
+            const seen = new Set();
+            searchResults = combined.filter(doc => {
+              const id = `${doc._id?.toString() || Math.random().toString(36).slice(2)}:${doc.sourceType || 'unknown'}`;
+              if (seen.has(id)) return false;
+              seen.add(id);
+              return true;
+            });
           }
         }
       } catch (fallbackErr) {
