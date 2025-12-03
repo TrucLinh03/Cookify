@@ -33,7 +33,7 @@ export const API_CONFIG = {
 };
 
 // Helper functions
-export const getApiUrl = (endpoint) => {
+export const getApiUrl = (endpoint = '') => {
   return `${API_CONFIG.BASE_URL}${endpoint}`;
 };
 

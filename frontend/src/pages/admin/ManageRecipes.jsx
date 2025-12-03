@@ -13,6 +13,8 @@ import CoffeeIcon from '../../assets/coffee.svg';
 import ChefHatIcon from '../../assets/chef-hat.svg';
 import { getApiUrl } from '../../config/api.js';
 
+const ITEMS_PER_PAGE = 10;
+
 const ManageRecipes = () => {
   const [recipes, setRecipes] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
@@ -35,6 +37,11 @@ const ManageRecipes = () => {
   });
   const [imagePreview, setImagePreview] = useState('');
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(filteredRecipes.length / ITEMS_PER_PAGE) || 1;
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedRecipes = filteredRecipes.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
 
   // Get category counts
@@ -47,6 +54,11 @@ const ManageRecipes = () => {
       anvat: recipes.filter(recipe => recipe.category === 'anvat').length,
       douong: recipes.filter(recipe => recipe.category === 'douong').length
     };
+
+  const handlePageChange = (page) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
     return counts;
   };
 
@@ -56,6 +68,7 @@ const ManageRecipes = () => {
     setSelectedCategory('all');
     setStartDate('');
     setEndDate('');
+    setCurrentPage(1);
     fetchRecipes();
   };
 
@@ -106,6 +119,17 @@ const ManageRecipes = () => {
     
     setFilteredRecipes(filtered);
   }, [recipes, searchTerm, selectedCategory, startDate, endDate]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, selectedCategory, startDate, endDate]);
+
+  useEffect(() => {
+    const maxPage = Math.max(1, Math.ceil(filteredRecipes.length / ITEMS_PER_PAGE));
+    if (currentPage > maxPage) {
+      setCurrentPage(maxPage);
+    }
+  }, [filteredRecipes, currentPage]);
 
   const fetchRecipes = async () => {
     try {
@@ -874,10 +898,10 @@ const ManageRecipes = () => {
                   </td>
                 </tr>
               ) : (
-                filteredRecipes.map((item, index) => (
+                paginatedRecipes.map((item, index) => (
                 <tr key={item._id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {index + 1}
+                    {startIndex + index + 1}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                   <img
@@ -945,6 +969,83 @@ const ManageRecipes = () => {
             </tbody>
           </table>
         </div>
+        {filteredRecipes.length > ITEMS_PER_PAGE && (
+          <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+            <div className="flex-1 flex justify-between sm:hidden">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
+                  currentPage === 1
+                    ? 'text-gray-400 bg-gray-100 cursor-not-allowed'
+                    : 'text-gray-700 bg-white hover:bg-gray-50'
+                }`}
+              >
+                Trước
+              </button>
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className={`ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
+                  currentPage === totalPages
+                    ? 'text-gray-400 bg-gray-100 cursor-not-allowed'
+                    : 'text-gray-700 bg-white hover:bg-gray-50'
+                }`}
+              >
+                Sau
+              </button>
+            </div>
+            <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm text-gray-700">
+                  Trang <span className="font-medium">{currentPage}</span> / <span className="font-medium">{totalPages}</span>
+                </p>
+              </div>
+              <div>
+                <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 text-sm font-medium ${
+                      currentPage === 1
+                        ? 'text-gray-400 bg-gray-100 cursor-not-allowed'
+                        : 'text-gray-500 bg-white hover:bg-gray-50'
+                    }`}
+                  >
+                    Trước
+                  </button>
+                  {[...Array(Math.min(5, totalPages))].map((_, index) => {
+                    const page = index + 1;
+                    return (
+                      <button
+                        key={page}
+                        onClick={() => handlePageChange(page)}
+                        className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                          currentPage === page
+                            ? 'z-10 bg-orange-50 border-orange-500 text-orange-600'
+                            : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    );
+                  })}
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 text-sm font-medium ${
+                      currentPage === totalPages
+                        ? 'text-gray-400 bg-gray-100 cursor-not-allowed'
+                        : 'text-gray-500 bg-white hover:bg-gray-50'
+                    }`}
+                  >
+                    Sau
+                  </button>
+                </nav>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       </div>
     </AdminLayout>

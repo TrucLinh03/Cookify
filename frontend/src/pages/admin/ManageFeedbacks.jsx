@@ -19,6 +19,7 @@ const ManageFeedbacks = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [stats, setStats] = useState({});
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [selectedFeedback, setSelectedFeedback] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState('');
@@ -67,6 +68,7 @@ const ManageFeedbacks = () => {
         setFeedbacks(filteredFeedbacks);
         setCurrentPage(response.data.data.pagination.currentPage);
         setTotalPages(response.data.data.pagination.totalPages);
+        setItemsPerPage(response.data.data.pagination.limit || 10);
         setStats(response.data.data.stats);
       }
     } catch (error) {
@@ -170,6 +172,11 @@ const ManageFeedbacks = () => {
     e.preventDefault();
     setCurrentPage(1);
     fetchFeedbacks(1);
+  };
+
+  const handlePageChange = (page) => {
+    if (page < 1 || page > totalPages) return;
+    fetchFeedbacks(page);
   };
 
   // Format date
@@ -400,7 +407,7 @@ const ManageFeedbacks = () => {
                 feedbacks.map((feedback, index) => (
                   <tr key={feedback._id} className="hover:bg-gray-50">
                     <td className="px-4 py-3 whitespace-nowrap text-xs text-gray-500">
-                      {index + 1 + (currentPage - 1) * 100}
+                      {index + 1 + (currentPage - 1) * itemsPerPage}
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap">
                       <div className="flex items-center">
@@ -483,14 +490,14 @@ const ManageFeedbacks = () => {
           <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
             <div className="flex-1 flex justify-between sm:hidden">
               <button
-                onClick={() => fetchFeedbacks(currentPage - 1)}
+                onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
                 className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Trước
               </button>
               <button
-                onClick={() => fetchFeedbacks(currentPage + 1)}
+                onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
                 className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -506,16 +513,40 @@ const ManageFeedbacks = () => {
               <div>
                 <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
                   <button
-                    onClick={() => fetchFeedbacks(currentPage - 1)}
+                    onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 text-sm font-medium ${
+                      currentPage === 1
+                        ? 'text-gray-400 bg-gray-100 cursor-not-allowed'
+                        : 'text-gray-500 bg-white hover:bg-gray-50'
+                    }`}
                   >
                     Trước
                   </button>
+                  {[...Array(Math.min(5, totalPages))].map((_, index) => {
+                    const page = index + 1;
+                    return (
+                      <button
+                        key={page}
+                        onClick={() => handlePageChange(page)}
+                        className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                          currentPage === page
+                            ? 'z-10 bg-orange-50 border-orange-500 text-orange-600'
+                            : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    );
+                  })}
                   <button
-                    onClick={() => fetchFeedbacks(currentPage + 1)}
+                    onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 text-sm font-medium ${
+                      currentPage === totalPages
+                        ? 'text-gray-400 bg-gray-100 cursor-not-allowed'
+                        : 'text-gray-500 bg-white hover:bg-gray-50'
+                    }`}
                   >
                     Sau
                   </button>

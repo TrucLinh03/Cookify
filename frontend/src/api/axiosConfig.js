@@ -39,8 +39,11 @@ axiosInstance.interceptors.response.use(
     
     // Handle 401 Unauthorized - clear storage and redirect to login
     if (error.response?.status === 401) {
-      SecureStorage.clearAll();
-      window.location.href = '/login';
+      const isAuthEndpoint = error.config?.url?.includes('/users/login') || error.config?.url?.includes('/users/register');
+      if (!isAuthEndpoint && !window.location.pathname.includes('/login')) {
+        SecureStorage.clearAll();
+        window.location.href = '/login';
+      }
     }
     
     return Promise.reject(error);

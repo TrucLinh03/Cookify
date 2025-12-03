@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useRegisterUserMutation } from '../../redux/features/auth/authApi';
+import { useRegisterUserMutation, useLoginUserMutation } from '../../redux/features/auth/authApi';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { setUser } from '../../redux/features/auth/authSlice';
@@ -15,6 +15,7 @@ const Register = () => {
   const dispatch = useDispatch();
 
   const [registerUser, { isLoading }] = useRegisterUserMutation();
+  const [loginUser] = useLoginUserMutation();
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -24,14 +25,25 @@ const Register = () => {
       const res = await registerUser({ name, email, password }).unwrap();
       
       // Lưu token vào SecureStorage (localStorage với prefix để persistent)
-      if (res.token) {
-        SecureStorage.setToken(res.token);
+      let token = res.token || res?.data?.token;
+      let userData = res.user || res?.data?.user;
+
+      // Fallback: nếu backend chưa trả token ngay sau đăng ký => login tự động
+      if (!token || !userData) {
+        const loginRes = await loginUser({ email, password }).unwrap();
+        token = loginRes.token;
+        userData = loginRes.user;
+      }
+
+      if (token) {
+        SecureStorage.setToken(token);
       }
       
-      // Lưu user vào Redux store (sẽ tự động lưu vào SecureStorage)
-      dispatch(setUser({ user: res.user }));
+      if (userData) {
+        dispatch(setUser({ user: userData }));
+      }
       
-      toast.success(`Chào mừng ${res.user.name}! Đăng ký thành công.`);
+      toast.success(`Chào mừng ${userData?.name || name}! Đăng ký thành công.`);
       navigate('/');
     } catch (err) {
       if (import.meta.env.DEV) {

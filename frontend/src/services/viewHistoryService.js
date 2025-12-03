@@ -4,7 +4,7 @@ import SecureStorage from '../utils/secureStorage';
 
 // Create axios instance with base URL
 const axiosInstance = axios.create({
-  baseURL: getApiUrl(),
+  baseURL: getApiUrl('/api'),
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
