@@ -270,7 +270,6 @@ function buildContextPrompt(query, searchResults, conversationContext = '') {
    
    Thời gian nấu: ${doc.cookingTime || 'Không rõ'}
    Độ khó: ${doc.difficulty || 'Không rõ'}
-   Điểm tương đồng: ${(doc.score * 100).toFixed(0)}%
       `.trim());
     } else if (doc.sourceType === 'blog') {
       const content = doc.excerpt || doc.content?.substring(0, 500) || '';
@@ -281,8 +280,6 @@ function buildContextPrompt(query, searchResults, conversationContext = '') {
    
    Nội dung:
    ${content}
-   
-   Điểm tương đồng: ${(doc.score * 100).toFixed(0)}%
       `.trim());
     } else if (doc.sourceType === 'feedback') {
       contextParts.push(`
