@@ -98,7 +98,9 @@ const CreateBlog = () => {
       // Create preview
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result);
+        const base64String = reader.result;
+        setImagePreview(base64String);
+        setFormData(prev => ({ ...prev, imageUrl: base64String }));
       };
       reader.readAsDataURL(file);
     }
@@ -156,28 +158,9 @@ const CreateBlog = () => {
       let imageUrl = formData.imageUrl;
 
       // Upload image if file is selected
-      if (uploadMethod === 'upload' && imageFile) {
-        const formDataImage = new FormData();
-        formDataImage.append('image', imageFile);
-
-        try {
-          const uploadResponse = await axios.post(
-            getApiUrl('/api/upload/image'),
-            formDataImage,
-            {
-              headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'multipart/form-data'
-              }
-            }
-          );
-
-          if (uploadResponse.data.success) {
-            imageUrl = uploadResponse.data.data.url;
-          }
-        } catch (uploadError) {
-          console.error('Error uploading image:', uploadError);
-          toast.error('Lỗi khi upload ảnh: ' + (uploadError.response?.data?.message || uploadError.message));
+      if (uploadMethod === 'upload') {
+        if (!imageUrl) {
+          toast.error('Vui lòng chọn ảnh trước khi đăng bài');
           setLoading(false);
           return;
         }
