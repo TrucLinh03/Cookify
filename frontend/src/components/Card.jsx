@@ -14,6 +14,9 @@ const Card = ({ item, source = 'direct', contextTab = null }) => {
   const { favoriteUpdates, triggerFavoriteUpdate } = useFavoritesContext();
   const [isFavorited, setIsFavorited] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [likeCount, setLikeCount] = useState(
+    typeof item?.totalLikes === 'number' ? item.totalLikes : 0
+  );
 
   // Check if recipe is favorited using backend API
   useEffect(() => {
@@ -39,6 +42,12 @@ const Card = ({ item, source = 'direct', contextTab = null }) => {
 
     checkFavoriteStatus();
   }, [user, item?._id, favoriteUpdates]);
+
+  useEffect(() => {
+    if (typeof item?.totalLikes === 'number') {
+      setLikeCount(item.totalLikes);
+    }
+  }, [item?.totalLikes]);
 
   const difficultyStyles = {
     easy: { backgroundColor: "#d1fae5", color: "#059669" }, // green
@@ -146,6 +155,7 @@ const Card = ({ item, source = 'direct', contextTab = null }) => {
           const updatedFavorites = favorites.filter(id => id !== item._id);
           localStorage.setItem(`favorites_${user._id}`, JSON.stringify(updatedFavorites));
           // Trigger update for other components
+          setLikeCount(prev => Math.max(0, prev - 1));
           triggerFavoriteUpdate();
         } else {
           console.error('Remove favorite failed:', response);
@@ -209,10 +219,12 @@ const Card = ({ item, source = 'direct', contextTab = null }) => {
         if (isFavorited) {
           updatedFavorites = favorites.filter(id => id !== item._id);
           setIsFavorited(false);
+          setLikeCount(prev => Math.max(0, prev - 1));
           toast.success('Đã bỏ yêu thích (offline)');
         } else {
           updatedFavorites = [...favorites, item._id];
           setIsFavorited(true);
+          setLikeCount(prev => prev + 1);
           toast.success('Đã thêm yêu thích (offline)');
         }
 
@@ -337,13 +349,13 @@ const Card = ({ item, source = 'direct', contextTab = null }) => {
               </div>
             )}
 
-            {contextTab === 'favorites' && typeof item?.totalLikes === 'number' && (
+            {contextTab === 'favorites' && (
               <div className="absolute bottom-3 right-3 z-10 bg-white/95 backdrop-blur px-2 py-0.5 rounded-full text-xs font-semibold shadow border border-red-200 text-red-600 flex items-center gap-1">
                 {/* Heart icon */}
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4 fill-red-500">
                   <path d="M12 21s-6.5-4.33-10-9.5C-0.42 8.55 1.55 3.5 6 3.5c2.28 0 4.5 1.5 6 3.5 1.5-2 3.72-3.5 6-3.5 4.45 0 6.42 5.05 4 8.0C18.5 16.67 12 21 12 21z"/>
                 </svg>
-                {item.totalLikes}
+                {likeCount}
               </div>
             )}
           </div>

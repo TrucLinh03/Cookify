@@ -3,10 +3,12 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import featuredImg from "../../assets/featured.webp"
 import { getApiUrl } from '../../config/api.js';
+import { useFavoritesContext } from '../../contexts/FavoritesContext';
 
 const FeaturedSection = () => {
   const [featuredRecipe, setFeaturedRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { favoriteUpdates } = useFavoritesContext();
 
   useEffect(() => {
     const getFeaturedRecipe = async () => {
@@ -42,7 +44,7 @@ const FeaturedSection = () => {
     };
     
     getFeaturedRecipe();
-  }, []);
+  }, [favoriteUpdates]);
 
   if (loading) {
     return (

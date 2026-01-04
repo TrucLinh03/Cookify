@@ -10,6 +10,7 @@ import MagnifyingGlassIcon from '../../assets/magnifying-glass.svg';
 import ChefHatIcon from '../../assets/chef-hat.svg';
 import { getApiUrl } from '../../config/api.js';
 import SecureStorage from '../../utils/secureStorage';
+import { useFavoritesContext } from '../../contexts/FavoritesContext';
 
 const Recommendations = () => {
   const [activeTab, setActiveTab] = useState('popular');
@@ -18,6 +19,7 @@ const Recommendations = () => {
   const [error, setError] = useState(null);
   const [metadata, setMetadata] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { favoriteUpdates } = useFavoritesContext();
 
   // Check authentication status
   useEffect(() => {
@@ -83,7 +85,7 @@ const Recommendations = () => {
     };
 
     fetchRecommendations();
-  }, [activeTab, isAuthenticated]);
+  }, [activeTab, isAuthenticated, favoriteUpdates]);
 
   return (
     <section className="min-h-screen bg-gradient-to-br from-orange-50 to-yellow-50">
