@@ -203,7 +203,7 @@ async function initialize() {
     initializeGemini(
       process.env.GOOGLE_API_KEY,
       process.env.MODEL_EMBEDDING || 'text-embedding-004',
-      process.env.MODEL_GENERATION || 'gemini-2.0-flash'
+      process.env.MODEL_GENERATION || 'gemini-2.5-flash-lite'
     );
     
     // Initialize MongoDB
